@@ -1,0 +1,2 @@
+<span class="text-danger"> *</span>
+style="{{ $lang == 'ar' ? 'margin-right: 8px;' : 'margin-left: 8px;' }}" 

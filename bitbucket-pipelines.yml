@@ -1,0 +1,86 @@
+image: php:8.1.1-fpm-alpine
+pipelines:
+  branches:
+    development:
+    - parallel:
+        - step:
+            name: " Deploy To dev-pfm.finexerp.com "
+            script:
+              - pipe: atlassian/ssh-run:0.3.1
+                variables:
+                  SSH_USER: 'automation'
+                  SERVER: '15.184.88.196'
+                  MODE: 'command'
+                  COMMAND: '/home/automation/scripts/dev-pfm.finexerp.com.sh'
+    staging:
+    - parallel:
+        - step:
+            name: " Deploy To stage-pfm.finexerp.com "
+            script:
+              - pipe: atlassian/ssh-run:0.3.1
+                variables:
+                  SSH_USER: 'automation'
+                  SERVER: '15.184.88.196'
+                  MODE: 'command'
+                  COMMAND: '/home/automation/scripts/stage-pfm.finexerp.com.sh'
+    master:
+    - parallel:
+        - step:
+            name: " Deploy To pfm.finexerp.com "
+            script:
+              - pipe: atlassian/ssh-run:0.3.1
+                variables:
+                  SSH_USER: 'automation'
+                  SERVER: '157.175.9.223'
+                  MODE: 'command'
+                  COMMAND: '/home/automation/scripts/pfm.finexerp.com.sh'
+    admin:
+    - step:
+        name: " Deploy To admin-pfm.finexerp.com "
+        script:
+          - curl ifconfig.me
+          - pipe: atlassian/ssh-run:0.3.1
+            variables:
+              SSH_USER: 'automation'
+              SERVER: '15.184.88.196'
+              MODE: 'command'
+              COMMAND: '/home/automation/scripts/pfm.finexerp.com.sh'
+    - step:
+        name: " Run Composer Update - admin-pfm "
+        condition:
+          changesets:
+            includePaths:
+              - 'composer.json'
+        script:
+          - pipe: atlassian/ssh-run:0.3.1
+            variables:
+              SSH_USER: 'automation'
+              SERVER: '15.184.88.196'
+              MODE: 'command'
+              COMMAND: 'cd /home/automation/dev/pfm.finexerp.com && /usr/bin/php8.1 /usr/bin/composer update'
+    - step:
+        name: " Run Migrations (if needed) - admin-pfm "
+        condition:
+          changesets:
+            includePaths:
+              - 'database/migrations/**'
+        script:
+          - pipe: atlassian/ssh-run:0.3.1
+            variables:
+              SSH_USER: 'automation'
+              SERVER: '15.184.88.196'
+              MODE: 'command'
+              COMMAND: 'cd /home/automation/dev/pfm.finexerp.com && /usr/bin/php8.1 artisan migrate --force'
+    - step:
+        name: " Run Migrations (if needed) - admin-pfm "
+        condition:
+          changesets:
+            includePaths:
+              - 'database/migrations/**'
+        script:
+          - pipe: atlassian/ssh-run:0.3.1
+            variables:
+              SSH_USER: 'automation'
+              SERVER: '15.184.88.196'
+              MODE: 'command'
+              COMMAND: 'cd /home/automation/dev/pfm.finexerp.com && /usr/bin/php8.1 artisan migrate:all'

@@ -1,0 +1,96 @@
+@extends('layouts.back-end.app')
+@php
+    $currentUrl = url()->current();
+    $segments = explode('/', $currentUrl);
+    $end = end($segments);
+@endphp
+@section('title', __('general.settings'))
+
+@push('css_or_js')
+    <link href="{{ asset('public/assets/select2/css/select2.min.css')}}" rel="stylesheet">
+    <link href="{{ asset('public/assets/back-end/css/custom.css')}}" rel="stylesheet">
+    <meta name="csrf-token" content="{{ csrf_token() }}">
+@endpush
+
+@section('content')
+    <div class="content container-fluid">
+        <!-- Page Title -->
+        <div class="d-flex justify-content-between align-items-center gap-3 mb-3">
+            <h2 class="h1 mb-0 text-capitalize d-flex align-items-center gap-2">
+                <img src="{{asset('/public/assets/back-end/img/business-setup.png')}}" alt="">
+                 {{ __('property_transactions.agreement_settings') }}
+            </h2>
+
+        </div>
+        <!-- End Page Title -->
+
+        <!-- Inlile Menu -->
+        @include('admin-views.settings.business-setup-inline-menu')
+
+
+
+            <!-- Form -->
+            <form class="product-form text-start" action="{{   route('agreement_settings.store')   }}" method="POST" enctype="multipart/form-data" id="product_form">
+                @csrf
+                @method('patch')
+
+                <!-- general setup -->
+                <div class="card mt-3 rest-part">
+                    <div class="card-header">
+                        <div class="d-flex gap-2">
+                            <img src="{{asset('/public/assets/back-end/img/seller-information.png')}}" class="mb-1" alt="">
+                            <h4 class="mb-0">{{ __('property_transactions.agreement_settings')  }}</h4>
+                        </div>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+
+                            <div class="col-md-6 col-lg-4 col-xl-3">
+                                <div class="form-group">
+                                    <label for="token" class="title-color">{{ __('property_transactions.prefix') }}</label>
+                                    <input type="text" class="form-control" name="agreement_prefix"   value="{{  $agreement_prefix }}">
+                                </div>
+                            </div>
+
+                            <div class="col-md-6 col-lg-4 col-xl-3">
+                                <div class="form-group">
+                                    <label for="token" class="title-color">{{ __('property_transactions.agreement_digits') }}</label>
+                                    <input type="text" class="form-control" name="agreement_digits" value="{{ $agreement_digits }}">
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-4 col-xl-3">
+                                <div class="form-group">
+                                    <label for="">{{ __('property_transactions.start_date') }}</label>
+                                    <input type="text" class="form-control" id="agreement_start_date" name="agreement_date" value="{{  (isset($agreement_date)) ? \Carbon\Carbon::parse($agreement_date)->format('d-m-Y') : \Carbon\Carbon::now()->format('d-m-Y') }}" class="form-control">
+                                </div>
+                            </div>
+                            <div class="col-md-12 col-lg-4 col-xl-3">
+                                <div class="form-group">
+                                    <label for="">{{   __('property_transactions.agreement_expire_date')    }}</label>
+                                    <input type="number" class="form-control"   name="agreement_expire_date"  class="form-control" value="{{ ( isset($agreement_expire_date)) ? $agreement_expire_date : ''   }}">
+                                </div>
+                            </div>
+
+                        </div>
+                    </div>
+
+
+                </div>
+
+
+                <div class="row justify-content-end gap-3 mt-3 mx-1">
+                    <button type="reset" class="btn btn-secondary px-5">{{ __('reset') }}</button>
+                    <button type="submit" class="btn btn--primary px-5">{{ __('submit') }}</button>
+                </div>
+            </form>
+@endsection
+@push('script')
+    <script>
+        flatpickr("#agreement_start_date", {
+            dateFormat: "d/m/Y",
+
+        });
+
+
+    </script>
+@endpush

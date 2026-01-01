@@ -1,0 +1,187 @@
+<div class="accordion" id="accordionExample">
+            @foreach ($groups as $group)
+                @if ($group->ledgers->isNotEmpty() || $group->sub_groups->isNotEmpty())
+                    @php $groupId = 'group-' . $group->id; @endphp
+                    <div class="accordion-item">
+                        <h4 class="accordion-header" id="heading-{{ $groupId }}">
+                            <a href="{{ route('groups.show' , $group->id) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                data-bs-target="#collapse-{{ $groupId }}" aria-expanded="false"
+                                aria-controls="collapse-{{ $groupId }}">+ {{ $group->name }} <span  style="color: gray;"> ({{ str_pad($group->code, 3, '0', STR_PAD_LEFT) }}) | <a href="{{ route('groups.show' , $group->id) }}">{{ __('collections.show_group') }}</a> | <a href="{{ route('groups.edit' , $group->id) }}">{{ __('collections.edit_group') }}</a></span>  </a>
+                        </h4>
+                        <div id="collapse-{{ $groupId }}" class="accordion-collapse collapse"
+                            aria-labelledby="heading-{{ $groupId }}" data-bs-parent="#accordionExample">
+                            <div class="accordion-body">
+
+                                {{-- عرض الـ Ledgers داخل الـ Group --}}
+                                @if ($group->ledgers->isNotEmpty())
+                                    <ul>
+                                        @foreach ($group->ledgers as $ledger)
+                                            <li><a href="{{ route('ledgers.show' , $ledger->id) }}">{{ $ledger->name }}</a></li>
+                                        @endforeach
+                                    </ul>
+                                @endif
+
+                                {{-- عرض الـ Subgroups داخل الـ Group --}}
+                                @foreach ($group->sub_groups as $sub_group)
+                                    @php $subGroupId = 'subgroup-' . $sub_group->id; @endphp
+                                    <div class="accordion-item">
+                                        <h4 class="accordion-header" id="heading-{{ $subGroupId }}">
+                                            <a href="{{ route('groups.show' , $sub_group->id) }}" class="accordion-button collapsed" type="button" data-bs-toggle="collapse"
+                                                data-bs-target="#collapse-{{ $subGroupId }}" aria-expanded="false"
+                                                aria-controls="collapse-{{ $subGroupId }}">&nbsp;&nbsp;&nbsp;+
+                                                {{ $sub_group->name }} <span  style="color: gray;"> ({{ str_pad($sub_group->code, 3, '0', STR_PAD_LEFT) }}) | <a href="{{ route('groups.show' , $sub_group->id) }}">{{ __('collections.show_group') }}</a> | <a href="{{ route('groups.edit' , $sub_group->id) }}">{{ __('collections.edit_group') }}</a></span></a>
+                                        </h4>
+                                        <div id="collapse-{{ $subGroupId }}" class="accordion-collapse collapse"
+                                            aria-labelledby="heading-{{ $subGroupId }}">
+                                            <div class="accordion-body">
+ 
+                                                @if ($sub_group->ledgers->isNotEmpty())
+                                                    <ul>
+                                                        @foreach ($sub_group->ledgers as $ledger)
+                                                            <li> <h4><a href="{{ route('ledgers.show' , $ledger->id) }}">{{ $ledger->name }} <span  style="color: red;"> ({{ str_pad($ledger->code, 3, '0', STR_PAD_LEFT) }}) | <a href="{{ route('ledgers.show' , $ledger->id) }}">{{ __('collections.show_ledger') }}</a> | <a href="{{ route('ledgers.edit' , $ledger->id) }}">{{ __('collections.edit_ledger') }}</a></span></a></h4></li>
+                                                        @endforeach
+                                                    </ul>
+                                                @endif
+                                                @foreach ($sub_group->sub_groups as $sub_sub_group)
+                                                    @php $subGroupId = 'subgroup-' . $sub_sub_group->id; @endphp
+                                                    <div class="accordion-item">
+                                                        <h4 class="accordion-header" id="heading-{{ $subGroupId }}">
+                                                            <a class="accordion-button collapsed" href="{{ route('groups.show' , $sub_sub_group->id) }}" type="button"
+                                                                data-bs-toggle="collapse"
+                                                                data-bs-target="#collapse-{{ $subGroupId }}"
+                                                                aria-expanded="false"
+                                                                aria-controls="collapse-{{ $subGroupId }}">&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;+
+                                                                {{ $sub_sub_group->name }} <span  style="color: gray;"> ({{ str_pad($sub_sub_group->code, 3, '0', STR_PAD_LEFT) }}) | <a href="{{ route('groups.show' , $sub_sub_group->id) }}">{{ __('collections.show_group') }}</a> | <a href="{{ route('groups.edit' , $sub_sub_group->id) }}">{{ __('collections.edit_group') }}</a></span></a>
+                                                        </h4>
+                                                        <div id="collapse-{{ $subGroupId }}"
+                                                            class="accordion-collapse collapse"
+                                                            aria-labelledby="heading-{{ $subGroupId }}">
+                                                            <div class="accordion-body"> 
+                                                                @if ($sub_sub_group->ledgers->isNotEmpty())
+                                                                    <ul>
+                                                                        @foreach ($sub_sub_group->ledgers as $ledger)
+                                                                            <li><h4><a href="{{ route('ledgers.show' , $ledger->id) }}"> {{ $ledger->name }}  <span  style="color: red;"> ({{ str_pad($ledger->code, 3, '0', STR_PAD_LEFT) }}) | <a href="{{ route('ledgers.show' , $ledger->id) }}">{{ __('collections.show_ledger') }}</a> | <a href="{{ route('ledgers.edit' , $ledger->id) }}">{{ __('collections.edit_ledger') }}</a></span></a></h4></li>
+                                                                        @endforeach
+                                                                    </ul>
+                                                                @endif
+
+                                                            </div>
+                                                        </div>
+                                                    </div>
+                                                @endforeach
+
+                                            </div>
+                                        </div>
+                                    </div>
+                                @endforeach
+
+                            </div>
+                        </div>
+                    </div>
+                @else
+                    <div class="row mt-2">
+                        <div class="col-lg-12">
+                            <h4><a href="{{ route('groups.show' , $group->id) }}" class="" type="button">{{ $group->name }} <span  style="color: gray;"> ({{ str_pad($group->code, 3, '0', STR_PAD_LEFT) }}) | <a href="{{ route('groups.show' , $group->id) }}">{{ __('collections.show_group') }}</a> | <a href="{{ route('groups.edit' , $group->id) }}">{{ __('collections.edit_group') }}</a></span> </a></h4>
+                        </div>
+                    </div>
+                @endif
+            @endforeach
+        </div>
+
+
+
+
+
+
+
+
+
+
+
+
+        
+<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+{{-- <script>
+    function toggleGroup(groupId) {
+        var groupElement = $("#group-" + groupId);
+        var toggleButton = groupElement.prev().find(".toggle-btn");
+
+        if (groupElement.is(":visible")) {
+            groupElement.slideUp();
+            toggleButton.text("+");
+        } else {
+            groupElement.slideDown();
+            toggleButton.text("-");
+        }
+    }
+</script> --}}
+<!--
+  <ul class="ledger-list">
+            @foreach ($groups as $group)
+<li>
+
+                    @if ($group->ledgers->isNotEmpty() || $group->sub_groups->isNotEmpty())
+<span class="toggle-btn" onclick="toggleGroup({{ $group->id }})">+</span>
+@else
+<span class="no-toggle">•</span>
+@endif
+
+                    <strong>
+                        <a href="{{ route('groups.show', ['id' => $group->id]) }}">{{ $group->name }}</a>
+                        ({{ str_pad($group->id, 3, '0', STR_PAD_LEFT) }})
+</strong> -
+                    <a href="{{ route('groups.edit', $group->id) }}">Edit Group</a> |
+                    {{-- <a href="{{ route('groups.create', ['parent_id' => $group->id]) }}">Add Group</a> --}}
+
+
+                    @if ($group->ledgers->isNotEmpty() || $group->sub_groups->isNotEmpty())
+@if ($group->sub_groups->isNotEmpty())
+<ul id="group-{{ $group->id }}" class="sub-group" style="display: none;">
+                                @foreach ($group->sub_groups as $sub_group_item)
+<li style="color: red;">
+                                        @if ($sub_group_item->ledgers->isNotEmpty())
+<span class="toggle-btn"
+                                                onclick="toggleGroup({{ $sub_group_item->id }})">+</span>
+@else
+<span class="no-toggle">•</span>
+@endif
+                                        <a href=" ">{{ $sub_group_item->name }}</a>
+                                        ({{ str_pad($sub_group_item->id, 3, '0', STR_PAD_LEFT) }})
+-
+                                        <a href="{{ route('groups.edit', $sub_group_item->id) }}">Edit Group</a>
+                                        {{-- | <a href="{{ route('groups.delete', $sub_group_item->id) }}" style="color: red;">Delete</a> --}}
+                                        @if ($sub_group_item->ledgers->isNotEmpty())
+<ul id="group-{{ $sub_group_item->id }}" class="sub-group"
+                                                style="display: none;">
+                                                @foreach ($sub_group_item->ledgers as $sub_group_item_ledger)
+<li style="color: red;">
+                                                        <a href=" ">{{ $sub_group_item_ledger->name }}</a>
+                                                        ({{ str_pad($sub_group_item_ledger->id, 3, '0', STR_PAD_LEFT) }})
+-
+                                                        <a href="{{ route('ledgers.edit', $sub_group_item_ledger->id) }}">Edit
+                                                            Ledger</a>
+                                                        {{-- | <a href="{{ route('ledgers.delete', $sub_group_item_ledger->id) }}" style="color: red;">Delete</a> --}}
+                                                    </li>
+@endforeach
+                                            </ul>
+@endif
+                                    </li>
+@endforeach
+                            </ul>
+@endif
+                        {{-- <ul id="group-{{ $group->id }}" class="sub-group" style="display: none;">
+                            @foreach ($group->ledgers as $ledger)
+                                <li style="color: red;">
+                                    <a href=" ">{{ $ledger->name }}</a>
+                                    ({{ str_pad($ledger->id, 3, '0', STR_PAD_LEFT) }})
+                                    -
+                                    <a href="{{ route('ledgers.edit', $ledger->id) }}">Edit Ledger</a> |
+                                    <a href="{{ route('ledgers.delete', $ledger->id) }}" style="color: red;">Delete</a>
+                                </li>
+                            @endforeach
+                        </ul> --}}
+@endif
+                </li>
+@endforeach
+        </ul>
+-->
