@@ -96,7 +96,7 @@ use App\Http\Controllers\property_transactions\PropertyTransactionSettingsContro
 
 // // Translation
 // Route::get('/login-page' ,function (){
-    
+
 //     return view('auth.login');
 // })->name('login-page');
 Route::get('lang/{locale}', function ($locale) {
@@ -125,10 +125,9 @@ Route::group(["prefix" => "dashboard"], function () {
 Route::get("/get_unit_by_id/{id}", [DashboardController::class, "get_unit_by_id"])->name("general.get_unit_by_id");
 
 // Dashboard
-Route::group(["prefix" => "main_dashboard",'middleware'=> 'auth:web' ], function () {
+Route::group(["prefix" => "main_dashboard", 'middleware' => 'auth:web'], function () {
     Route::get("/", [DashboardController::class, "index"])->name("main_dashboard");
     Route::get("/get_unit_details/{id}", [DashboardController::class, "get_unit_details"])->name("dashboard.get_unit_details");
-
 });
 
 Route::get('/hierarchy', function () {
@@ -222,7 +221,6 @@ Route::group(['prefix' => 'general_property_list'], function () {
     Route::get('/', [PropertyListController::class, 'index'])->name('general_property_list');
     Route::get('/list_view/{id}', [PropertyListController::class, 'list_view'])->name('general_property_list_view');
     Route::get('/image_view/{id}', [PropertyListController::class, 'image_view'])->name('general_property_image_view');
-
 });
 // User Managment
 Route::group(['prefix' => 'user_management'], function () {
@@ -286,7 +284,6 @@ Route::group(['prefix' => 'countries'], function () {
     Route::get('/edit/{id}', [CountryController::class, 'edit'])->name('country.edit');
     Route::patch('/update/{id}', [CountryController::class, 'update'])->name('country.update');
     Route::get('/delete', [CountryController::class, 'delete'])->name('country.delete');
-
 });
 
 ###################################################### Hierarchy ###################################################
@@ -319,7 +316,6 @@ Route::group(['prefix' => 'category-cost-center'], function () {
     Route::patch('/update/{id}', [CostCenterCategoryController::class, 'update'])->name('cost_center_category.update');
     Route::get('delete', [CostCenterCategoryController::class, 'delete'])->name('cost_center_category.delete');
     Route::post('/status-update', [CostCenterCategoryController::class, 'statusUpdate'])->name('cost_center_category.status-update');
-
 });
 
 // Cost Center
@@ -331,7 +327,6 @@ Route::group(['prefix' => 'cost_center'], function () {
     Route::patch('/update/{id}', [CostCenterController::class, 'update'])->name('cost_center.update');
     Route::get('delete', [CostCenterController::class, 'delete'])->name('cost_center.delete');
     Route::post('/status-update', [CostCenterController::class, 'statusUpdate'])->name('cost_center.status-update');
-
 });
 
 ################################################## Start Propert_master #############################################
@@ -344,7 +339,6 @@ Route::group(['prefix' => 'ownership'], function () {
     Route::patch('/update/{id}', [OwnershipController::class, 'update'])->name('ownership.update');
     Route::get('delete', [OwnershipController::class, 'delete'])->name('ownership.delete');
     Route::post('/status-update', [OwnershipController::class, 'statusUpdate'])->name('ownership.status-update');
-
 });
 
 // property type
@@ -355,7 +349,6 @@ Route::group(['prefix' => 'property_type'], function () {
     Route::patch('/update/{id}', [PropertyTypeController::class, 'update'])->name('property_type.update');
     Route::get('delete', [PropertyTypeController::class, 'delete'])->name('property_type.delete');
     Route::post('/status-update', [PropertyTypeController::class, 'statusUpdate'])->name('property_type.status-update');
-
 });
 
 // services
@@ -366,7 +359,6 @@ Route::group(['prefix' => 'services'], function () {
     Route::patch('/update/{id}', [ServiceController::class, 'update'])->name('services.update');
     Route::get('delete', [ServiceController::class, 'delete'])->name('services.delete');
     Route::post('/status-update', [ServiceController::class, 'statusUpdate'])->name('services.status-update');
-
 });
 
 // Blocks
@@ -377,7 +369,6 @@ Route::group(['prefix' => 'block'], function () {
     Route::patch('/update/{id}', [BlockController::class, 'update'])->name('block.update');
     Route::get('delete', [BlockController::class, 'delete'])->name('block.delete');
     Route::post('/status-update', [BlockController::class, 'statusUpdate'])->name('block.status-update');
-
 });
 
 // Unit Description
@@ -388,7 +379,6 @@ Route::group(['prefix' => 'unit_description'], function () {
     Route::patch('/update/{id}', [UnitDescriptionController::class, 'update'])->name('unit_description.update');
     Route::get('delete', [UnitDescriptionController::class, 'delete'])->name('unit_description.delete');
     Route::post('/status-update', [UnitDescriptionController::class, 'statusUpdate'])->name('unit_description.status-update');
-
 });
 
 // Unit Type
@@ -399,7 +389,6 @@ Route::group(['prefix' => 'unit_type'], function () {
     Route::patch('/update/{id}', [UnitTypeController::class, 'update'])->name('unit_type.update');
     Route::get('delete', [UnitTypeController::class, 'delete'])->name('unit_type.delete');
     Route::post('/status-update', [UnitTypeController::class, 'statusUpdate'])->name('unit_type.status-update');
-
 });
 
 // Unit Condition
@@ -410,7 +399,6 @@ Route::group(['prefix' => 'unit_condition'], function () {
     Route::patch('/update/{id}', [UnitConditionController::class, 'update'])->name('unit_condition.update');
     Route::get('delete', [UnitConditionController::class, 'delete'])->name('unit_condition.delete');
     Route::post('/status-update', [UnitConditionController::class, 'statusUpdate'])->name('unit_condition.status-update');
-
 });
 
 // Unit Parking
@@ -421,7 +409,6 @@ Route::group(['prefix' => 'unit_parking'], function () {
     Route::patch('/update/{id}', [UnitParkingController::class, 'update'])->name('unit_parking.update');
     Route::get('delete', [UnitParkingController::class, 'delete'])->name('unit_parking.delete');
     Route::post('/status-update', [UnitParkingController::class, 'statusUpdate'])->name('unit_parking.status-update');
-
 });
 
 // View
@@ -432,7 +419,6 @@ Route::group(['prefix' => 'view'], function () {
     Route::patch('/update/{id}', [ViewController::class, 'update'])->name('view.update');
     Route::get('delete', [ViewController::class, 'delete'])->name('view.delete');
     Route::post('/status-update', [ViewController::class, 'statusUpdate'])->name('view.status-update');
-
 });
 
 // Business Activity
@@ -443,7 +429,6 @@ Route::group(['prefix' => 'business_activity'], function () {
     Route::patch('/update/{id}', [BusinessActivityController::class, 'update'])->name('business_activity.update');
     Route::get('delete', [BusinessActivityController::class, 'delete'])->name('business_activity.delete');
     Route::post('/status-update', [BusinessActivityController::class, 'statusUpdate'])->name('business_activity.status-update');
-
 });
 
 // Live With
@@ -454,7 +439,6 @@ Route::group(['prefix' => 'live_with'], function () {
     Route::patch('/update/{id}', [LiveWithController::class, 'update'])->name('live_with.update');
     Route::get('delete', [LiveWithController::class, 'delete'])->name('live_with.delete');
     Route::post('/status-update', [LiveWithController::class, 'statusUpdate'])->name('live_with.status-update');
-
 });
 
 // Enquiry Status
@@ -465,7 +449,6 @@ Route::group(['prefix' => 'enquiry_status'], function () {
     Route::patch('/update/{id}', [EnquiryStatusController::class, 'update'])->name('enquiry_status.update');
     Route::get('delete', [EnquiryStatusController::class, 'delete'])->name('enquiry_status.delete');
     Route::post('/status-update', [EnquiryStatusController::class, 'statusUpdate'])->name('enquiry_status.status-update');
-
 });
 
 // Enquiry Request Status
@@ -476,7 +459,6 @@ Route::group(['prefix' => 'enquiry_request_status'], function () {
     Route::patch('/update/{id}', [EnquiryRequestStatusController::class, 'update'])->name('enquiry_request_status.update');
     Route::get('delete', [EnquiryRequestStatusController::class, 'delete'])->name('enquiry_request_status.delete');
     Route::post('/status-update', [EnquiryRequestStatusController::class, 'statusUpdate'])->name('enquiry_request_status.status-update');
-
 });
 
 // Floors
@@ -520,7 +502,6 @@ Route::group(['prefix' => 'property_management'], function () {
     Route::patch('/update/{id}', [PropertyManagementController::class, 'update'])->name('property_management.update');
     Route::get('delete', [PropertyManagementController::class, 'delete'])->name('property_management.delete');
     Route::get('/list_view/{id}', [PropertyManagementController::class, 'list_view'])->name('property_management.list_view');
-
 });
 
 // Block Management
@@ -549,7 +530,6 @@ Route::group(['prefix' => 'floor_management'], function () {
     Route::get('delete', [FloorManagementController::class, 'delete'])->name('floor_management.delete');
     Route::get('get_blocks_by_property_id/{id}', [FloorManagementController::class, 'get_blocks_by_property_id'])->name('floor_management.get_blocks_by_property_id');
     Route::post('status-update', [FloorManagementController::class, 'statusUpdate'])->name('floor_management.status-update');
-
 });
 
 // Units Management
@@ -567,7 +547,6 @@ Route::group(['prefix' => 'unit_management'], function () {
     Route::get('get_blocks_by_property_id/{id}', [UnitManagementController::class, 'get_blocks_by_property_id'])->name('unit_management.get_blocks_by_property_id');
     Route::get('get_floors_by_block_id/{id}', [UnitManagementController::class, 'get_floors_by_block_id'])->name('unit_management.get_floors_by_block_id');
     Route::get('get_units_by_floor_id/{floor_id}/{block_id}/{property_id}', [UnitManagementController::class, 'get_units_by_floor_id'])->name('unit_management.get_units_by_floor_id');
-
 });
 Route::group(['prefix' => 'rent_price_list'], function () {
     Route::get('/', [RentPriceListController::class, 'index'])->name('rent_price.index');
@@ -579,6 +558,13 @@ Route::group(['prefix' => 'rent_price_list'], function () {
     Route::get('/get_floors_by_block_id_for_rent/{id}', [RentPriceListController::class, 'get_floors_by_block_id_for_rent'])->name('rent_price.get_floors_by_block_id_for_rent');
     Route::get('/get_units_by_floor_id_for_rent/{id}', [RentPriceListController::class, 'get_units_by_floor_id_for_rent'])->name('rent_price.get_units_by_floor_id_for_rent');
     Route::get('delete', [RentPriceListController::class, 'delete'])->name('rent_price.delete');
+    Route::get('/get-units/{property_id}', [RentPriceListController::class, 'getUnits'])->name('rent_price.get_units');
+    // Route::get('/get-blocks/{property}', [RentPriceListController::class, 'getBlocks'])->name('rent_price.get_units_filtered');
+    // Route::get('/get-floors/{property}/{block}', [RentPriceListController::class, 'getFloors'])->name('rent_price.get_units_filtered');
+    // Route::get('/get-units-filtered', [RentPriceListController::class, 'getUnitsFiltered'])->name('rent_price.get_units_filtered');
+        Route::get('/get-blocks/{property}', [RentPriceListController::class, 'getBlocks'])->name('rent_price.get_blocks');
+    Route::get('/get-floors/{property}/{block}', [RentPriceListController::class, 'getFloors'])->name('rent_price.get_floors');
+    Route::get('/get-units', [RentPriceListController::class, 'getUnitsFiltered'])->name('rent_price.get_units_filtered');
 });
 
 ################################################## End Propert Management #############################################
@@ -603,7 +589,6 @@ Route::group(['prefix' => 'tenant'], function () {
     Route::get('delete', [TenantController::class, 'delete'])->name('tenant.delete');
     Route::post('status-update', [TenantController::class, 'statusUpdate'])->name('tenant.status-update');
     Route::get('exportTenants', [TenantController::class, 'exportTenants'])->name('tenant.exportTenants');
-
 });
 // Enquiry Management
 
@@ -630,7 +615,6 @@ Route::group(['prefix' => 'proposal'], function () {
     Route::get('/empty_unit_from_service_proposal/{id}', [ProposalController::class, 'empty_unit_from_service_proposal'])->name('proposal.empty_unit_from_service_proposal');
     Route::post('search', [ProposalController::class, 'search'])->name('proposal.search');
     Route::get('/create_with_select_unit', [ProposalController::class, 'create_with_select_unit'])->name('proposal.create_with_select_unit');
-
 });
 
 // Booking Management
@@ -677,7 +661,6 @@ Route::group(['prefix' => 'termination'], function () {
 Route::group(['prefix' => 'renewal'], function () {
     Route::get('/{id}', [TerminationController::class, 'renewal'])->name('renewal.create');
     Route::post('/store/{id}', [TerminationController::class, 'renewal_update'])->name('renewal.update');
-
 });
 
 // Agreement Management
@@ -755,7 +738,6 @@ Route::group(['prefix' => 'department'], function () {
     Route::patch('/update/{id}', [DepartmentController::class, 'update'])->name('department.update');
     Route::get('delete', [DepartmentController::class, 'delete'])->name('department.delete');
     Route::post('/status-update', [DepartmentController::class, 'statusUpdate'])->name('department.status-update');
-
 });
 
 // Employee Type
@@ -766,7 +748,6 @@ Route::group(['prefix' => 'employee_type'], function () {
     Route::patch('/update/{id}', [EmployeeTypeController::class, 'update'])->name('employee_type.update');
     Route::get('delete', [EmployeeTypeController::class, 'delete'])->name('employee_type.delete');
     Route::post('/status-update', [EmployeeTypeController::class, 'statusUpdate'])->name('employee_type.status-update');
-
 });
 
 // Employee
@@ -778,7 +759,6 @@ Route::group(['prefix' => 'employees'], function () {
     Route::patch('/update/{id}', [EmployeeController::class, 'update'])->name('employee.update');
     Route::get('delete', [EmployeeController::class, 'delete'])->name('employee.delete');
     Route::post('/status-update', [EmployeeController::class, 'statusUpdate'])->name('employee.status-update');
-
 });
 
 // Agent
@@ -791,7 +771,6 @@ Route::group(['prefix' => 'agent'], function () {
     Route::patch('/update/{id}', [AgentController::class, 'update'])->name('agent.update');
     Route::get('delete', [AgentController::class, 'delete'])->name('agent.delete');
     Route::post('status-update', [AgentController::class, 'statusUpdate'])->name('agent.status-update');
-
 });
 
 // Complaint Cataegory
@@ -803,7 +782,6 @@ Route::group(['prefix' => 'complaint_category'], function () {
     Route::patch('/update/{id}', [ComplaintCategoryController::class, 'update'])->name('complaint_category.update');
     Route::get('delete', [ComplaintCategoryController::class, 'delete'])->name('complaint_category.delete');
     Route::post('/status-update', [ComplaintCategoryController::class, 'statusUpdate'])->name('complaint_category.status-update');
-
 });
 
 // Complaint
@@ -815,7 +793,6 @@ Route::group(['prefix' => 'main_complaint'], function () {
     Route::patch('/update/{id}', [MainComplaintController::class, 'update'])->name('main_complaint.update');
     Route::get('delete', [MainComplaintController::class, 'delete'])->name('main_complaint.delete');
     Route::post('/status-update', [MainComplaintController::class, 'statusUpdate'])->name('main_complaint.status-update');
-
 });
 
 // Work Status
@@ -827,7 +804,6 @@ Route::group(['prefix' => 'work_status'], function () {
     Route::patch('/update/{id}', [WorkStatusController::class, 'update'])->name('work_status.update');
     Route::get('delete', [WorkStatusController::class, 'delete'])->name('work_status.delete');
     Route::post('/status-update', [WorkStatusController::class, 'statusUpdate'])->name('work_status.status-update');
-
 });
 
 // Asset Group
@@ -839,7 +815,6 @@ Route::group(['prefix' => 'asset_group'], function () {
     Route::patch('/update/{id}', [AssetGroupController::class, 'update'])->name('asset_group.update');
     Route::get('delete', [AssetGroupController::class, 'delete'])->name('asset_group.delete');
     Route::post('/status-update', [AssetGroupController::class, 'statusUpdate'])->name('asset_group.status-update');
-
 });
 
 // Priority
@@ -851,7 +826,6 @@ Route::group(['prefix' => 'priority'], function () {
     Route::patch('/update/{id}', [PriorityController::class, 'update'])->name('priority.update');
     Route::get('delete', [PriorityController::class, 'delete'])->name('priority.delete');
     Route::post('/status-update', [PriorityController::class, 'statusUpdate'])->name('priority.status-update');
-
 });
 
 // Freezing
@@ -863,7 +837,6 @@ Route::group(['prefix' => 'freezing'], function () {
     Route::patch('/update/{id}', [FreezingController::class, 'update'])->name('freezing.update');
     Route::get('delete', [FreezingController::class, 'delete'])->name('freezing.delete');
     Route::post('/status-update', [FreezingController::class, 'statusUpdate'])->name('freezing.status-update');
-
 });
 
 // Supplier
@@ -875,7 +848,6 @@ Route::group(['prefix' => 'supplier'], function () {
     Route::patch('/update/{id}', [SupplierController::class, 'update'])->name('supplier.update');
     Route::get('delete', [SupplierController::class, 'delete'])->name('supplier.delete');
     Route::post('/status-update', [SupplierController::class, 'statusUpdate'])->name('supplier.status-update');
-
 });
 
 // Amc Providers
@@ -887,7 +859,6 @@ Route::group(['prefix' => 'amc_providers'], function () {
     Route::patch('/update/{id}', [AMCProviderController::class, 'update'])->name('amc_provider.update');
     Route::get('delete', [AMCProviderController::class, 'delete'])->name('amc_provider.delete');
     Route::post('/status-update', [AMCProviderController::class, 'statusUpdate'])->name('amc_provider.status-update');
-
 });
 
 // Asset
@@ -940,13 +911,12 @@ Route::group(['prefix' => 'property_reports/invoice'], function () {
 // Sales Return 
 Route::group(['prefix' => 'property_reports/sales-return'], function () {
     Route::post('/create', [InvoiceReturnController::class, 'storeInvoice'])->name('invoice_return_generate.store');
-    Route::get('/get-tenant-invoices', [InvoiceReturnController::class,'get_tenant_invoices'])->name('get.tenant.invoices');
+    Route::get('/get-tenant-invoices', [InvoiceReturnController::class, 'get_tenant_invoices'])->name('get.tenant.invoices');
     Route::get('/all_invoices', [InvoiceReturnController::class, 'index'])->name('invoices_return.all_invoices');
     Route::get('/print/{id}', [InvoiceReturnController::class, 'print'])->name('invoices_return.print_pdf');
     Route::get('/invoice/{id}/pdf', [InvoiceReturnController::class, 'generate_invoice'])->name('invoice_return.pdf');
     Route::get('/invoice_return_create', [InvoiceReturnController::class, 'invoice_return_create'])->name('invoice_return_create');
     Route::post('/sales-return-store', [InvoiceReturnController::class, 'sales_return_store'])->name('sales_return.store');
- 
 });
 // reports
 Route::group(['prefix' => 'property_reports'], function () {
@@ -955,7 +925,6 @@ Route::group(['prefix' => 'property_reports'], function () {
     Route::get('/leased_expired_details', [ReportController::class, 'leased_expired_details'])->name('leased_expired_details');
     Route::get('/tenant_age_analysis', [ReportController::class, 'tenant_age_analysis'])->name('tenant_age_analysis');
     Route::get('/tenant_financial_summary', [ReportController::class, 'tenant_financial_summary'])->name('tenant_financial_summary');
-
 });
 // Complaint
 Route::group(['prefix' => 'facility_transactions/complaint_registration'], function () {
@@ -977,7 +946,6 @@ Route::group(['prefix' => 'facility_transactions/complaint_registration'], funct
     Route::get('/get_employees_departments_complaint/{id}', [ComplaintRegisterController::class, 'get_employees_departments_complaint'])->name('get_employees_departments_complaint');
     Route::patch('/assign_to_employee', [ComplaintRegisterController::class, 'assign_to_employee'])->name('complaint_registration.assign_to_employee');
     Route::patch('/assign_to_department', [ComplaintRegisterController::class, 'assign_to_department'])->name('complaint_registration.assign_to_department');
-
 });
 
 // Complaint
@@ -1004,7 +972,6 @@ Route::group(['prefix' => 'receipts'], function () {
     Route::get('/get_receipt_type_id/{id}', [ReceiptController::class, 'get_receipt_type_id'])->name('get_voucher_type_id');
     Route::get('/print_receipt/{id}', [ReceiptController::class, 'print_receipt'])->name('receipts.print_receipt');
     Route::get('/receipt/{id}/pdf', [ReceiptController::class, 'generate_receipt'])->name('receipt.pdf');
-
 });
 ################################################## End Collections ######################################################
 ################################################## End Property Reports #############################################
@@ -1045,12 +1012,12 @@ Route::get('add_unit_to_cost', function () {
         $unit_cost = CostCenter::create([
 
             'name'                    => $unit_management_pain->property_unit_management->name .
-            '-' .
-            $unit_management_pain->unit_management_main->name .
-            '-' .
-            $unit_management_pain->block_unit_management->block->name .
-            '-' .
-            $unit_management_pain->floor_unit_management->floor_management_main->name . '-' . $unit_management_pain->unit_management_main->name,
+                '-' .
+                $unit_management_pain->unit_management_main->name .
+                '-' .
+                $unit_management_pain->block_unit_management->block->name .
+                '-' .
+                $unit_management_pain->floor_unit_management->floor_management_main->name . '-' . $unit_management_pain->unit_management_main->name,
             'main_id'                 => $unit_management_pain->id,
             'main_type'               => 'unit',
             'cost_center_category_id' => $property->id,
@@ -1114,10 +1081,9 @@ Route::group(['prefix' => 'investments'], function () {
     Route::get('/create', [InvestmentController::class, 'create'])->name('investment.create');
     Route::post('store', [InvestmentController::class, 'store'])->name('investment.store');
     Route::post('store_for_anything', [TenantController::class, 'store_for_anything'])->name('tenant.store_for_anything');
-    Route::get('/edit/{id}', [InvestmentController::class, 'edit'])->name('investment.edit'); 
+    Route::get('/edit/{id}', [InvestmentController::class, 'edit'])->name('investment.edit');
     Route::patch('/update/{id}', [InvestmentController::class, 'update'])->name('investment.update');
     Route::get('delete', [InvestmentController::class, 'delete'])->name('investment.delete');
- 
 });
 // Investor Management
 Route::group(['prefix' => 'investors'], function () {
@@ -1125,7 +1091,7 @@ Route::group(['prefix' => 'investors'], function () {
     Route::get('/create', [InvestorController::class, 'create'])->name('investor.create');
     Route::post('store', [InvestorController::class, 'store'])->name('investor.store');
     Route::post('store_for_anything', [InvestorController::class, 'store_for_anything'])->name('investor.store_for_anything');
-    Route::get('/edit/{id}', [InvestorController::class, 'edit'])->name('investor.edit'); 
+    Route::get('/edit/{id}', [InvestorController::class, 'edit'])->name('investor.edit');
     Route::patch('/update/{id}', [InvestorController::class, 'update'])->name('investor.update');
     Route::get('delete', [InvestorController::class, 'delete'])->name('investor.delete');
 });
@@ -1135,85 +1101,76 @@ Route::group(['prefix' => 'investors'], function () {
 // --------------- Master ------------------------
 
 Route::group(['prefix' => 'room_reservation/master'], function () {
-    
+
     // ------------------------ room types ----------------------
     Route::group(['prefix' => 'room-types'], function () {
-    Route::get('list', [RoomTypeController::class, 'index'])->name('room_type.list'); 
-    Route::post('store', [RoomTypeController::class, 'store'])->name('room_type.store'); 
-    Route::patch('update', [RoomTypeController::class, 'update'])->name('room_type.update');
-    Route::get('delete', [RoomTypeController::class, 'delete'])->name('room_type.delete');
-    Route::get('edit/{id}', [RoomTypeController::class, 'edit'])->name('room_type.edit');
-
+        Route::get('list', [RoomTypeController::class, 'index'])->name('room_type.list');
+        Route::post('store', [RoomTypeController::class, 'store'])->name('room_type.store');
+        Route::patch('update', [RoomTypeController::class, 'update'])->name('room_type.update');
+        Route::get('delete', [RoomTypeController::class, 'delete'])->name('room_type.delete');
+        Route::get('edit/{id}', [RoomTypeController::class, 'edit'])->name('room_type.edit');
     });
-    
+
     // ------------------------ room facilities ----------------------
     Route::group(['prefix' => 'room-facilities'], function () {
-    Route::get('/list', [RoomFacilityController::class, 'index'])->name('room_facility.list'); 
-    Route::post('store', [RoomFacilityController::class, 'store'])->name('room_facility.store'); 
-    Route::patch('/update', [RoomFacilityController::class, 'update'])->name('room_facility.update');
-    Route::get('delete', [RoomFacilityController::class, 'delete'])->name('room_facility.delete');
-    Route::get('edit/{id}', [RoomTypeController::class, 'edit'])->name('room_facility.edit');
-
+        Route::get('/list', [RoomFacilityController::class, 'index'])->name('room_facility.list');
+        Route::post('store', [RoomFacilityController::class, 'store'])->name('room_facility.store');
+        Route::patch('/update', [RoomFacilityController::class, 'update'])->name('room_facility.update');
+        Route::get('delete', [RoomFacilityController::class, 'delete'])->name('room_facility.delete');
+        Route::get('edit/{id}', [RoomTypeController::class, 'edit'])->name('room_facility.edit');
     });
-    
+
     // ------------------------ room options ----------------------
     Route::group(['prefix' => 'room-options'], function () {
-    Route::get('/list', [RoomOptionController::class, 'index'])->name('room_option.list'); 
-    Route::post('store', [RoomOptionController::class, 'store'])->name('room_option.store'); 
-    Route::patch('/update', [RoomOptionController::class, 'update'])->name('room_option.update');
-    Route::get('delete', [RoomOptionController::class, 'delete'])->name('room_option.delete');
-    Route::get('edit/{id}', [RoomOptionController::class, 'edit'])->name('room_option.edit');
-
+        Route::get('/list', [RoomOptionController::class, 'index'])->name('room_option.list');
+        Route::post('store', [RoomOptionController::class, 'store'])->name('room_option.store');
+        Route::patch('/update', [RoomOptionController::class, 'update'])->name('room_option.update');
+        Route::get('delete', [RoomOptionController::class, 'delete'])->name('room_option.delete');
+        Route::get('edit/{id}', [RoomOptionController::class, 'edit'])->name('room_option.edit');
     });
-    
+
     // ------------------------ room status ----------------------
     Route::group(['prefix' => 'room-status'], function () {
-    Route::get('/list', [RoomStatusController::class, 'index'])->name('room_status.list'); 
-    Route::post('store', [RoomStatusController::class, 'store'])->name('room_status.store'); 
-    Route::patch('/update', [RoomStatusController::class, 'update'])->name('room_status.update');
-    Route::get('delete', [RoomStatusController::class, 'delete'])->name('room_status.delete');
-    Route::get('edit/{id}', [RoomStatusController::class, 'edit'])->name('room_status.edit');
-
+        Route::get('/list', [RoomStatusController::class, 'index'])->name('room_status.list');
+        Route::post('store', [RoomStatusController::class, 'store'])->name('room_status.store');
+        Route::patch('/update', [RoomStatusController::class, 'update'])->name('room_status.update');
+        Route::get('delete', [RoomStatusController::class, 'delete'])->name('room_status.delete');
+        Route::get('edit/{id}', [RoomStatusController::class, 'edit'])->name('room_status.edit');
     });
- 
-    
+
+
     // ------------------------ room building ----------------------
     Route::group(['prefix' => 'room-building'], function () {
-    Route::get('/list', [RoomBuildingController::class, 'index'])->name('room_building.list'); 
-    Route::post('store', [RoomBuildingController::class, 'store'])->name('room_building.store'); 
-    Route::patch('/update', [RoomBuildingController::class, 'update'])->name('room_building.update');
-    Route::get('delete', [RoomBuildingController::class, 'delete'])->name('room_building.delete');
-    Route::get('edit/{id}', [RoomBuildingController::class, 'edit'])->name('room_building.edit');
-
+        Route::get('/list', [RoomBuildingController::class, 'index'])->name('room_building.list');
+        Route::post('store', [RoomBuildingController::class, 'store'])->name('room_building.store');
+        Route::patch('/update', [RoomBuildingController::class, 'update'])->name('room_building.update');
+        Route::get('delete', [RoomBuildingController::class, 'delete'])->name('room_building.delete');
+        Route::get('edit/{id}', [RoomBuildingController::class, 'edit'])->name('room_building.edit');
     });
     // ------------------------ room block ----------------------
     Route::group(['prefix' => 'room-block'], function () {
-    Route::get('/list', [RoomBlockController::class, 'index'])->name('room_block.list'); 
-    Route::post('store', [RoomBlockController::class, 'store'])->name('room_block.store'); 
-    Route::patch('/update', [RoomBlockController::class, 'update'])->name('room_block.update');
-    Route::get('delete', [RoomBlockController::class, 'delete'])->name('room_block.delete');
-    Route::get('edit/{id}', [RoomBlockController::class, 'edit'])->name('room_block.edit');
-
+        Route::get('/list', [RoomBlockController::class, 'index'])->name('room_block.list');
+        Route::post('store', [RoomBlockController::class, 'store'])->name('room_block.store');
+        Route::patch('/update', [RoomBlockController::class, 'update'])->name('room_block.update');
+        Route::get('delete', [RoomBlockController::class, 'delete'])->name('room_block.delete');
+        Route::get('edit/{id}', [RoomBlockController::class, 'edit'])->name('room_block.edit');
     });
     // ------------------------ room floor ----------------------
     Route::group(['prefix' => 'room-floor'], function () {
-    Route::get('/list', [RoomFloorController::class, 'index'])->name('room_floor.list'); 
-    Route::post('store', [RoomFloorController::class, 'store'])->name('room_floor.store'); 
-    Route::patch('/update', [RoomFloorController::class, 'update'])->name('room_floor.update');
-    Route::get('delete', [RoomFloorController::class, 'delete'])->name('room_floor.delete');
-    Route::get('edit/{id}', [RoomFloorController::class, 'edit'])->name('room_floor.edit');
+        Route::get('/list', [RoomFloorController::class, 'index'])->name('room_floor.list');
+        Route::post('store', [RoomFloorController::class, 'store'])->name('room_floor.store');
+        Route::patch('/update', [RoomFloorController::class, 'update'])->name('room_floor.update');
+        Route::get('delete', [RoomFloorController::class, 'delete'])->name('room_floor.delete');
+        Route::get('edit/{id}', [RoomFloorController::class, 'edit'])->name('room_floor.edit');
         Route::get('/get-blocks-by-building/{building_id}', [RoomFloorController::class, 'getBlocks'])->name('room_floor.get_blocks');
-
     });
     // ------------------------ room unit ----------------------
     Route::group(['prefix' => 'room-unit'], function () {
-    Route::get('/list', [RoomController::class, 'index'])->name('room_unit.list'); 
-    Route::post('store', [RoomController::class, 'store'])->name('room_unit.store'); 
-    Route::patch('/update', [RoomController::class, 'update'])->name('room_unit.update');
-    Route::get('delete', [RoomController::class, 'delete'])->name('room_unit.delete');
-    Route::get('edit/{id}', [RoomController::class, 'edit'])->name('room_unit.edit');
-    Route::get('/get-floors-by-building-and-block/{building_id}/{block_id}', [RoomController::class, 'get_floors'])->name('room_unit.get_floors');
-
+        Route::get('/list', [RoomController::class, 'index'])->name('room_unit.list');
+        Route::post('store', [RoomController::class, 'store'])->name('room_unit.store');
+        Route::patch('/update', [RoomController::class, 'update'])->name('room_unit.update');
+        Route::get('delete', [RoomController::class, 'delete'])->name('room_unit.delete');
+        Route::get('edit/{id}', [RoomController::class, 'edit'])->name('room_unit.edit');
+        Route::get('/get-floors-by-building-and-block/{building_id}/{block_id}', [RoomController::class, 'get_floors'])->name('room_unit.get_floors');
     });
- 
 });

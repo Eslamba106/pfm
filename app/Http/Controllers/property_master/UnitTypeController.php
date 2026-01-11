@@ -32,7 +32,7 @@ class UnitTypeController extends Controller
                     ->orWhere('id', $value);
             }
         })
-            ->latest()->paginate()->appends($query_param);
+            ->orderBy('id' , 'asc')->paginate()->appends($query_param);
 
         $data = [
             'main'              => $unit_type,
@@ -48,9 +48,9 @@ class UnitTypeController extends Controller
 
     public function store(Request $request){
         $request->validate([
-            'name' => 'required',
-            'code' => 'required',
-            'unit_description_id' => 'required',
+            'name' => 'required|unique:unit_types,name',
+            'code' => 'required|unique:unit_types,code',
+            // 'unit_description_id' => 'required',
         ]);
         try{
             $unit_type_services = $this->unit_type_services->storePropertyMasterModal($request);
@@ -74,8 +74,8 @@ class UnitTypeController extends Controller
     }
     public function update(Request $request, $id){
         $request->validate([
-            'name' => 'required',
-            'code' => 'required',
+        'name' => 'required|unique:unit_types,name,' . $id . ',id',
+            'code' => 'required|unique:unit_types,code,' . $id . ',id',
         ]);
         try{
             // $request->id = $id;

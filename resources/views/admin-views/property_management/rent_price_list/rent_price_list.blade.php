@@ -1,6 +1,6 @@
 @extends('layouts.back-end.app')
 
-@section('title', __('roles.rent_price_list'))
+@section('title', ui_change('rent_price_list'))
 
 @push('css_or_js')
 @endpush
@@ -10,7 +10,7 @@
         <!-- Page Title -->
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex gap-2">
-                {{ __('roles.rent_price_list') }}
+                {{ ui_change('rent_price_list') }}
                 <span class="badge badge-soft-dark radius-50 fz-14 ml-1">{{ $rent_price_list->total() }}</span>
             </h2>
         </div>
@@ -30,10 +30,10 @@
                                             </div>
                                         </div>
                                         <input id="datatableSearch_" type="search" name="search" class="form-control"
-                                            placeholder="{{ __('general.search_by_name') }}" aria-label="Search orders"
+                                            placeholder="{{ ui_change('search_by_name') }}" aria-label="Search orders"
                                             value="{{ request('search') }}">
                                         <input type="hidden" value="{{ request('status') }}" name="status">
-                                        <button type="submit" class="btn btn--primary">{{ __('general.search') }}</button>
+                                        <button type="submit" class="btn btn--primary">{{ ui_change('search') }}</button>
                                     </div>
                                 </form>
                                 <!-- End Search -->
@@ -41,7 +41,7 @@
                             <div class="col-lg-8 mt-3 mt-lg-0 d-flex flex-wrap gap-3 justify-content-lg-end">
                                 <a href="{{ route('rent_price.create') }}" class="btn btn--primary">
                                     <i class="tio-add"></i>
-                                    <span class="text">{{ __('roles.create_rent') }}</span>
+                                    <span class="text">{{ ui_change('create_rent') }}</span>
                                 </a>
                             </div>
                         </div>
@@ -58,11 +58,11 @@
                                 <thead class="thead-light thead-50 text-capitalize">
                                     <tr>
                                         <th><input id="bulk_check_all" class="bulk_check_all" type="checkbox" />
-                                            {{ __('general.sl') }}</th>
-                                        <th class="text-center">{{ __('property_master.unit') }}</th>
-                                        <th class="text-center">{{ __('property_transactions.rent_amount') }}</th>
-                                        <th class="text-center">{{ __('collections.applicable_from') }}</th>
-                                        <th class="text-center">{{ __('roles.Actions') }}</th>
+                                            {{ ui_change('sl') }}</th>
+                                        <th class="text-center">{{ ui_change('unit') }}</th>
+                                        <th class="text-center">{{ ui_change('rent_amount') }}</th>
+                                        <th class="text-center">{{ ui_change('applicable_from') }}</th>
+                                        <th class="text-center">{{ ui_change('Actions') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -81,24 +81,24 @@
                                                     optional($rent_price_list_item->unit_management->floor_unit_management)->floor_management_main->name .
                                                     '-' .
                                                     optional($rent_price_list_item->unit_management)->unit_management_main->name ??
-                                                    __('general.not_available') }}
+                                                    ui_change('not_available') }}
                                             </td>
                                             <td class="text-center">
-                                                {{ number_format($rent_price_list_item->rent_amount, 3) ?? __('general.not_available') }}
+                                                {{ number_format($rent_price_list_item->rent_amount, 3) ?? ui_change('not_available') }}
                                             </td>
                                             <td class="text-center">
-                                                {{ optional($rent_price_list_item)->applicable_date ?? __('general.not_available') }}
+                                                {{ optional($rent_price_list_item)->applicable_date ?? ui_change('not_available') }}
                                             </td>
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
 
                                                     <a class="btn btn-outline--primary btn-sm square-btn"
-                                                        title="{{ __('edit') }}"
+                                                        title="{{ ui_change('edit') }}"
                                                         href="{{ route('rent_price.edit', [$rent_price_list_item->id]) }}">
                                                         <i class="tio-edit"></i>
                                                     </a>
                                                     <a class="btn btn-outline-danger btn-sm delete square-btn"
-                                                        title="{{ __('general.delete') }}" id="{{ $rent_price_list_item->id }}">
+                                                        title="{{ ui_change('delete') }}" id="{{ $rent_price_list_item->id }}">
                                                         <i class="tio-delete"></i>
                                                     </a>
                                                 </div>
@@ -117,9 +117,9 @@
 
                     @if (count($rent_price_list) == 0)
                         <div class="text-center p-4">
-                            <img class="mb-3 w-160" src="{{ asset(main_path() . 'back-end') }}/svg/illustrations/sorry.svg"
+                            <img class="mb-3 w-160" src="{{ asset(main_path() . 'assets/back-end') }}/svg/illustrations/sorry.svg"
                                 alt="Image Description">
-                            <p class="mb-0">{{ __('general.no_data_to_show') }}</p>
+                            <p class="mb-0">{{ ui_change('no_data_to_show') }}</p>
                         </div>
                     @endif
                 </div>
@@ -135,13 +135,13 @@
         var id = $(this).attr("id");
         // var route_name = document.getElementById('route_name').value;
         Swal.fire({
-            title: "{{__('general.are_you_sure_delete_this')}}",
-            text: "{{__('general.you_will_not_be_able_to_revert_this')}}!",
+            title: "{{ui_change('are_you_sure_delete_this')}}",
+            text: "{{ui_change('you_will_not_be_able_to_revert_this')}}!",
             showCancelButton: true,
             confirmButtonColor: '#3085d6',
             cancelButtonColor: '#d33',
-            confirmButtonText: '{{__('general.yes_delete_it')}}!',
-            cancelButtonText: '{{ __("general.cancel") }}',
+            confirmButtonText: '{{ui_change('yes_delete_it')}}!',
+            cancelButtonText: '{{ ui_change("cancel") }}',
             type: 'warning',
             reverseButtons: true
         }).then((result) => {
@@ -156,7 +156,7 @@
                     method: 'get',
                     data: {id: id},
                     success: function () {
-                        toastr.success('{{__('department.deleted_successfully')}}');
+                        toastr.success('{{ui_change('deleted_successfully')}}');
                         location.reload();
                     }
                 });

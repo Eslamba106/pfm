@@ -2,7 +2,7 @@
 @php
     $lang = Session::get('locale');
 @endphp
-@section('title', ui_change('block' , 'property_config'))
+@section('title', ui_change('block', 'property_config'))
 @push('css_or_js')
     <!-- Custom styles for this page -->
     <link href="{{ asset('public/assets/back-end') }}/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -52,10 +52,9 @@
         <div class="mb-3 d-flex align-items-center justify-content-between">
             <h2 class="h1 mb-0 d-flex gap-2 align-items-center">
                 {{-- <img width="60" src="{{ asset('/public/assets/back-end/img/block.jpg') }}" alt=""> --}}
-                {{ ui_change('block' , 'property_config') }}
+                {{ ui_change('block', 'property_config') }}
             </h2>
-            <a href="{{ route('block_management.create') }}"
-                class="btn btn--primary">{{ ui_change('add_new_block' , 'property_config') }}</a>
+
         </div>
         <!-- End Page Title -->
         @include('admin-views.inline_menu.property_config.inline-menu')
@@ -68,10 +67,8 @@
                     <div class="px-3 py-4">
                         <div class="row align-items-center">
                             <div class="col-sm-4 col-md-6 col-lg-8 mb-2 mb-sm-0">
-                                <h5 class="mb-0 d-flex align-items-center gap-2">
-                                    {{ ui_change('block_list' , 'property_config') }}
-                                    <span class="badge badge-soft-dark radius-50 fz-12"> </span>
-                                </h5>
+                                <a href="{{ route('block_management.create') }}"
+                                    class="btn btn--primary">{{ ui_change('block_configuration', 'property_config') }}</a>
                             </div>
                             <div class="col-sm-8 col-md-6 col-lg-4">
                                 <!-- Search -->
@@ -83,9 +80,10 @@
                                             </div>
                                         </div>
                                         <input id="datatableSearch_" type="search" name="search" class="form-control"
-                                            placeholder="{{ ui_change('search_by_block_name' , 'property_config') }}"
+                                            placeholder="{{ ui_change('search_by_block_name', 'property_config') }}"
                                             aria-label="Search" value="{{ $search }}" required>
-                                        <button type="submit" class="btn btn--primary">{{ ui_change('search' , 'property_config') }}</button>
+                                        <button type="submit"
+                                            class="btn btn--primary">{{ ui_change('search', 'property_config') }}</button>
                                     </div>
                                 </form>
                                 <!-- End Search -->
@@ -98,11 +96,11 @@
                                 class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table w-100">
                                 <thead class="thead-light thead-50 text-capitalize">
                                     <tr>
-                                        <th>{{ ui_change('sl' , 'property_config') }}</th>
-                                        <th class="text-center">{{ ui_change('block' , 'property_config') }} </th>
-                                        <th class="text-center">{{ ui_change('property' , 'property_config') }} </th>
-                                        <th class="text-center">{{ ui_change('status' , 'property_config') }}</th>
-                                        <th class="text-center">{{ ui_change('actions' , 'property_config') }}</th>
+                                        <th>{{ ui_change('sl', 'property_config') }}</th>
+                                        <th class="text-center">{{ ui_change('block', 'property_config') }} </th>
+                                        <th class="text-center">{{ ui_change('property', 'property_config') }} </th>
+                                        <th class="text-center">{{ ui_change('status', 'property_config') }}</th>
+                                        <th class="text-center">{{ ui_change('actions', 'property_config') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -111,22 +109,23 @@
                                             <td>{{ $main->firstItem() + $key }}</td>
                                             <td class="text-center">{{ $value->block->name }}</td>
                                             <td class="text-center">{{ $value->property_block_management->name }} </td>
-                                            <td class="text-center">{{ ui_change($value->status  , 'property_config') }} </td>
+                                            <td class="text-center">{{ ui_change($value->status, 'property_config') }}
+                                            </td>
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
                                                     <a class="btn btn-outline-info btn-sm square-btn"
-                                                        title="{{ ui_change('edit' , 'property_config') }}"
+                                                        title="{{ ui_change('edit', 'property_config') }}"
                                                         href="{{ route('block_management.edit', $value->id) }}">
                                                         <i class="tio-edit"></i>
                                                     </a>
                                                     <a class="btn btn-outline--primary square-btn btn-sm mr-1"
-                                                        title="{{ ui_change('view_image' , 'property_config') }}"
+                                                        title="{{ ui_change('view_image', 'property_config') }}"
                                                         href="{{ route('block_management.view_image', ['id' => $value['id']]) }}">
                                                         <img src="{{ asset('/assets/back-end/img/eye.svg') }}"
                                                             class="svg" alt="">
                                                     </a>
                                                     <a class="btn btn-outline-warning square-btn btn-sm mr-1"
-                                                        title="{{ ui_change('list_view' , 'property_config') }}"
+                                                        title="{{ ui_change('list_view', 'property_config') }}"
                                                         href="{{ route('block_management.list_view', ['id' => $value['id']]) }}">
                                                         <i class="tio-home"></i>
                                                     </a>
@@ -152,9 +151,10 @@
 
                     @if (count($main) == 0)
                         <div class="text-center p-4">
-                            <img class="mb-3 w-160"  src="{{ asset(main_path() . 'back-end') }}/svg/illustrations/sorry.svg"
+                            <img class="mb-3 w-160"
+                                src="{{ asset(main_path() . 'assets/back-end') }}/svg/illustrations/sorry.svg"
                                 alt="Image Description">
-                            <p class="mb-0">{{ ui_change('no_data_to_show' , 'property_config') }}</p>
+                            <p class="mb-0">{{ ui_change('no_data_to_show', 'property_config') }}</p>
                         </div>
                     @endif
                 </div>
@@ -230,13 +230,13 @@
             var id = $(this).attr("id");
             // var route_name = document.getElementById('route_name').value;
             Swal.fire({
-                title: "{{ ui_change('are_you_sure_delete_this' , 'property_config') }}",
-                text: "{{ ui_change('you_will_not_be_able_to_revert_this' , 'property_config') }}!",
+                title: "{{ ui_change('are_you_sure_delete_this', 'property_config') }}",
+                text: "{{ ui_change('you_will_not_be_able_to_revert_this', 'property_config') }}!",
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: '{{ ui_change('yes_delete_it' , 'property_config') }}!',
-                cancelButtonText: '{{ ui_change('cancel' , 'property_config') }}',
+                confirmButtonText: '{{ ui_change('yes_delete_it', 'property_config') }}!',
+                cancelButtonText: '{{ ui_change('cancel', 'property_config') }}',
                 type: 'warning',
                 reverseButtons: true
             }).then((result) => {
@@ -253,7 +253,9 @@
                             id: id
                         },
                         success: function() {
-                            toastr.success('{{ ui_change('deleted_successfully' , 'property_config') }}');
+                            toastr.success(
+                                '{{ ui_change('deleted_successfully', 'property_config') }}'
+                                );
                             location.reload();
                         }
                     });

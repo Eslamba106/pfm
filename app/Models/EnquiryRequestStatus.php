@@ -2,14 +2,21 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class EnquiryRequestStatus extends Model
 {
     use HasFactory;
     protected $connection = 'tenant';
 
-    protected $guarded =   [];    
-
+    protected $guarded =   [];
+    public function isUsed(): bool
+    {
+        return DB::connection($this->connection)
+            ->table('enquiry_details')
+            ->where('enquiry_request_status_id', $this->id)
+            ->exists();
+    }
 }

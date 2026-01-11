@@ -174,10 +174,10 @@
                                                         href="{{ route($route . '.edit', $value->id) }}">
                                                         <i class="tio-edit"></i>
                                                     </a>
-                                                    <a class="btn btn-outline-danger btn-sm delete square-btn"
+                                                    {{-- <a class="btn btn-outline-danger btn-sm delete square-btn"
                                                         title="{{ ui_change('delete' , 'property_master')  }}" id="{{ $value['id'] }}">
                                                         <i class="tio-delete"></i>
-                                                    </a>
+                                                    </a> --}}
                                                 </div>
                                             </td>
                                         </tr>

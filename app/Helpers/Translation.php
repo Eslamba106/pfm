@@ -34,44 +34,44 @@ if (! function_exists('translate')) {
     }
 
 }
-if (! function_exists('ui_change')) {
+// if (! function_exists('ui_change')) {
  
-function ui_change($key, $position = 'dashboard')
-{ 
-    $connectionName = 'tenant'; 
-    try { 
-        $value = DB::connection($connectionName)
-                   ->table('ui_settings')
-                   ->where('key', $key)
-                   ->where('position', $position)
-                   ->first();
+// function ui_change($key, $position = 'dashboard')
+// { 
+//     $connectionName = 'tenant'; 
+//     try { 
+//         $value = DB::connection($connectionName)
+//                    ->table('ui_settings')
+//                    ->where('key', $key)
+//                    ->where('position', $position)
+//                    ->first();
 
-    } catch (Throwable $e) { 
+//     } catch (Throwable $e) { 
 
-        $connectionName = 'mysql';  
+//         $connectionName = 'mysql';  
          
-        $value = DB::connection($connectionName)
-                   ->table('ui_settings')
-                   ->where('key', $key)
-                   ->where('position', $position)
-                   ->first();
-    }
+//         $value = DB::connection($connectionName)
+//                    ->table('ui_settings')
+//                    ->where('key', $key)
+//                    ->where('position', $position)
+//                    ->first();
+//     }
      
-    if (is_null($value)) {
-        $formattedValue = str_replace('_', ' ', $key);
-        $formattedValue = ucwords($formattedValue);
+//     if (is_null($value)) {
+//         $formattedValue = str_replace('_', ' ', $key);
+//         $formattedValue = ucwords($formattedValue);
  
-        DB::connection($connectionName)->table('ui_settings')->insert([
-            'key'      => $key,
-            'value'    => $formattedValue,
-            'position' => $position,
-        ]);
+//         DB::connection($connectionName)->table('ui_settings')->insert([
+//             'key'      => $key,
+//             'value'    => $formattedValue,
+//             'position' => $position,
+//         ]);
 
-        return $formattedValue;
-    }
+//         return $formattedValue;
+//     }
 
-    return $value->value;
-}
+//     return $value->value;
+// }
 
     // function ui_change($key , $position = 'dashboard')
     // {
@@ -93,4 +93,40 @@ function ui_change($key, $position = 'dashboard')
     //     return $value->value;
     // }
 
+// }
+if (! function_exists('ui_change')) {
+    function ui_change($key, $position = 'dashboard')
+    {
+        $connectionName = 'tenant';
+        try {
+            $value = DB::connection($connectionName)
+                       ->table('ui_settings')
+                       ->whereRaw('BINARY `key` = ?', [$key])
+                       ->where('position', $position)
+                       ->first();
+        } catch (Throwable $e) {
+            $connectionName = 'mysql';
+            $value = DB::connection($connectionName)
+                       ->table('ui_settings')
+                       ->whereRaw('BINARY `key` = ?', [$key])
+                       ->where('position', $position)
+                       ->first();
+        }
+
+        if (is_null($value)) {
+            $formattedValue = str_replace('_', ' ', $key);
+            $formattedValue = ucwords($formattedValue);
+
+            DB::connection($connectionName)->table('ui_settings')->insert([
+                'key'      => $key,
+                'value'    => $formattedValue,
+                'position' => $position,
+            ]);
+
+            return $formattedValue;
+        }
+
+        return $value->value;
+    }
 }
+

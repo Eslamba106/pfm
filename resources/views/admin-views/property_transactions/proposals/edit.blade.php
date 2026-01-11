@@ -853,8 +853,8 @@
                                                     for="area-measurement">{{  ui_change('is_rent_inclusive_of_ewa' , 'property_transaction')   }}</label>
                                                 <select name="is_rent_inclusive_of_ewa-{{ $item->id }}"
                                                     class="js-select2-custom form-control">
-                                                    <option>{{  ui_change('yes' , 'property_transaction')   }}</option>
-                                                    <option>{{  ui_change('no' , 'property_transaction')  }}</option>
+                                                    <option value="yes" {{ $item->is_rent_inclusive_of_ewa == 'yes' ? 'selected' : '' }}>{{  ui_change('yes' , 'property_transaction')   }}</option>
+                                                    <option value="no" {{ $item->is_rent_inclusive_of_ewa == 'no' ? 'selected' : '' }}>{{  ui_change('no' , 'property_transaction')  }}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -864,8 +864,8 @@
                                                     for="area-measurement">{{  ui_change('ewa_limit_mode' , 'property_transaction')   }}</label>
                                                 <select name="ewa_limit_mode-{{ $item->id }}"
                                                     class="js-select2-custom form-control">
-                                                    <option>{{  ui_change('monthly' , 'property_transaction')   }}</option>
-                                                    <option>{{  ui_change('yearly' , 'property_transaction')  }}</option>
+                                                    <option value="monthly" {{ $item->ewa_limit_mode == 'monthly' ? 'selected' : '' }}>{{  ui_change('monthly' , 'property_transaction')   }}</option>
+                                                    <option value="yearly" {{ $item->ewa_limit_mode == 'yearly' ? 'selected' : '' }}>{{  ui_change('yearly' , 'property_transaction')  }}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -875,7 +875,7 @@
                                                 <label
                                                     for="total-area">{{  ui_change('ewa_limit_monthly' , 'property_transaction')   }}</label>
                                                 <input type="number" name="ewa_limit_monthly-{{ $item->id }}"
-                                                    class="form-control" step="0.001" value="{{ number_format(0,$company->decimals) }}">
+                                                    class="form-control" step="0.001" value="{{ number_format($item->ewa_limit,$company->decimals) }}">
                                             </div>
                                         </div>
                                         <div class="col-md-12 col-lg-4 col-xl-3">

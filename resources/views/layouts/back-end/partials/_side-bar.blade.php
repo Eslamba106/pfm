@@ -189,11 +189,11 @@
                                 style="font-size: 1rem">
                                 <a class="js-navbar-vertical-aside-menu-link nav-link "
                                     href="{{ route('property_management_side') }}"
-                                    title="{{ ui_change('property_config') }}">
+                                    title="{{ ui_change('property_master') }}">
                                     <i class="fas fa-layer-group"></i>
                                     <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate"
                                         style="{{ $lang == 'ar' ? 'margin-right: 8px;' : 'margin-left: 8px;' }}">
-                                        {{ ui_change('property_config') }}
+                                        {{ ui_change('property_master') }}
                                     </span>
                                 </a>
                             </li>

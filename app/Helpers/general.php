@@ -254,7 +254,7 @@ if (! function_exists('get_settings')) {
 if (! function_exists('main_path')) {
     function main_path()
     {
-        return 'public/';
+        return '/';
         // return 'assets/';
     }
 }
@@ -832,3 +832,56 @@ if (! function_exists('receiptNo')) {
         }
 
     }
+
+if (! function_exists('calc_rent_amount')) {
+    function calc_rent_amount($rentMode, $paymentMode, $baseAmount,  $rentAmount)
+    {
+        switch ($rentMode) {
+            case 1:
+                $dailyAmount = $baseAmount;
+                break;  
+            case 2:
+                $dailyAmount = $baseAmount / 30;
+                break;  
+            case 3:
+                $dailyAmount = $baseAmount / 60;
+                break; // bi_monthly
+            case 4:
+                $dailyAmount = $baseAmount / 90;
+                break; // quarterly
+            case 5:
+                $dailyAmount = $baseAmount / 180;
+                break; // half_yearly
+            case 6:
+                $dailyAmount = $baseAmount / 365;
+                break; // yearly
+            default:
+                $dailyAmount = $baseAmount;
+        }
+ 
+        switch ($paymentMode) {
+            case 1:
+                $rentAmount = $dailyAmount;
+                break; // daily
+            case 2:
+                $rentAmount = $dailyAmount * 30;
+                break; // monthly
+            case 3:
+                $rentAmount = $dailyAmount * 60;
+                break; // bi_monthly
+            case 4:
+                $rentAmount = $dailyAmount * 90;
+                break; // quarterly
+            case 5:
+                $rentAmount = $dailyAmount * 180;
+                break; // half_yearly
+            case 6:
+                $rentAmount = $dailyAmount * 365;
+                break; // yearly
+            default:
+                $rentAmount = $dailyAmount;
+        }
+        return $rentAmount;
+    }
+
+}

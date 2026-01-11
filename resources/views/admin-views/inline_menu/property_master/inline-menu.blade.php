@@ -13,8 +13,8 @@
         <li class="{{ Request::is('unit_type') ?'active':'' }}"><a href="{{ route('unit_type.index') }}">{{ui_change('unit_type' , 'property_master')}}</a></li>
         <li class="{{ Request::is('unit_parking') ?'active':'' }}"><a href="{{ route('unit_parking.index') }}">{{ui_change('unit_parking' , 'property_master')}}</a></li>
         <li class="{{ Request::is('view') ?'active':'' }}"><a href="{{ route('view.index') }}">{{ui_change('view' , 'property_master')}}</a></li>
-        <li class="{{ Request::is('business_activity') ?'active':'' }}"><a href="{{ route('business_activity.index') }}">{{ui_change('business_activitys' , 'property_master')}}</a></li>
-        <li class="{{ Request::is('live_with') ?'active':'' }}"><a href="{{ route('live_with.index') }}">{{ui_change('live_withs' , 'property_master')}}</a></li>
+        <li class="{{ Request::is('business_activity') ?'active':'' }}"><a href="{{ route('business_activity.index') }}">{{ui_change('business_activities' , 'property_master')}}</a></li>
+        <li class="{{ Request::is('live_with') ?'active':'' }}"><a href="{{ route('live_with.index') }}">{{ui_change('tenant_status' , 'property_master')}}</a></li>
         <li class="{{ Request::is('enquiry_status') ?'active':'' }}"><a href="{{ route('enquiry_status.index') }}">{{ui_change('enquiry_status' , 'property_master')}}</a></li>
         <li class="{{ Request::is('enquiry_request_status') ?'active':'' }}"><a href="{{ route('enquiry_request_status.index') }}">{{ui_change('enquiry_request_status' , 'property_master')}}</a></li>
     </ul>

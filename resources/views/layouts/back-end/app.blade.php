@@ -58,7 +58,7 @@
         }
 
         .navbar-vertical-content::-webkit-scrollbar {
-            width: 7px !important;
+            width: 12px !important;
             height: 7px !important;
         }
     </style>

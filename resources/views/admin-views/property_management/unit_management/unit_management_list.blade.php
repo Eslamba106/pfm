@@ -47,7 +47,7 @@
                                 {{-- @can('create_unit_management') --}}
                                     <a href="{{ route('unit_management.create') }}" class="btn btn--primary">
                                         <i class="tio-add"></i>
-                                        <span class="text">{{ ui_change('create_unit_management' , 'property_config') }}</span>
+                                        <span class="text">{{ ui_change('unit_configuration' , 'property_config') }}</span>
                                     </a>
                                 {{-- @endcan --}}
                             </div>
@@ -159,7 +159,7 @@
 
                     @if (count($unit_management) == 0)
                         <div class="text-center p-4">
-                            <img class="mb-3 w-160" src="{{ asset(main_path() . 'back-end') }}/svg/illustrations/sorry.svg"
+                            <img class="mb-3 w-160" src="{{ asset(main_path() . 'assets/back-end') }}/svg/illustrations/sorry.svg"
                                 alt="Image Description">
                             <p class="mb-0">{{ ui_change('no_data_to_show' , 'property_config') }}</p>
                         </div>

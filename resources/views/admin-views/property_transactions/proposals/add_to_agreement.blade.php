@@ -908,7 +908,7 @@
                                                     class="form-control" step="0.001"
                                                     onkeyup="deposite({{ $item->id }})"
                                                     placeholder="{{ number_format(0, $company->decimals) }}"
-                                                    value="{{ number_format($item->security_deposit, $company->decimals, '.', '') }}">
+                                                    value="{{ number_format($item->security_deposit ) }}">
                                             </div>
                                         </div>
                                         <div class="col-md-6 col-lg-4 col-xl-3">
@@ -958,7 +958,7 @@
                                                     for="total-area">{{ ui_change('ewa_limit_monthly', 'property_transaction') }}</label>
                                                 <input type="number" name="ewa_limit_monthly-{{ $item->id }}"
                                                     class="form-control" step="0.001"
-                                                    value="{{ $item->ewa_limit_monthly }}">
+                                                    value="{{ $item->ewa_limit }}">
                                             </div>
                                         </div>
                                         <div class="col-md-12 col-lg-4 col-xl-3">

@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Ownership extends Model
 {
@@ -11,4 +12,11 @@ class Ownership extends Model
     protected $guarded = [];
     protected $connection = 'tenant';
 
+    public function isUsed(): bool
+    {
+        return DB::connection($this->connection)
+            ->table('property_management')
+            ->where('ownership_id', $this->id)
+            ->exists();
+    }
 }

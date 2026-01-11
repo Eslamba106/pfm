@@ -74,7 +74,7 @@
                                      <span class="text-truncate">
                                          {{ ui_change('enquiries', 'property_transaction') }}
                                          <span class="badge badge-soft-info badge-pill ml-1">
-                                             {{ \App\Models\Enquiry::count() }}
+                                             {{ \App\Models\Enquiry::where('booking_status' ,'enquiry')->count() }}
                                          </span>
                                      </span>
                                  </a> <a class="nav-link " style="color: var(--primary);font-size: 18px;"

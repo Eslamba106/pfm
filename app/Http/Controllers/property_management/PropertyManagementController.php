@@ -1,16 +1,18 @@
 <?php
+
 namespace App\Http\Controllers\property_management;
 
-use App\Http\Controllers\Controller;
+use Carbon\Carbon;
+use App\Models\Ownership;
+use App\Models\PropertyType;
+use Illuminate\Http\Request;
 use App\Models\CountryMaster;
 use App\Models\general\Groups;
-use App\Models\hierarchy\CostCenterCategory;
-use App\Models\Ownership;
+use App\Models\facility\Supplier;
 use App\Models\PropertyManagement;
-use App\Models\PropertyType;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\hierarchy\CostCenterCategory;
 
 class PropertyManagementController extends Controller
 {
@@ -39,7 +41,7 @@ class PropertyManagementController extends Controller
     }
     public function create()
     {
-
+        $suppliers = Supplier::select('id', 'name')->get();
         $country_master = (new CountryMaster())->setConnection('tenant')->all();
         $property_type  = (new PropertyType())->setConnection('tenant')->all();
         $owner_ship     = (new Ownership())->setConnection('tenant')->all();
@@ -50,12 +52,13 @@ class PropertyManagementController extends Controller
             "owner_ship"     => $owner_ship,
             "country_master" => $country_master,
             'dail_code_main' => $dail_code_main,
+            'suppliers'      => $suppliers,
         ];
         return view("admin-views.property_management.property.create", $data);
-
     }
     public function edit($id)
     {
+        $suppliers = Supplier::select('id', 'name')->get();
 
         $country_master      = (new CountryMaster())->setConnection('tenant')->all();
         $property_type       = (new PropertyType())->setConnection('tenant')->all();
@@ -69,10 +72,10 @@ class PropertyManagementController extends Controller
             "country_master"      => $country_master,
             "property_management" => $property_management,
             'dail_code_main'      => $dail_code_main,
+            'suppliers'           => $suppliers,
 
         ];
         return view("admin-views.property_management.property.edit", $data);
-
     }
 
     public function store(Request $request)
@@ -260,9 +263,13 @@ class PropertyManagementController extends Controller
 
     public function view_image($id)
     {
-        $property = (new PropertyManagement())->setConnection('tenant')->with('blocks_management_child', 'blocks_management_child.block'
-            , 'blocks_management_child.floors_management_child', 'blocks_management_child.floors_management_child.floor_management_main',
-            'blocks_management_child.floors_management_child.unit_management_child', 'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
+        $property = (new PropertyManagement())->setConnection('tenant')->with(
+            'blocks_management_child',
+            'blocks_management_child.block',
+            'blocks_management_child.floors_management_child',
+            'blocks_management_child.floors_management_child.floor_management_main',
+            'blocks_management_child.floors_management_child.unit_management_child',
+            'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->findOrFail($id);
         // $property = (new PropertyManagement())->setConnection('tenant')->findOrFail($id);
         $data = [
@@ -272,9 +279,13 @@ class PropertyManagementController extends Controller
     }
     public function list_view($id)
     {
-        $property = (new PropertyManagement())->setConnection('tenant')->with('blocks_management_child', 'blocks_management_child.block'
-            , 'blocks_management_child.floors_management_child', 'blocks_management_child.floors_management_child.floor_management_main',
-            'blocks_management_child.floors_management_child.unit_management_child', 'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
+        $property = (new PropertyManagement())->setConnection('tenant')->with(
+            'blocks_management_child',
+            'blocks_management_child.block',
+            'blocks_management_child.floors_management_child',
+            'blocks_management_child.floors_management_child.floor_management_main',
+            'blocks_management_child.floors_management_child.unit_management_child',
+            'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->findOrFail($id);
         // $property = (new PropertyManagement())->setConnection('tenant')->findOrFail($id);
         $data = [
@@ -282,5 +293,4 @@ class PropertyManagementController extends Controller
         ];
         return view('admin-views.property_management.property.list_view', $data);
     }
-
 }

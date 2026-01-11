@@ -46,7 +46,7 @@
 
                                 <a href="{{ route('floor_management.create') }}" class="btn btn--primary">
                                     <i class="tio-add"></i>
-                                    <span class="text">{{ ui_change('create_floor_management' , 'property_config') }}</span>
+                                    <span class="text">{{ ui_change('floor_configuration' , 'property_config') }}</span>
                                 </a>
                             </div>
                         </div>
@@ -128,7 +128,7 @@
 
                     @if (count($floor_management) == 0)
                         <div class="text-center p-4">
-                            <img class="mb-3 w-160" src="{{ asset(main_path() . 'back-end') }}/svg/illustrations/sorry.svg"
+                            <img class="mb-3 w-160" src="{{ asset(main_path() . 'assets/back-end') }}/svg/illustrations/sorry.svg"
                                 alt="Image Description">
                             <p class="mb-0">{{ ui_change('no_data_to_show' , 'property_config') }}</p>
                         </div>

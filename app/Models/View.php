@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class View extends Model
 {
@@ -11,4 +12,11 @@ class View extends Model
     protected $guarded = [];
     protected $connection = 'tenant';
 
+    public function isUsed(): bool
+    {
+        return DB::connection($this->connection)
+            ->table('unit_management')
+            ->where('view_id', $this->id)
+            ->exists();
+    }
 }

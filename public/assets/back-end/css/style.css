@@ -473,7 +473,7 @@ label {
 }
 
 .navbar-vertical-content::-webkit-scrollbar-thumb {
-    background: #c1c1c1;
+    background: #e8bbbb;
 }
 
 @media only screen and (max-width: 768px) {
@@ -5281,7 +5281,7 @@ select {
 
 .sidebar--search-form {
     position: -webkit-sticky;
-    position: sticky;
+    /* position: sticky; */
     top: 0;
     z-index: 9;
     background: #073b74;

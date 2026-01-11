@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\property_transactions;
 
 use App\Http\Controllers\Controller;
@@ -150,7 +151,7 @@ class ProposalController extends Controller
         $view_id             = $request->input('view_id');
         $property_type       = $request->input('property_type');
         $units               = (new UnitManagement())->setConnection('tenant')
-        // ->where('booking_status', 'empty')
+            // ->where('booking_status', 'empty')
             ->with('unit_management_main:id,name')
             ->when($property_id, function ($query, $property_id) {
                 return $query->where('property_management_id', $property_id);
@@ -166,12 +167,17 @@ class ProposalController extends Controller
             })
             ->when($view_id, function ($query, $view_id) {
                 return $query->where('view_id', $view_id);
-            })->with('property_unit_management', 'block_unit_management', 'block_unit_management.block',
-            'floor_unit_management.floor_management_main', 'floor_unit_management', 'unit_management_main')
+            })->with(
+                'property_unit_management',
+                'block_unit_management',
+                'block_unit_management.block',
+                'floor_unit_management.floor_management_main',
+                'floor_unit_management',
+                'unit_management_main'
+            )
 
             ->get();
         return response()->json($units);
-
     }
 
     public function store(Request $request)
@@ -265,8 +271,12 @@ class ProposalController extends Controller
                     $viewId            = $request->input("view_id-$i");
                     $propertyType      = $request->input("property_type-$i");
 
-                    if ($request->input("period_from-$key")) {$periodFrom = Carbon::createFromFormat('d/m/Y', $request->input("period_from-$key"))->format('Y-m-d');}
-                    if ($request->input("period_to-$key")) {$periodTo = Carbon::createFromFormat('d/m/Y', $request->input("period_to-$key"))->format('Y-m-d');}
+                    if ($request->input("period_from-$key")) {
+                        $periodFrom = Carbon::createFromFormat('d/m/Y', $request->input("period_from-$key"))->format('Y-m-d');
+                    }
+                    if ($request->input("period_to-$key")) {
+                        $periodTo = Carbon::createFromFormat('d/m/Y', $request->input("period_to-$key"))->format('Y-m-d');
+                    }
                     $city                     = $request->input("city-$i");
                     $totalArea                = $request->input("total_area-$i");
                     $areaMeasurement          = $request->input("area_measurement-$i");
@@ -279,7 +289,9 @@ class ProposalController extends Controller
                     $rentAmount               = $request->input("rent_amount-$i");
                     $rentMode                 = $request->input("rent_mode-$i");
                     $rentalGl                 = $request->input("rental_gl-$i");
-                    if($request->input("lease_break_date-$i")) {$lease_break_date_format = Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$i"))->format('Y-m-d');}
+                    if ($request->input("lease_break_date-$i")) {
+                        $lease_break_date_format = Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$i"))->format('Y-m-d');
+                    }
                     $lease_break_date         = $lease_break_date_format ?? null;
                     $lease_break_comment      = $request->input("lease_break_comments-$i");
                     $total_net_rent_amount    = $request->input("total_net_rent_amount-$i") ?? 0;
@@ -317,22 +329,26 @@ class ProposalController extends Controller
                         'total'                    => 0,
                     ]);
                     $unit_management = (new UnitManagement())->setConnection('tenant')->where('id', $unit)->first();
-                    $unit_management->update(['booking_status' => 'proposal','tenant_id'=>$request->tenant_id]);
+                    $unit_management->update(['booking_status' => 'proposal', 'tenant_id' => $request->tenant_id]);
                     if (isset($request->service_counter[$i])) {
                         for ($ind = 1, $inde = $request->service_counter[$i]; $ind <= $inde; $ind++) {
-                            $chargeMode       = isset($request->input("charge_mode-{$i}-{$ind}")[0] ) ? $request->input("charge_mode-{$i}-{$ind}")[0] :  null;
-                            $chargeModeType   = isset($request->input("charge_mode_type-{$i}-{$ind}")[0] ) ? $request->input("charge_mode_type-{$i}-{$ind}")[0] :  null;
-                            $amountCharge     = isset($request->input("amount_charge-{$i}-{$ind}")[0] ) ? $request->input("amount_charge-{$i}-{$ind}")[0] :  null;
-                            $percentageCharge = isset($request->input("percentage_amount_charge-{$i}-{$ind}")[0] ) ? $request->input("percentage_amount_charge-{$i}-{$ind}")[0] :  null;
-                            $calculateAmount  = isset($request->input("calculate_amount-{$i}-{$ind}")[0] ) ? $request->input("calculate_amount-{$i}-{$ind}")[0] :  null;
-                            $vatPercentage    = isset($request->input("vat_percentage-{$i}-{$ind}")[0] ) ?  $request->input("vat_percentage-{$i}-{$ind}")[0] :  null;
-                            $vatAmount        = isset($request->input("vat_amount-{$i}-{$ind}")[0] ) ? $request->input("vat_amount-{$i}-{$ind}")[0]  :  null;
-                            $totalAmount      = isset($request->input("total_amount-{$i}-{$ind}")[0] ) ? $request->input("total_amount-{$i}-{$ind}")[0] :  null;
-                            if (isset($request->input("start_date-{$i}-{$ind}")[0])) {$start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$i}-{$ind}")[0])->format('Y-m-d');}
-                            if (isset($request->input("expiry_date-{$i}-{$ind}")[0])) {$expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$i}-{$ind}")[0])->format('Y-m-d');}
+                            $chargeMode       = isset($request->input("charge_mode-{$i}-{$ind}")[0]) ? $request->input("charge_mode-{$i}-{$ind}")[0] :  null;
+                            $chargeModeType   = isset($request->input("charge_mode_type-{$i}-{$ind}")[0]) ? $request->input("charge_mode_type-{$i}-{$ind}")[0] :  null;
+                            $amountCharge     = isset($request->input("amount_charge-{$i}-{$ind}")[0]) ? $request->input("amount_charge-{$i}-{$ind}")[0] :  null;
+                            $percentageCharge = isset($request->input("percentage_amount_charge-{$i}-{$ind}")[0]) ? $request->input("percentage_amount_charge-{$i}-{$ind}")[0] :  null;
+                            $calculateAmount  = isset($request->input("calculate_amount-{$i}-{$ind}")[0]) ? $request->input("calculate_amount-{$i}-{$ind}")[0] :  null;
+                            $vatPercentage    = isset($request->input("vat_percentage-{$i}-{$ind}")[0]) ?  $request->input("vat_percentage-{$i}-{$ind}")[0] :  null;
+                            $vatAmount        = isset($request->input("vat_amount-{$i}-{$ind}")[0]) ? $request->input("vat_amount-{$i}-{$ind}")[0]  :  null;
+                            $totalAmount      = isset($request->input("total_amount-{$i}-{$ind}")[0]) ? $request->input("total_amount-{$i}-{$ind}")[0] :  null;
+                            if (isset($request->input("start_date-{$i}-{$ind}")[0])) {
+                                $start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$i}-{$ind}")[0])->format('Y-m-d');
+                            }
+                            if (isset($request->input("expiry_date-{$i}-{$ind}")[0])) {
+                                $expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$i}-{$ind}")[0])->format('Y-m-d');
+                            }
                             $startDate     = $start ?? null;
                             $expiryDate    = $expiry ?? null;
-                            if($chargeModeType){
+                            if ($chargeModeType) {
 
                                 DB::connection('tenant')->table('proposal_units_services')->insert([
                                     'proposal_unit_id'  => $proposal_units->id,
@@ -343,12 +359,9 @@ class ProposalController extends Controller
                                     'total'             => $totalAmount,
                                 ]);
                             }
-
                         }
                     }
-
                 }
-
             }
             DB::commit();
             return to_route('proposal.index')->with('success', __('country.added_successfully'));
@@ -405,7 +418,7 @@ class ProposalController extends Controller
     public function show($id)
     {
 
-        $proposal         = (new Proposal())->setConnection('tenant')->with('tenant' ,'proposal_details','proposal_unit')->findOrFail($id);
+        $proposal         = (new Proposal())->setConnection('tenant')->with('tenant', 'proposal_details', 'proposal_unit')->findOrFail($id);
         $proposal_details = (new ProposalDetails())->setConnection('tenant')->where('proposal_id', $id)->first();
         $proposal_units   = (new ProposalUnits())->setConnection('tenant')->where('proposal_id', $id)->get();
 
@@ -538,8 +551,12 @@ class ProposalController extends Controller
                     $unitConditionId   = $request->input("unit_condition_id-$key");
                     $viewId            = $request->input("view_id-$key");
                     $propertyType      = $request->input("property_type-$key");
-                    if ($request->input("period_from-$key")) {$periodFrom = Carbon::createFromFormat('d/m/Y', $request->input("period_from-$key"))->format('Y-m-d');}
-                    if ($request->input("period_to-$key")) {$periodTo = Carbon::createFromFormat('d/m/Y', $request->input("period_to-$key"))->format('Y-m-d');}
+                    if ($request->input("period_from-$key")) {
+                        $periodFrom = Carbon::createFromFormat('d/m/Y', $request->input("period_from-$key"))->format('Y-m-d');
+                    }
+                    if ($request->input("period_to-$key")) {
+                        $periodTo = Carbon::createFromFormat('d/m/Y', $request->input("period_to-$key"))->format('Y-m-d');
+                    }
                     $totalArea                = $request->input("total_area-$key");
                     $areaMeasurement          = $request->input("area_measurement-$key");
                     $notes                    = $request->input("notes-$key");
@@ -551,7 +568,9 @@ class ProposalController extends Controller
                     $rentAmount               = $request->input("rent_amount-$key");
                     $rentMode                 = $request->input("rent_mode-$key");
                     $rentalGl                 = $request->input("rental_gl-$key");
-                    if($request->input("lease_break_date-$key")) {$lease_break_date_format = Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$key"))->format('Y-m-d');}
+                    if ($request->input("lease_break_date-$key")) {
+                        $lease_break_date_format = Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$key"))->format('Y-m-d');
+                    }
                     $lease_break_date         = $lease_break_date_format ?? null;                    // $lease_break_date         = Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$key"))->format('Y-m-d');
                     $lease_break_comment      = $request->input("lease_break_comments-$key");
                     $total_net_rent_amount    = $request->input("total_net_rent_amount-$key") ?? 0;
@@ -600,23 +619,26 @@ class ProposalController extends Controller
                             $vatPercentage    = (isset($request->input("vat_percentage-{$key}-{$ind}")[0])) ? $request->input("vat_percentage-{$key}-{$ind}")[0] : null;
                             $vatAmount        = (isset($request->input("vat_amount-{$key}-{$ind}")[0])) ? $request->input("vat_amount-{$key}-{$ind}")[0] : null;
                             $totalAmount      = (isset($request->input("total_amount-{$key}-{$ind}")[0])) ?  $request->input("total_amount-{$key}-{$ind}")[0] : null;
-                            
-                            if (isset($request->input("start_date-{$key}-{$ind}")[0])) {$start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$key}-{$ind}")[0])->format('Y-m-d');}
-                            if (isset($request->input("expiry_date-{$key}-{$ind}")[0])) {$expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$key}-{$ind}")[0])->format('Y-m-d');}
+
+                            if (isset($request->input("start_date-{$key}-{$ind}")[0])) {
+                                $start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$key}-{$ind}")[0])->format('Y-m-d');
+                            }
+                            if (isset($request->input("expiry_date-{$key}-{$ind}")[0])) {
+                                $expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$key}-{$ind}")[0])->format('Y-m-d');
+                            }
                             $startDate     = $start ?? null;
                             $expiryDate    = $expiry ?? null;
-                            if($chargeModeType){
-                            DB::connection('tenant')->table('proposal_units_services')->insert([
-                                'proposal_unit_id'  => $proposal_units->id,
-                                'charge_mode'       => $chargeModeType,
-                                'other_charge_type' => $chargeMode,
-                                'amount'            => $calculateAmount,
-                                'vat'               => $vatAmount,
-                                'total'             => $totalAmount,
-                            ]);
+                            if ($chargeModeType) {
+                                DB::connection('tenant')->table('proposal_units_services')->insert([
+                                    'proposal_unit_id'  => $proposal_units->id,
+                                    'charge_mode'       => $chargeModeType,
+                                    'other_charge_type' => $chargeMode,
+                                    'amount'            => $calculateAmount,
+                                    'vat'               => $vatAmount,
+                                    'total'             => $totalAmount,
+                                ]);
+                            }
                         }
-                        }
-
                     }
                     if (! isset($request->service_counter[$key]) && isset($request->old_service_counter[$key])) {
                         for ($ind = 1, $inde = $request->old_service_counter[$key]; $ind <= $inde; $ind++) {
@@ -629,11 +651,15 @@ class ProposalController extends Controller
                             $vatAmount        = isset($request->input("vat_amount-{$key}-{$ind}")[0]) ? $request->input("vat_amount-{$key}-{$ind}")[0] :  null;
                             $totalAmount      = isset($request->input("total_amount-{$key}-{$ind}")[0]) ? $request->input("total_amount-{$key}-{$ind}")[0] :  null;
 
-                            if (isset($request->input("start_date-{$key}-{$ind}")[0])) {$start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$key}-{$ind}")[0])->format('Y-m-d');}
-                            if (isset($request->input("expiry_date-{$key}-{$ind}")[0])) {$expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$key}-{$ind}")[0])->format('Y-m-d');}
+                            if (isset($request->input("start_date-{$key}-{$ind}")[0])) {
+                                $start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$key}-{$ind}")[0])->format('Y-m-d');
+                            }
+                            if (isset($request->input("expiry_date-{$key}-{$ind}")[0])) {
+                                $expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$key}-{$ind}")[0])->format('Y-m-d');
+                            }
                             $startDate     = $start ?? null;
                             $expiryDate    = $expiry ?? null;
-                            if($chargeModeType){
+                            if ($chargeModeType) {
 
                                 DB::connection('tenant')->table('proposal_units_services')->insert([
                                     'proposal_unit_id'  => $proposal_units->id,
@@ -645,11 +671,8 @@ class ProposalController extends Controller
                                 ]);
                             }
                         }
-
                     }
-
                 }
-
             }
             DB::commit();
             return to_route('proposal.index')->with('success', __('general.updated_successfully'));
@@ -700,7 +723,7 @@ class ProposalController extends Controller
             'tenants'                  => $tenants,
             'booking'                  => $proposal,
             'booking_details'          => $proposal_details,
-            'booking_units'            => $proposal_units,  
+            'booking_units'            => $proposal_units,
         ];
         return view('admin-views.property_transactions.proposals.add_to_booking', $data);
     }
@@ -793,12 +816,16 @@ class ProposalController extends Controller
         ];
         return view('admin-views.property_transactions.proposals.check_property', $data);
     }
-    public function view_image($id , $proposal_id)
+    public function view_image($id, $proposal_id)
     {
         $proposal_unit = ProposalUnits::where('proposal_id', $proposal_id)->pluck('id', 'unit_id')->toArray();
-        $property = (new PropertyManagement())->setConnection('tenant')->with('blocks_management_child', 'blocks_management_child.block'
-            , 'blocks_management_child.floors_management_child', 'blocks_management_child.floors_management_child.floor_management_main',
-            'blocks_management_child.floors_management_child.unit_management_child', 'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
+        $property = (new PropertyManagement())->setConnection('tenant')->with(
+            'blocks_management_child',
+            'blocks_management_child.block',
+            'blocks_management_child.floors_management_child',
+            'blocks_management_child.floors_management_child.floor_management_main',
+            'blocks_management_child.floors_management_child.unit_management_child',
+            'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->findOrFail($id);
         // $property = PropertyManagement::findOrFail($id);
         $data = [
@@ -807,13 +834,17 @@ class ProposalController extends Controller
         ];
         return view('admin-views.property_transactions.proposals.view_image', $data);
     }
-    public function list_view($id , $proposal_id)
+    public function list_view($id, $proposal_id)
     {
-                $proposal_unit = ProposalUnits::where('proposal_id', $proposal_id)->pluck('id', 'unit_id')->toArray();
+        $proposal_unit = ProposalUnits::where('proposal_id', $proposal_id)->pluck('id', 'unit_id')->toArray();
 
-        $property = (new PropertyManagement())->setConnection('tenant')->with('blocks_management_child', 'blocks_management_child.block'
-            , 'blocks_management_child.floors_management_child', 'blocks_management_child.floors_management_child.floor_management_main',
-            'blocks_management_child.floors_management_child.unit_management_child', 'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
+        $property = (new PropertyManagement())->setConnection('tenant')->with(
+            'blocks_management_child',
+            'blocks_management_child.block',
+            'blocks_management_child.floors_management_child',
+            'blocks_management_child.floors_management_child.floor_management_main',
+            'blocks_management_child.floors_management_child.unit_management_child',
+            'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->findOrFail($id);
         // $property = PropertyManagement::findOrFail($id);
         $data = [
@@ -898,8 +929,12 @@ class ProposalController extends Controller
                         $unitConditionId   = $request->input("unit_condition_id-$i");
                         $viewId            = $request->input("view_id-$i");
                         $propertyType      = $request->input("property_type-$i");
-                        if ($request->input("period_from-$i")) {$periodFrom = Carbon::createFromFormat('d/m/Y', $request->input("period_from-$i"))->format('Y-m-d');}
-                        if ($request->input("period_to-$i")) {$periodTo = Carbon::createFromFormat('d/m/Y', $request->input("period_to-$i"))->format('Y-m-d');}
+                        if ($request->input("period_from-$i")) {
+                            $periodFrom = Carbon::createFromFormat('d/m/Y', $request->input("period_from-$i"))->format('Y-m-d');
+                        }
+                        if ($request->input("period_to-$i")) {
+                            $periodTo = Carbon::createFromFormat('d/m/Y', $request->input("period_to-$i"))->format('Y-m-d');
+                        }
                         $city                     = $request->input("city-$i");
                         $totalArea                = $request->input("total_area-$i");
                         $areaMeasurement          = $request->input("area_measurement-$i");
@@ -912,8 +947,10 @@ class ProposalController extends Controller
                         $rentAmount               = $request->input("rent_amount-$i");
                         $rentMode                 = $request->input("rent_mode-$i");
                         $rentalGl                 = $request->input("rental_gl-$i");
-                        if($request->input("lease_break_date-$i")) {$lease_break_date_format = Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$i"))->format('Y-m-d');}
-                        $lease_break_date         = $lease_break_date_format ?? null; 
+                        if ($request->input("lease_break_date-$i")) {
+                            $lease_break_date_format = Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$i"))->format('Y-m-d');
+                        }
+                        $lease_break_date         = $lease_break_date_format ?? null;
                         // $lease_break_date         = $request->input("lease_break_date-$i") ? Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$i"))->format('Y-m-d') : null;
                         $lease_break_comment      = $request->input("lease_break_comment-$i");
                         $total_net_rent_amount    = $request->input("total_net_rent_amount-$i");
@@ -951,17 +988,21 @@ class ProposalController extends Controller
                             'total'                    => 0,
                         ]);
                         $unit_management = (new UnitManagement())->setConnection('tenant')->where('id', $unit)->first();
-                        $unit_management->update(['booking_status' => 'booking',  'tenant_id'=>$request->tenant_id ]);
+                        $unit_management->update(['booking_status' => 'booking',  'tenant_id' => $request->tenant_id]);
                         if (isset($request->service_counter[$i])) {
                             for ($ind = 1, $inde = $request->service_counter[$i]; $ind <= $inde; $ind++) {
 
-                                $chargeMode       = (isset($request->input("charge_mode-{$i}-{$ind}")[0]))  ? $request->input("charge_mode-{$i}-{$ind}")[0]: null;
+                                $chargeMode       = (isset($request->input("charge_mode-{$i}-{$ind}")[0]))  ? $request->input("charge_mode-{$i}-{$ind}")[0] : null;
                                 $chargeModeType   = (isset($request->input("charge_mode_type-{$i}-{$ind}")[0]))  ? $request->input("charge_mode_type-{$i}-{$ind}")[0] : null;
                                 $amountCharge     = (isset($request->input("amount_charge-{$i}-{$ind}")[0]))  ? $request->input("amount_charge-{$i}-{$ind}")[0] : null;
                                 $percentageCharge = (isset($request->input("percentage_amount_charge-{$i}-{$ind}")[0]))  ? $request->input("percentage_amount_charge-{$i}-{$ind}")[0] : null;
                                 $calculateAmount  = (isset($request->input("calculate_amount-{$i}-{$ind}")[0]))  ? $request->input("calculate_amount-{$i}-{$ind}")[0] : null;
-                                if (isset($request->input("start_date-{$i}-{$ind}")[0])) {$start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$i}-{$ind}")[0])->format('Y-m-d');}
-                                if (isset($request->input("expiry_date-{$i}-{$ind}")[0])) {$expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$i}-{$ind}")[0])->format('Y-m-d');}
+                                if (isset($request->input("start_date-{$i}-{$ind}")[0])) {
+                                    $start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$i}-{$ind}")[0])->format('Y-m-d');
+                                }
+                                if (isset($request->input("expiry_date-{$i}-{$ind}")[0])) {
+                                    $expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$i}-{$ind}")[0])->format('Y-m-d');
+                                }
                                 $startDate     = $start ?? null;
                                 $expiryDate    = $expiry ?? null;
                                 $vatPercentage = (isset($request->input("vat_percentage-{$i}-{$ind}")[0]))  ? $request->input("vat_percentage-{$i}-{$ind}")[0] : null;
@@ -981,12 +1022,16 @@ class ProposalController extends Controller
                         } elseif (! isset($request->service_counter[$i]) && isset($request->old_service_counter[$i])) {
                             for ($ind = 1, $inde = $request->old_service_counter[$i]; $ind <= $inde; $ind++) {
                                 $chargeMode       = (isset($request->input("charge_mode-{$i}-{$ind}")[0])) ? $request->input("charge_mode-{$i}-{$ind}")[0] :  null;
-                                $chargeModeType   = (isset($request->input("charge_mode_type-{$i}-{$ind}")[0])) ?$request->input("charge_mode_type-{$i}-{$ind}")[0] :  null;
+                                $chargeModeType   = (isset($request->input("charge_mode_type-{$i}-{$ind}")[0])) ? $request->input("charge_mode_type-{$i}-{$ind}")[0] :  null;
                                 $amountCharge     = (isset($request->input("amount_charge-{$i}-{$ind}")[0])) ? $request->input("amount_charge-{$i}-{$ind}")[0] :  null;
                                 $percentageCharge = (isset($request->input("percentage_amount_charge-{$i}-{$ind}")[0])) ? $request->input("percentage_amount_charge-{$i}-{$ind}")[0]  :  null;
                                 $calculateAmount  = (isset($request->input("calculate_amount-{$i}-{$ind}")[0])) ? $request->input("calculate_amount-{$i}-{$ind}")[0] :  null;
-                                if (isset($request->input("start_date-{$i}-{$ind}")[0])) {$start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$i}-{$ind}")[0])->format('Y-m-d');}
-                                if (isset($request->input("expiry_date-{$i}-{$ind}")[0])) {$expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$i}-{$ind}")[0])->format('Y-m-d');}
+                                if (isset($request->input("start_date-{$i}-{$ind}")[0])) {
+                                    $start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$i}-{$ind}")[0])->format('Y-m-d');
+                                }
+                                if (isset($request->input("expiry_date-{$i}-{$ind}")[0])) {
+                                    $expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$i}-{$ind}")[0])->format('Y-m-d');
+                                }
                                 $startDate     = $start ?? null;
                                 $expiryDate    = $expiry ?? null;
                                 $vatPercentage = (isset($request->input("vat_percentage-{$i}-{$ind}")[0])) ? $request->input("vat_percentage-{$i}-{$ind}")[0] :  null;
@@ -1003,9 +1048,7 @@ class ProposalController extends Controller
                                     ]);
                                 }
                             }
-
                         }
-
                     }
                 }
             }
@@ -1093,8 +1136,12 @@ class ProposalController extends Controller
                         $viewId            = $request->input("view_id-$i");
                         $propertyType      = $request->input("property_type-$i");
 
-                        if ($request->input("period_from-$i")) {$periodFrom = Carbon::createFromFormat('d/m/Y', $request->input("period_from-$i"))->format('Y-m-d');}
-                        if ($request->input("period_to-$i")) {$periodTo = Carbon::createFromFormat('d/m/Y', $request->input("period_to-$i"))->format('Y-m-d');}
+                        if ($request->input("period_from-$i")) {
+                            $periodFrom = Carbon::createFromFormat('d/m/Y', $request->input("period_from-$i"))->format('Y-m-d');
+                        }
+                        if ($request->input("period_to-$i")) {
+                            $periodTo = Carbon::createFromFormat('d/m/Y', $request->input("period_to-$i"))->format('Y-m-d');
+                        }
                         $city            = $request->input("city-$i");
                         $totalArea       = $request->input("total_area-$i");
                         $areaMeasurement = $request->input("area_measurement-$i");
@@ -1105,9 +1152,12 @@ class ProposalController extends Controller
                         $totalAreaAmount = $request->input("total_area_amount-$i");
                         $amount          = $request->input("amount-$i");
                         $rentAmount      = $request->input("rent_amount-$i");
+                        $baseAmount      = $request->input("rent_amount-$i"); 
                         $rentMode        = $request->input("rent_mode-$i");
                         $rentalGl        = $request->input("rental_gl-$i");
-                        if ($request->input("lease_break_date-$i")) {$lease_break_date = Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$i"))->format('Y-m-d');}
+                        if ($request->input("lease_break_date-$i")) {
+                            $lease_break_date = Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$i"))->format('Y-m-d');
+                        }
                         $lease_break_comment      = $request->input("lease_break_comment-$i");
                         $total_net_rent_amount    = $request->input("total_net_rent_amount-$i");
                         $vat_percentage           = $request->input("vat_percentage-$i");
@@ -1116,8 +1166,17 @@ class ProposalController extends Controller
                         $security_deposit_amount  = $request->input("security_deposit_amount-$i");
                         $is_rent_inclusive_of_ewa = $request->input("is_rent_inclusive_of_ewa-$i");
                         $ewa_limit_mode           = $request->input("ewa_limit_mode-$i");
-                        $ewa_limit                = $request->input("ewa_limit-$i");
+                        $ewa_limit                = $request->input("ewa_limit_monthly-$i");
                         $notice_period            = $request->input("notice_period-$i");
+                        
+                        // if ($rentMode === $paymentMode) {
+
+                        //     $rentAmount = $baseAmount;
+                        // } else {
+                        //     $rentAmount = calc_rent_amount($rentMode, $paymentMode, $baseAmount, $rentAmount);
+                        //     $total_net_rent_amount = ($rentAmount * ($vat_percentage / 100)) + $rentAmount;
+                        //     $security_deposit_amount = $rentAmount * $security_deposit;
+                        // }
                         $agreement_units          = (new AgreementUnits())->setConnection('tenant')->create([
                             'agreement_id'             => $agreement->id,
                             'property_id'              => $propertyId,
@@ -1144,7 +1203,7 @@ class ProposalController extends Controller
                             'total'                    => 0,
                         ]);
                         $unit_management = (new UnitManagement())->setConnection('tenant')->where('id', $unit)->first();
-                        $unit_management->update(['booking_status' => 'agreement',  'tenant_id'=>$request->tenant_id ]);
+                        $unit_management->update(['booking_status' => 'agreement',  'tenant_id' => $request->tenant_id]);
                         if (isset($request->service_counter[$i])) {
                             for ($ind = 1, $inde = $request->service_counter[$i]; $ind <= $inde; $ind++) {
                                 $chargeMode       = (isset($request->input("charge_mode-{$i}-{$ind}")[0])) ? $request->input("charge_mode-{$i}-{$ind}")[0] : null;
@@ -1152,8 +1211,12 @@ class ProposalController extends Controller
                                 $amountCharge     = (isset($request->input("amount_charge-{$i}-{$ind}")[0])) ? $request->input("amount_charge-{$i}-{$ind}")[0] : null;
                                 $percentageCharge = (isset($request->input("percentage_amount_charge-{$i}-{$ind}")[0])) ? $request->input("percentage_amount_charge-{$i}-{$ind}")[0] : null;
                                 $calculateAmount  = (isset($request->input("calculate_amount-{$i}-{$ind}")[0])) ? $request->input("calculate_amount-{$i}-{$ind}")[0] : null;
-                                if (isset($request->input("start_date-{$i}-{$ind}")[0])) {$start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$i}-{$ind}")[0])->format('Y-m-d');}
-                                if (isset($request->input("expiry_date-{$i}-{$ind}")[0])) {$expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$i}-{$ind}")[0])->format('Y-m-d');}
+                                if (isset($request->input("start_date-{$i}-{$ind}")[0])) {
+                                    $start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$i}-{$ind}")[0])->format('Y-m-d');
+                                }
+                                if (isset($request->input("expiry_date-{$i}-{$ind}")[0])) {
+                                    $expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$i}-{$ind}")[0])->format('Y-m-d');
+                                }
                                 $startDate     = $start ?? null;
                                 $expiryDate    = $expiry ?? null;
                                 $vatPercentage = (isset($request->input("vat_percentage-{$i}-{$ind}")[0])) ? $request->input("vat_percentage-{$i}-{$ind}")[0] : null;
@@ -1177,8 +1240,12 @@ class ProposalController extends Controller
                                 $amountCharge     = (isset($request->input("amount_charge-{$i}-{$ind}")[0])) ? $request->input("amount_charge-{$i}-{$ind}")[0] : null;
                                 $percentageCharge = (isset($request->input("percentage_amount_charge-{$i}-{$ind}")[0])) ? $request->input("percentage_amount_charge-{$i}-{$ind}")[0] : null;
                                 $calculateAmount  = (isset($request->input("calculate_amount-{$i}-{$ind}")[0])) ? $request->input("calculate_amount-{$i}-{$ind}")[0] : null;
-                                if (isset($request->input("start_date-{$i}-{$ind}")[0])) {$start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$i}-{$ind}")[0])->format('Y-m-d');}
-                                if (isset($request->input("expiry_date-{$i}-{$ind}")[0])) {$expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$i}-{$ind}")[0])->format('Y-m-d');}
+                                if (isset($request->input("start_date-{$i}-{$ind}")[0])) {
+                                    $start = Carbon::createFromFormat('d/m/Y', $request->input("start_date-{$i}-{$ind}")[0])->format('Y-m-d');
+                                }
+                                if (isset($request->input("expiry_date-{$i}-{$ind}")[0])) {
+                                    $expiry = Carbon::createFromFormat('d/m/Y', $request->input("expiry_date-{$i}-{$ind}")[0])->format('Y-m-d');
+                                }
                                 $startDate     = $start ?? null;
                                 $expiryDate    = $expiry ?? null;
                                 $vatPercentage = (isset($request->input("vat_percentage-{$i}-{$ind}")[0])) ? $request->input("vat_percentage-{$i}-{$ind}")[0] : null;
@@ -1195,7 +1262,6 @@ class ProposalController extends Controller
                                     ]);
                                 }
                             }
-
                         }
                     }
                 }
@@ -1262,8 +1328,18 @@ class ProposalController extends Controller
         $employees                = (new Employee())->setConnection('tenant')->select('id', 'name')->lazy();
         $country_master           = (new CountryMaster())->setConnection('tenant')->select('id', 'country_id')->with('country')->lazy();
         $all_units                = (new UnitManagement())->setConnection('tenant')->select('id', 'property_management_id', 'booking_status', 'view_id', 'unit_type_id', 'unit_condition_id', 'unit_description_id', 'unit_id', 'block_management_id', 'floor_management_id')->whereIn('id', $ids)
-            ->with('block_unit_management', 'property_unit_management', 'block_unit_management.block', 'floor_unit_management.floor_management_main'
-                , 'floor_unit_management', 'unit_management_main', 'unit_description', 'unit_type', 'view', 'unit_condition')->lazy();
+            ->with(
+                'block_unit_management',
+                'property_unit_management',
+                'block_unit_management.block',
+                'floor_unit_management.floor_management_main',
+                'floor_unit_management',
+                'unit_management_main',
+                'unit_description',
+                'unit_type',
+                'view',
+                'unit_condition'
+            )->lazy();
         $live_withs          = (new LiveWith())->setConnection('tenant')->select('id', 'name')->lazy();
         $business_activities = (new BusinessActivity())->setConnection('tenant')->select('id', 'name')->lazy();
         $buildings           = (new PropertyManagement())->setConnection('tenant')->select('id', 'name')->lazy();
@@ -1294,7 +1370,6 @@ class ProposalController extends Controller
             'tenants'                  => $allTenants,
         ];
         return view('admin-views.property_transactions.proposals.create_with_select_unit', $data);
-
     }
     public function empty_unit_from_service_proposal($id)
     {

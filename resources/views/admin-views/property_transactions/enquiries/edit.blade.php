@@ -3,9 +3,7 @@
 @section('title', ui_change('edit_enquiry', 'property_transaction'))
 @php
     $lang = Session::get('locale');
-    $company =
-        App\Models\Company::where('id', auth()->user()?->company_id)
-            ->first() ?? App\Models\User::first();
+    $company = App\Models\Company::where('id', auth()->user()?->company_id)->first() ?? App\Models\User::first();
 @endphp
 @push('css_or_js')
     <link href="{{ asset('assets/back-end') }}/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -611,7 +609,8 @@
                                             value="{{ $enquiry_unit_details_item->period_from ? \Carbon\Carbon::createFromFormat('Y-m-d', $enquiry_unit_details_item->period_from)->format('d/m/Y') : \Carbon\Carbon::now()->format('d/m/Y') }}"
                                             onchange="(search_unit_edit_date({{ $enquiry_unit_details_item->id }}))"
                                             name="period_from_old[]"
-                                            id="period-from-{{ $enquiry_unit_details_item->id }}" style="background-color:white;"
+                                            id="period-from-{{ $enquiry_unit_details_item->id }}"
+                                            style="background-color:white;"
                                             class="enquiry_unit_main_date form-control general_period_date period-from-{{ isset($enquiry_unit_details_item->unit_management) ? $enquiry_unit_details_item->unit_management->unit_description_id : $enquiry_unit_details_item->unit_description_id }}">
                                         <input type="text"
                                             value="{{ $enquiry_unit_details_item->period_to ? \Carbon\Carbon::createFromFormat('Y-m-d', $enquiry_unit_details_item->period_to)->format('d/m/Y') : \Carbon\Carbon::now()->format('d/m/Y') }}"
@@ -628,7 +627,7 @@
                                         <option>{{ ui_change('Any', 'property_transaction') }}</option>
                                     </select>
                                 </div>
-                                
+
                                 <div class="form-group">
                                     <label for="city">{{ ui_change('City', 'property_transaction') }}</label>
                                     <select id="city" name="city_old[]" class="js-select2-custom form-control">
@@ -636,19 +635,27 @@
                                     </select>
                                 </div>
                             </div>
-                            <div class="form-row">
+                           
                                 <div class="form-group">
                                     <label
                                         for="total-area">{{ ui_change('Total_Area_Required', 'property_transaction') }}</label>
                                     <input type="number" class=" form-control" id="total-area" step="0.001"
-                                        value="0.000" name="total_area_required_old[]">
+                                        value="{{ $enquiry_unit_details_item->total_area_required }}"
+                                        name="total_area_required_old[]">
                                 </div>
                                 <div class="form-group">
                                     <label
                                         for="area-measurement">{{ ui_change('Area_Measurement', 'property_transaction') }}</label>
                                     <select id="area-measurement" name="area_measurement_old[]"
                                         class="js-select2-custom form-control">
-                                        <option>{{ ui_change('Select_Unit_Type', 'property_transaction') }}</option>
+                                        <option value="">
+                                            {{ ui_change('Select_Unit_Type', 'property_transaction') }}</option>
+                                        <option value="1"
+                                            {{ $enquiry_unit_details_item->area_measurement == 1 ? 'selected' : '' }}>
+                                            {{ ui_change('Sq. Mtr.', 'property_transaction') }}</option>
+                                        <option value="2"
+                                            {{ $enquiry_unit_details_item->area_measurement == 2 ? 'selected' : '' }}>
+                                            {{ ui_change('Sq. Ft.', 'property_transaction') }}</option>
                                     </select>
                                 </div>
                                 <div class="form-group">

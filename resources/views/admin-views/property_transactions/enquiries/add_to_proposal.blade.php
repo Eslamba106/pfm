@@ -158,7 +158,8 @@
                                     class="title-color">{{ ui_change('leasing_executive', 'property_transaction') }}
                                 </label>
                                 <select class="js-select2-custom form-control" name="employee_id">
-
+                                    <option value="">{{ ui_change('select_leasing_executive', 'property_transaction') }}
+                                    </option>
                                     @foreach ($employees as $employee_item)
                                         <option value="{{ $employee_item->id }}"
                                             {{ $employee_item->id == $enquiry->enquiry_details->employee_id ? 'selected' : '' }}>
@@ -179,7 +180,7 @@
                                     class="title-color">{{ ui_change('agent', 'property_transaction') }}
                                 </label>
                                 <select class="js-select2-custom form-control" name="agent_id">
-
+                                    <option value="">{{ ui_change('select_agent', 'property_transaction') }}</option>
                                     @foreach ($agents as $agent_item)
                                         <option value="{{ $agent_item->id }}"
                                             {{ $agent_item->id == $enquiry->enquiry_details->agent_id ? 'selected' : '' }}>
@@ -594,7 +595,7 @@
                                     <div class="col-md-6 col-lg-4 col-xl-3">
                                         <div class="form-group">
                                             <label
-                                                for="area-measurement">{{ ui_change('pdc', 'property_transaction') }}</label>
+                                                for="area-measurement">{{ ui_change('PDC', 'property_transaction') }}</label>
                                             <select id="area-measurement" name="pdc-{{ $item->id }}"
                                                 class="js-select2-custom form-control">
                                                 <option value="yes">{{ ui_change('yes', 'property_transaction') }}
@@ -721,7 +722,7 @@
                                     <div class="col-md-6 col-lg-4 col-xl-3">
                                         <div class="form-group">
                                             <label
-                                                for="total-area">{{ ui_change('vat_percentage', 'property_transaction') }}</label>
+                                                for="total-area">{{ ui_change('VAT_percentage', 'property_transaction') }}</label>
                                             <input type="number" readonly name="vat_percentage-{{ $item->id }}"
                                                 class="form-control text-white" step="0.001"
                                                 placeholder="{{ number_format(0, $company->decimals) }}"
@@ -731,7 +732,7 @@
                                     <div class="col-md-6 col-lg-4 col-xl-3">
                                         <div class="form-group">
                                             <label
-                                                for="total-area">{{ ui_change('vat_amount', 'property_transaction') }}</label>
+                                                for="total-area">{{ ui_change('VAT_amount', 'property_transaction') }}</label>
                                             <input type="number" readonly name="vat_amount-{{ $item->id }}"
                                                 class="form-control  text-white" step="0.001"
                                                 placeholder="{{ number_format(0, $company->decimals) }}"
@@ -786,8 +787,8 @@
                                                     for="area-measurement">{{ ui_change('is_rent_inclusive_of_ewa', 'property_transaction') }}</label>
                                                 <select name="is_rent_inclusive_of_ewa-{{ $item->id }}"
                                                     class="js-select2-custom form-control">
-                                                    <option>{{ ui_change('yes', 'property_transaction') }}</option>
-                                                    <option>{{ ui_change('no', 'property_transaction') }}</option>
+                                                    <option value="yes">{{ ui_change('yes', 'property_transaction') }}</option>
+                                                    <option value="no">{{ ui_change('no', 'property_transaction') }}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -797,8 +798,8 @@
                                                     for="area-measurement">{{ ui_change('ewa_limit_mode', 'property_transaction') }}</label>
                                                 <select name="ewa_limit_mode-{{ $item->id }}"
                                                     class="js-select2-custom form-control">
-                                                    <option>{{ ui_change('monthly', 'property_transaction') }}</option>
-                                                    <option>{{ ui_change('yearly', 'property_transaction') }}</option>
+                                                    <option value="monthly">{{ ui_change('monthly', 'property_transaction') }}</option>
+                                                    <option value="yearly">{{ ui_change('yearly', 'property_transaction') }}</option>
                                                 </select>
                                             </div>
                                         </div>
@@ -1584,7 +1585,7 @@
 
                     <div class="col-md-6 col-lg-4 col-xl-3">
                         <div class="form-group">
-                            <label for="total-area">{{ ui_change('vat_percentage', 'property_transaction') }}</label>
+                            <label for="total-area">{{ ui_change('VAT_percentage', 'property_transaction') }}</label>
                             <input type="number" readonly name="vat_percentage-${i}-${counters[i]}[]" class="form-control  bg-white"
                                 step="0.001" placeholder="0.000">
                         </div>
@@ -1592,7 +1593,7 @@
 
                     <div class="col-md-6 col-lg-4 col-xl-3">
                         <div class="form-group">
-                            <label for="total-area">{{ ui_change('vat_amount', 'property_transaction') }}</label>
+                            <label for="total-area">{{ ui_change('VAT_amount', 'property_transaction') }}</label>
                             <input type="number" readonly name="vat_amount-${i}-${counters[i]}[]" class="form-control  bg-white"
                                 step="0.001" placeholder="0.000">
                         </div>
@@ -1608,7 +1609,7 @@
                 </div>
                 `;
             // container.innerHTML += bladeContent;   
-            container.insertAdjacentHTML('beforeend', bladeContent);
+            container.insertAdjacentHTML('afterbegin', bladeContent);
             flatpickr(".main_unit_data", {
                 dateFormat: "d/m/Y",
                 minDate: "today"

@@ -616,7 +616,7 @@
                                             <select name="report_building" id="report_building"
                                                 class="form-control remv_focus">
                                                 <option value="-1" selected>
-                                                    {{ ui_change('All_Building', 'property_transaction') }}
+                                                    {{ ui_change('any', 'property_transaction') }}
                                                 </option>
                                                 @foreach ($buildings as $buildings_filter)
                                                     <option value="{{ $buildings_filter->id }}">
@@ -630,7 +630,7 @@
                                             <select name="report_block" id="report_block"
                                                 class="form-control remv_focus">
                                                 <option value="-1" selected>
-                                                    {{ ui_change('All_Blocks', 'property_transaction') }}
+                                                    {{ ui_change('any', 'property_transaction') }}
                                                 </option>
                                                 @foreach ($blocks as $block_filter)
                                                     <option value="{{ $block_filter->id }}">
@@ -644,7 +644,7 @@
                                             <select name="report_floor" id="report_floor"
                                                 class="form-control remv_focus">
                                                 <option value="-1" selected>
-                                                    {{ ui_change('All_Floors', 'property_transaction') }}
+                                                    {{ ui_change('any', 'property_transaction') }}
                                                 </option>
                                                 @foreach ($floors as $floors_filter)
                                                     <option value="{{ $floors_filter->id }}">
@@ -657,11 +657,11 @@
 
                                         <div class="col-md-6 col-lg-4 col-xl-4">
                                             <label
-                                                for="">{{ ui_change('property_master.unit_description', 'property_transaction') }}</label>
+                                                for="">{{ ui_change('unit_description', 'property_transaction') }}</label>
                                             <select name="report_unit_description" id="report_unit_description"
                                                 class="form-control remv_focus">
                                                 <option value="-1" selected>
-                                                    {{ ui_change('All_Unit_Descriptions', 'property_transaction') }}
+                                                    {{ ui_change('any', 'property_transaction') }}
                                                 </option>
                                                 @foreach ($unit_descriptions as $unit_descriptions_filter)
                                                     <option value="{{ $unit_descriptions_filter->id }}">
@@ -671,11 +671,11 @@
                                         </div>
                                         <div class="col-md-6 col-lg-4 col-xl-4">
                                             <label
-                                                for="">{{ ui_change('property_master.unit_condition', 'property_transaction') }}</label>
+                                                for="">{{ ui_change('unit_condition', 'property_transaction') }}</label>
                                             <select name="report_unit_condition" id="report_unit_condition"
                                                 class="form-control remv_focus">
                                                 <option value="-1" selected>
-                                                    {{ ui_change('All_Unit_Conditions', 'property_transaction') }}
+                                                    {{ ui_change('any', 'property_transaction') }}
                                                 </option>
                                                 @foreach ($unit_conditions as $unit_conditions_filter)
                                                     <option value="{{ $unit_conditions_filter->id }}">
@@ -689,7 +689,7 @@
                                             <select name="report_unit_types" id="report_unit_types"
                                                 class="form-control remv_focus">
                                                 <option value="-1" selected>
-                                                    {{ ui_change('All_Unit_Types', 'property_transaction') }}</option>
+                                                    {{ ui_change('any', 'property_transaction') }}</option>
                                                 @foreach ($unit_types as $unit_types_filter)
                                                     <option value="{{ $unit_types_filter->id }}">
                                                         {{ $unit_types_filter->name }}</option>
@@ -703,7 +703,7 @@
                                             <select name="report_unit_view" id="report_unit_view"
                                                 class="form-control remv_focus">
                                                 <option value="-1" selected>
-                                                    {{ ui_change('All_Unit_Views', 'property_transaction') }}</option>
+                                                    {{ ui_change('any', 'property_transaction') }}</option>
                                                 @foreach ($unit_views as $unit_views_filter)
                                                     <option value="{{ $unit_views_filter->id }}">
                                                         {{ $unit_views_filter->name }}</option>
@@ -716,7 +716,7 @@
                                             <select name="report_tenant" id="report_tenant"
                                                 class="form-control remv_focus">
                                                 <option value="-1" selected>
-                                                    {{ ui_change('All_Tenants', 'property_transaction') }}</option>
+                                                    {{ ui_change('any', 'property_transaction') }}</option>
                                                 @foreach ($tenants as $tenant_filter)
                                                     <option value="{{ $tenant_filter->id }}">
                                                         {{ $tenant_filter->name ?? $tenant_filter->company_name }}
@@ -732,7 +732,7 @@
                                                     <input class="form-check-input" type="checkbox"
                                                         name="report_status[]" value="-1" id="status_all" checked>
                                                     <label class="form-check-label" for="status_all">
-                                                        {{ ui_change('All Status', 'property_transaction') }}
+                                                        {{ ui_change('any', 'property_transaction') }}
                                                     </label>
                                                 </div>
                                                 <div class="form-check">

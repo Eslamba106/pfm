@@ -104,10 +104,12 @@
                                                     href="{{ route('floor.edit', $value->id) }}">
                                                     <i class="tio-edit"></i>
                                                 </a>
+                                                @if (!$value->isUsed())
                                                 <a class="btn btn-outline-danger btn-sm delete square-btn"
                                                     title="{{ ui_change('delete' , 'property_master') }}" id="{{ $value['id'] }}">
                                                     <i class="tio-delete"></i>
                                                 </a>
+                                                @endif
                                             </div>
                                         </td>
                                     </tr>

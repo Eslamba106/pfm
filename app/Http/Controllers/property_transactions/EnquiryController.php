@@ -1,38 +1,40 @@
 <?php
+
 namespace App\Http\Controllers\property_transactions;
 
-use App\Http\Controllers\Controller;
-use App\Http\Requests\EnquiryRequest;
+use Throwable;
+use Carbon\Carbon;
+use App\Models\View;
 use App\Models\Agent;
-use App\Models\BlockManagement;
-use App\Models\BusinessActivity;
-use App\Models\CountryMaster;
-use App\Models\Employee;
+use App\Models\Tenant;
 use App\Models\Enquiry;
-use App\Models\EnquiryDetails;
-use App\Models\EnquiryRequestStatus;
-use App\Models\EnquiryStatus;
-use App\Models\EnquiryUnitSearchDetails;
-use App\Models\FloorManagement;
+use App\Models\Employee;
 use App\Models\LiveWith;
-use App\Models\PropertyManagement;
-use App\Models\PropertyType;
 use App\Models\Proposal;
-use App\Models\ProposalDetails;
+use App\Models\UnitType;
+use Illuminate\Support\Str;
+use App\Models\PropertyType;
+use Illuminate\Http\Request;
+use App\Models\CountryMaster;
+use App\Models\EnquiryStatus;
 use App\Models\ProposalUnits;
 use App\Models\ServiceMaster;
-use App\Models\Tenant;
 use App\Models\UnitCondition;
-use App\Models\UnitDescription;
+use App\Models\EnquiryDetails;
 use App\Models\UnitManagement;
-use App\Models\UnitType;
-use App\Models\View;
-use Carbon\Carbon;
-use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Cache;
+use App\Models\BlockManagement;
+use App\Models\FloorManagement;
+use App\Models\ProposalDetails;
+use App\Models\UnitDescription;
+use App\Models\BusinessActivity;
+use App\Models\PropertyManagement;
 use Illuminate\Support\Facades\DB;
-use Illuminate\Support\Str;
-use Throwable;
+use Illuminate\Support\Facades\Log;
+use App\Http\Controllers\Controller;
+use App\Models\EnquiryRequestStatus;
+use App\Http\Requests\EnquiryRequest;
+use Illuminate\Support\Facades\Cache;
+use App\Models\EnquiryUnitSearchDetails;
 
 class EnquiryController extends Controller
 {
@@ -129,8 +131,19 @@ class EnquiryController extends Controller
         $employees                = (new Employee())->setConnection('tenant')->select('id', 'name')->lazy();
         $country_master           = (new CountryMaster())->setConnection('tenant')->select('id', 'country_id')->with('country')->lazy();
         $all_units                = (new UnitManagement())->setConnection('tenant')->select('id', 'property_management_id', 'booking_status', 'view_id', 'unit_type_id', 'unit_condition_id', 'unit_description_id', 'unit_id', 'block_management_id', 'floor_management_id')->whereIn('id', $ids)
-            ->with('latest_rent_schedule', 'block_unit_management', 'property_unit_management', 'block_unit_management.block', 'floor_unit_management.floor_management_main'
-                , 'floor_unit_management', 'unit_management_main', 'unit_description', 'unit_type', 'view', 'unit_condition')->lazy();
+            ->with(
+                'latest_rent_schedule',
+                'block_unit_management',
+                'property_unit_management',
+                'block_unit_management.block',
+                'floor_unit_management.floor_management_main',
+                'floor_unit_management',
+                'unit_management_main',
+                'unit_description',
+                'unit_type',
+                'view',
+                'unit_condition'
+            )->lazy();
         $live_withs          = (new LiveWith())->setConnection('tenant')->select('id', 'name')->lazy();
         $business_activities = (new BusinessActivity())->setConnection('tenant')->select('id', 'name')->lazy();
         $buildings           = (new PropertyManagement())->setConnection('tenant')->select('id', 'name')->lazy();
@@ -157,7 +170,6 @@ class EnquiryController extends Controller
             'tenants'                  => $allTenants,
         ];
         return view('admin-views.property_transactions.enquiries.create_with_select_unit', $data);
-
     }
     public function create()
     {
@@ -201,8 +213,18 @@ class EnquiryController extends Controller
         $enquiry_unit_details = (new EnquiryUnitSearchDetails())->setConnection('tenant')->where('enquiry_id', $id)->get();
         $tenants              = (new Tenant())->setConnection('tenant')->select('id', 'name', 'company_name', 'type')->paginate(5000);
         $unit_management_all  = (new UnitManagement())->setConnection('tenant')->select('id', 'property_management_id', 'booking_status', 'view_id', 'unit_type_id', 'unit_condition_id', 'unit_description_id', 'unit_id', 'block_management_id', 'floor_management_id')
-            ->with('block_unit_management', 'property_unit_management', 'block_unit_management.block', 'floor_unit_management.floor_management_main'
-                , 'floor_unit_management', 'unit_management_main', 'unit_description', 'unit_type', 'view', 'unit_condition')->lazy();
+            ->with(
+                'block_unit_management',
+                'property_unit_management',
+                'block_unit_management.block',
+                'floor_unit_management.floor_management_main',
+                'floor_unit_management',
+                'unit_management_main',
+                'unit_description',
+                'unit_type',
+                'view',
+                'unit_condition'
+            )->lazy();
         $agents                   = DB::connection('tenant')->table('agents')->get();
         $enquiry_statuses         = DB::connection('tenant')->table('enquiry_statuses')->get();
         $enquiry_request_statuses = DB::connection('tenant')->table('enquiry_request_statuses')->get();
@@ -250,11 +272,21 @@ class EnquiryController extends Controller
             $enquiry_unit_search_details->each(function ($enquiry_unit_search_details_item) {
                 $enquiry_unit_search_details_item->delete();
             });
-            if ($request->enquiry_date && Carbon::hasFormat($request->enquiry_date, 'd/m/Y')) {$enquiry_date = Carbon::createFromFormat('d/m/Y', $request->enquiry_date)->format('Y-m-d');}
-            if ($request->period_from && Carbon::hasFormat($request->period_from, 'd/m/Y')) {$period_from = Carbon::createFromFormat('d/m/Y', $request->period_from)->format('Y-m-d');}
-            if ($request->period_to && Carbon::hasFormat($request->period_to, 'd/m/Y')) {$period_to = Carbon::createFromFormat('d/m/Y', $request->period_to)->format('Y-m-d');}
-            if ($request->time_frame_for_relocation) {$time_frame_for_relocation = Carbon::createFromFormat('d/m/Y', $request->time_frame_for_relocation)->format('Y-m-d');}
-            if ($request->relocation_date) {$relocation_date = Carbon::createFromFormat('d/m/Y', $request->relocation_date)->format('Y-m-d');}
+            if ($request->enquiry_date && Carbon::hasFormat($request->enquiry_date, 'd/m/Y')) {
+                $enquiry_date = Carbon::createFromFormat('d/m/Y', $request->enquiry_date)->format('Y-m-d');
+            }
+            if ($request->period_from && Carbon::hasFormat($request->period_from, 'd/m/Y')) {
+                $period_from = Carbon::createFromFormat('d/m/Y', $request->period_from)->format('Y-m-d');
+            }
+            if ($request->period_to && Carbon::hasFormat($request->period_to, 'd/m/Y')) {
+                $period_to = Carbon::createFromFormat('d/m/Y', $request->period_to)->format('Y-m-d');
+            }
+            if ($request->time_frame_for_relocation) {
+                $time_frame_for_relocation = Carbon::createFromFormat('d/m/Y', $request->time_frame_for_relocation)->format('Y-m-d');
+            }
+            if ($request->relocation_date) {
+                $relocation_date = Carbon::createFromFormat('d/m/Y', $request->relocation_date)->format('Y-m-d');
+            }
             $enquiry->update([
                 'enquiry_no'           => $request->enquiry_no ?? $enquiry->enquiry_no,
                 'enquiry_date'         => $enquiry_date ?? $enquiry->enquiry_date,
@@ -312,8 +344,12 @@ class EnquiryController extends Controller
 
                         $unit_description_id = $request->unit_description_id[$key];
                         // $rent_amount         = $request->input('rent_amount-' . $unit_description_id);
-                        if ($request->period_from_unit_desc[$key]) {$enquiry_from_unit_date = Carbon::createFromFormat('d/m/Y', $request->period_from_unit_desc[$key])->format('Y-m-d');}
-                        if ($request->period_to_unit_desc[$key]) {$enquiry_to_unit_date = Carbon::createFromFormat('d/m/Y', $request->period_to_unit_desc[$key])->format('Y-m-d');}
+                        if ($request->period_from_unit_desc[$key]) {
+                            $enquiry_from_unit_date = Carbon::createFromFormat('d/m/Y', $request->period_from_unit_desc[$key])->format('Y-m-d');
+                        }
+                        if ($request->period_to_unit_desc[$key]) {
+                            $enquiry_to_unit_date = Carbon::createFromFormat('d/m/Y', $request->period_to_unit_desc[$key])->format('Y-m-d');
+                        }
                         DB::connection('tenant')->table('enquiry_unit_search_details')->insert([
                             'enquiry_id'             => $enquiry->id,
                             'property_management_id' => $request->property_id[$key],
@@ -332,17 +368,19 @@ class EnquiryController extends Controller
                             'period_to'              => $enquiry_to_unit_date,
                             'period_from'            => $enquiry_from_unit_date,
                         ]);
-
                     }
-
                 }
                 if (isset($request->property_id_old)) {
                     foreach ($request->property_id_old as $key_old => $value_unit_old) {
 
                         $unit_description_id_old = $request->unit_description_id_old[$key_old];
                         // $rent_amount_old         = $request->input('rent_amount-' . $unit_description_id_old);
-                        if ($request->period_from_old[$key_old]) {$enquiry_from_unit_date = Carbon::createFromFormat('d/m/Y', $request->period_from_old[$key_old])->format('Y-m-d');}
-                        if ($request->period_to_old[$key_old]) {$enquiry_to_unit_date = Carbon::createFromFormat('d/m/Y', $request->period_to_old[$key_old])->format('Y-m-d');}
+                        if ($request->period_from_old[$key_old]) {
+                            $enquiry_from_unit_date = Carbon::createFromFormat('d/m/Y', $request->period_from_old[$key_old])->format('Y-m-d');
+                        }
+                        if ($request->period_to_old[$key_old]) {
+                            $enquiry_to_unit_date = Carbon::createFromFormat('d/m/Y', $request->period_to_old[$key_old])->format('Y-m-d');
+                        }
                         DB::connection('tenant')->table('enquiry_unit_search_details')->insert([
                             'enquiry_id'             => $enquiry->id,
                             'property_management_id' => $request->property_id_old[$key_old],
@@ -360,7 +398,6 @@ class EnquiryController extends Controller
                             'period_to'              => $enquiry_to_unit_date,
                             'period_from'            => $enquiry_from_unit_date,
                         ]);
-
                     }
                 }
             }
@@ -399,11 +436,21 @@ class EnquiryController extends Controller
 
         $request->validate($rules);
         $request->validate($rules);
-        if ($request->enquiry_date) {$enquiry_date = Carbon::createFromFormat('d/m/Y', $request->enquiry_date)->format('Y-m-d');}
-        if ($request->period_from) {$period_from = Carbon::createFromFormat('d/m/Y', $request->period_from)->format('Y-m-d');}
-        if ($request->period_to) {$period_to = Carbon::createFromFormat('d/m/Y', $request->period_to)->format('Y-m-d');}
-        if ($request->time_frame_for_relocation) {$time_frame_for_relocation = Carbon::createFromFormat('d/m/Y', $request->time_frame_for_relocation)->format('Y-m-d');}
-        if ($request->relocation_date) {$relocation_date = Carbon::createFromFormat('d/m/Y', $request->relocation_date)->format('Y-m-d');}
+        if ($request->enquiry_date) {
+            $enquiry_date = Carbon::createFromFormat('d/m/Y', $request->enquiry_date)->format('Y-m-d');
+        }
+        if ($request->period_from) {
+            $period_from = Carbon::createFromFormat('d/m/Y', $request->period_from)->format('Y-m-d');
+        }
+        if ($request->period_to) {
+            $period_to = Carbon::createFromFormat('d/m/Y', $request->period_to)->format('Y-m-d');
+        }
+        if ($request->time_frame_for_relocation) {
+            $time_frame_for_relocation = Carbon::createFromFormat('d/m/Y', $request->time_frame_for_relocation)->format('Y-m-d');
+        }
+        if ($request->relocation_date) {
+            $relocation_date = Carbon::createFromFormat('d/m/Y', $request->relocation_date)->format('Y-m-d');
+        }
         DB::beginTransaction();
         try {
             $enquiry = DB::connection('tenant')->table('enquiries')->insertGetId([
@@ -464,8 +511,12 @@ class EnquiryController extends Controller
 
                         $unit_description_id = $request->unit_description_id[$key];
                         $rent_amount         = $request->input('rent_amount-' . $unit_description_id);
-                        if ($request->period_from_unit_desc[$key]) {$enquiry_from_unit_date = Carbon::createFromFormat('d/m/Y', $request->period_from_unit_desc[$key])->format('Y-m-d');}
-                        if ($request->period_to_unit_desc[$key]) {$enquiry_to_unit_date = Carbon::createFromFormat('d/m/Y', $request->period_to_unit_desc[$key])->format('Y-m-d');}
+                        if ($request->period_from_unit_desc[$key]) {
+                            $enquiry_from_unit_date = Carbon::createFromFormat('d/m/Y', $request->period_from_unit_desc[$key])->format('Y-m-d');
+                        }
+                        if ($request->period_to_unit_desc[$key]) {
+                            $enquiry_to_unit_date = Carbon::createFromFormat('d/m/Y', $request->period_to_unit_desc[$key])->format('Y-m-d');
+                        }
                         DB::connection('tenant')->table('enquiry_unit_search_details')->insert([
                             'enquiry_id'             => $enquiry,
                             'property_management_id' => $request->property_id[$key],
@@ -488,12 +539,10 @@ class EnquiryController extends Controller
                         if (isset($request->unit_management_id[$key])) {
                             // Log::info($request->unit_management_id[$key]);
                             $unit_management = (new UnitManagement())->setConnection('tenant')->where('id', $request->unit_management_id[$key])->first();
-                            $unit_management->update(['booking_status' => 'enquiry','tenant_id'=>$request->tenant_id ]);
+                            $unit_management->update(['booking_status' => 'enquiry', 'tenant_id' => $request->tenant_id]);
                         }
-
                     }
                 }
-
             }
             DB::commit();
         } catch (\Exception $e) {
@@ -655,15 +704,20 @@ class EnquiryController extends Controller
                 $areaMeasurement   = $request->input("area_measurement-$enquiry_unit_search_item->id");
                 $notes             = $request->input("notes-$enquiry_unit_search_item->id");
                 $unit              = $request->input("unit-$enquiry_unit_search_item->id");
-                $paymentMode       = $request->input("payment_mode-$enquiry_unit_search_item->id");
                 $pdc               = $request->input("pdc-$enquiry_unit_search_item->id");
                 $totalAreaAmount   = $request->input("total_area_amount-$enquiry_unit_search_item->id");
                 $amount            = $request->input("amount-$enquiry_unit_search_item->id");
-                $rentAmount        = $request->input("rent_amount-$enquiry_unit_search_item->id");
+                $paymentMode       = $request->input("payment_mode-$enquiry_unit_search_item->id");
                 $rentMode          = $request->input("rent_mode-$enquiry_unit_search_item->id");
+                $rentAmount        = $request->input("rent_amount-$enquiry_unit_search_item->id");
+                $baseAmount  = (float) $request->input("rent_amount-$enquiry_unit_search_item->id");
+
+
                 $rentalGl          = $request->input("rental_gl-$enquiry_unit_search_item->id");
                 // $lease_break_date         = Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$enquiry_unit_search_item->id"))->format('Y-m-d');
-                if ($request->input("lease_break_date-$enquiry_unit_search_item->id")) {$lease_break_date_format = Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$enquiry_unit_search_item->id"))->format('Y-m-d');}
+                if ($request->input("lease_break_date-$enquiry_unit_search_item->id")) {
+                    $lease_break_date_format = Carbon::createFromFormat('d/m/Y', $request->input("lease_break_date-$enquiry_unit_search_item->id"))->format('Y-m-d');
+                }
                 $lease_break_date         = $lease_break_date_format ?? null;
                 $lease_break_comment      = $request->input("lease_break_comment-$enquiry_unit_search_item->id");
                 $total_net_rent_amount    = $request->input("total_net_rent_amount-$enquiry_unit_search_item->id") ?? 0;
@@ -673,8 +727,17 @@ class EnquiryController extends Controller
                 $security_deposit_amount  = $request->input("security_deposit_amount-$enquiry_unit_search_item->id");
                 $is_rent_inclusive_of_ewa = $request->input("is_rent_inclusive_of_ewa-$enquiry_unit_search_item->id");
                 $ewa_limit_mode           = $request->input("ewa_limit_mode-$enquiry_unit_search_item->id");
-                $ewa_limit                = $request->input("ewa_limit-$enquiry_unit_search_item->id");
+                $ewa_limit                = $request->input("ewa_limit_monthly-$enquiry_unit_search_item->id");
                 $notice_period            = $request->input("notice_period-$enquiry_unit_search_item->id");
+                
+                if ($rentMode === $paymentMode) {
+
+                    $rentAmount = $baseAmount;
+                } else {
+                    $rentAmount = calc_rent_amount($rentMode, $paymentMode, $baseAmount, $rentAmount);
+                    $total_net_rent_amount = ($rentAmount * ($vat_percentage / 100 )) + $rentAmount;
+                    $security_deposit_amount = $rentAmount * $security_deposit;
+                }
                 $proposal_units           = (new ProposalUnits())->setConnection('tenant')->create([
                     'proposal_id'              => $proposal->id,
                     'property_id'              => $propertyId,
@@ -725,7 +788,6 @@ class EnquiryController extends Controller
                         ]);
                     }
                 }
-
             }
 
             // }
@@ -737,7 +799,6 @@ class EnquiryController extends Controller
         } catch (Throwable $e) {
             DB::rollBack();
             return redirect()->back()->with("error", $e->getMessage());
-
         }
     }
 
@@ -773,9 +834,20 @@ class EnquiryController extends Controller
     public function general_check_property(Request $request)
     {
 
-        $units = UnitManagement::select('id' , 'unit_id' , 'property_management_id' ,
-        'block_management_id','floor_management_id' , 'unit_description_id' , 'unit_condition_id' , 'unit_type_id' , 'unit_parking_id' ,
-        'view_id' , 'status' , 'booking_status')
+        $units = UnitManagement::select(
+            'id',
+            'unit_id',
+            'property_management_id',
+            'block_management_id',
+            'floor_management_id',
+            'unit_description_id',
+            'unit_condition_id',
+            'unit_type_id',
+            'unit_parking_id',
+            'view_id',
+            'status',
+            'booking_status'
+        )
             ->with([
                 'property_unit_management:id,name',
                 'block_unit_management:id,block_id',
@@ -800,9 +872,20 @@ class EnquiryController extends Controller
         $unit_views        = View::select('id', 'name')->get();
         $tenants           = Tenant::select('id', 'name', 'company_name')->orderBy('created_at', 'desc')->get();
         if ($request->bulk_action_btn === 'filter') {
-            $report_query = UnitManagement::select('id' , 'unit_id' , 'property_management_id' ,
-        'block_management_id','floor_management_id' , 'unit_description_id' , 'unit_condition_id' , 'unit_type_id' , 'unit_parking_id' ,
-        'view_id' , 'status' , 'booking_status')->with([
+            $report_query = UnitManagement::select(
+                'id',
+                'unit_id',
+                'property_management_id',
+                'block_management_id',
+                'floor_management_id',
+                'unit_description_id',
+                'unit_condition_id',
+                'unit_type_id',
+                'unit_parking_id',
+                'view_id',
+                'status',
+                'booking_status'
+            )->with([
                 'property_unit_management:id,name',
                 'block_unit_management:id,block_id',
                 'block_unit_management.block:id,name',
@@ -821,7 +904,7 @@ class EnquiryController extends Controller
                 $report_query->whereIn('booking_status', $request->report_status);
             }
             if ($request->has('report_tenant') && $request->report_tenant && (! empty($request->report_status) && ! in_array('empty', $request->report_status)) &&  $request->report_tenant != -1) {
-                $report_query->where('tenant_id' ,$request->report_tenant);
+                $report_query->where('tenant_id', $request->report_tenant);
             }
             if ($request->report_building && $request->report_building != -1) {
                 $report_query->whereHas('property_unit_management', function ($query) use ($request) {
@@ -864,7 +947,7 @@ class EnquiryController extends Controller
 
             $units = $report_query->orderBy('created_at', 'desc')->paginate(20);
         }
-        
+
         $data = [
             'floors'            => $floors,
             'blocks'            => $blocks,
@@ -882,18 +965,14 @@ class EnquiryController extends Controller
     {
         $enquiry  = (new Enquiry())->setConnection('tenant')->findOrFail($id);
         $unit_ids = (new EnquiryUnitSearchDetails())->setConnection('tenant')->where('enquiry_id', $id)
-        //->whereNull('unit_management_id' )
             ->pluck('unit_description_id')
             ->toArray();
         $units = (new UnitManagement())->setConnection('tenant')->whereIn('unit_description_id', $unit_ids)->get();
-        // dd($units);
         $property_ids = $units->pluck('property_management_id')->toArray();
         $property     = (new PropertyManagement())->setConnection('tenant')->whereIn('id', $property_ids)->get();
         if ($property->isEmpty()) {
             $property = (new PropertyManagement())->setConnection('tenant')->get();
         }
-        // $property = PropertyManagement::whereIn($enquiry_unit)
-
         $data = [
             'properties' => $property,
         ];
@@ -903,8 +982,11 @@ class EnquiryController extends Controller
     {
         // $enquiry_unit = EnquiryUnitSearchDetails::where('enquiry_id' , $enquiry_id)->whereNotNull('unit_management_id')->get( );//->toArray();
         $enquiry_unit = EnquiryUnitSearchDetails::where('enquiry_id', $enquiry_id)->whereNotNull('unit_management_id')->pluck('id', 'unit_management_id')->toArray();
-        $property     = (new PropertyManagement())->setConnection('tenant')->with('blocks_management_child', 'blocks_management_child.block'
-            , 'blocks_management_child.floors_management_child', 'blocks_management_child.floors_management_child.floor_management_main',
+        $property     = (new PropertyManagement())->setConnection('tenant')->with(
+            'blocks_management_child',
+            'blocks_management_child.block',
+            'blocks_management_child.floors_management_child',
+            'blocks_management_child.floors_management_child.floor_management_main',
             'blocks_management_child.floors_management_child.unit_management_child',
             'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->findOrFail($id);
@@ -918,9 +1000,13 @@ class EnquiryController extends Controller
     }
     public function list_view($id, $enquiry_id)
     {
-        $property = (new PropertyManagement())->setConnection('tenant')->with('blocks_management_child', 'blocks_management_child.block'
-            , 'blocks_management_child.floors_management_child', 'blocks_management_child.floors_management_child.floor_management_main',
-            'blocks_management_child.floors_management_child.unit_management_child', 'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
+        $property = (new PropertyManagement())->setConnection('tenant')->with(
+            'blocks_management_child',
+            'blocks_management_child.block',
+            'blocks_management_child.floors_management_child',
+            'blocks_management_child.floors_management_child.floor_management_main',
+            'blocks_management_child.floors_management_child.unit_management_child',
+            'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->findOrFail($id);
         $enquiry_unit = EnquiryUnitSearchDetails::where('enquiry_id', $enquiry_id)->whereNotNull('unit_management_id')->pluck('id', 'unit_management_id')->toArray();
 
@@ -955,10 +1041,27 @@ class EnquiryController extends Controller
 
         $count = count($request->unit_description_id);
 
-        $query = UnitManagement::select('id' ,'unit_description_id' ,'property_management_id','status' ,'booking_status', 'unit_type_id','unit_condition_id' ,
-         'view_id' , 'unit_id' , 'block_management_id' ,'property_management_id' , 'floor_management_id')//->emptyUnit()
-         ->with('property_unit_management:id,name' , 'block_unit_management:id,block_id' , 'floor_unit_management:id,floor_id',
-        'block_unit_management.block:id,name' , 'floor_unit_management.floor_management_main:id,name');
+        $query = UnitManagement::select(
+            'id',
+            'unit_description_id',
+            'property_management_id',
+            'status',
+            'booking_status',
+            'unit_type_id',
+            'unit_condition_id',
+            'view_id',
+            'unit_id',
+            'block_management_id',
+            'property_management_id',
+            'floor_management_id'
+        ) //->emptyUnit()
+            ->with(
+                'property_unit_management:id,name',
+                'block_unit_management:id,block_id',
+                'floor_unit_management:id,floor_id',
+                'block_unit_management.block:id,name',
+                'floor_unit_management.floor_management_main:id,name'
+            );
         $query->where(function ($q) use ($request, $count) {
             for ($i = 0; $i < $count; $i++) {
                 $q->orWhere(function ($subQuery) use ($request, $i) {
@@ -1075,8 +1178,11 @@ class EnquiryController extends Controller
 
     public function general_view_image()
     {
-        $property = (new PropertyManagement())->setConnection('tenant')->with('blocks_management_child', 'blocks_management_child.block'
-            , 'blocks_management_child.floors_management_child', 'blocks_management_child.floors_management_child.floor_management_main',
+        $property = (new PropertyManagement())->setConnection('tenant')->with(
+            'blocks_management_child',
+            'blocks_management_child.block',
+            'blocks_management_child.floors_management_child',
+            'blocks_management_child.floors_management_child.floor_management_main',
             'blocks_management_child.floors_management_child.unit_management_child',
             'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->get();
@@ -1089,9 +1195,13 @@ class EnquiryController extends Controller
     }
     public function general_list_view()
     {
-        $property = (new PropertyManagement())->setConnection('tenant')->with('blocks_management_child', 'blocks_management_child.block'
-            , 'blocks_management_child.floors_management_child', 'blocks_management_child.floors_management_child.floor_management_main',
-            'blocks_management_child.floors_management_child.unit_management_child', 'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
+        $property = (new PropertyManagement())->setConnection('tenant')->with(
+            'blocks_management_child',
+            'blocks_management_child.block',
+            'blocks_management_child.floors_management_child',
+            'blocks_management_child.floors_management_child.floor_management_main',
+            'blocks_management_child.floors_management_child.unit_management_child',
+            'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->get();
 
         $data = [
@@ -1099,6 +1209,7 @@ class EnquiryController extends Controller
         ];
         return view('admin-views.property_transactions.enquiries.general_list_view', $data);
     }
+   
 }
 // App\Models\Admin::create([
 //     'name'                  => 'Eslam',

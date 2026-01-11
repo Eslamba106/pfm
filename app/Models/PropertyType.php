@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class PropertyType extends Model
 {
@@ -14,5 +16,15 @@ class PropertyType extends Model
     {
         return $this->belongsToMany(PropertyManagement::class, 'property_management_id');
     }
-
+    public function isUsed(): bool
+    {
+        return DB::connection($this->connection)
+            ->table('property_type_property_management')
+            ->where('property_type_id', $this->id)
+            ->exists();
+    }
+    // public function isUsed(): bool
+    // {
+    //     return $this->properties()->exists();
+    // }
 }

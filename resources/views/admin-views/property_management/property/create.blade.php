@@ -215,12 +215,12 @@
             <div class="card mt-3">
                 <div class="card-body">
                     <input type="hidden" name="status" value="approved">
-                    <h5 class="mb-0 text-capitalize d-flex align-items-center gap-2 border-bottom pb-3 mb-4 pl-4">
+                    {{-- <h5 class="mb-0 text-capitalize d-flex align-items-center gap-2 border-bottom pb-3 mb-4 pl-4">
 
                         {{ ui_change('personal_info' , 'property_config') }}
-                    </h5>
+                    </h5> --}}
                     <div class="row">
-                        <div class="col-md-6 col-lg-4 col-xl-4">
+                        <div class="col-md-6 col-lg-4 col-xl-3">
                             <div class="form-group">
                                 <label for="name"
                                     class="title-color">{{ ui_change('bank_name' , 'property_config') }}</label>
@@ -232,7 +232,7 @@
                                 @enderror
                             </div>
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-4">
+                        <div class="col-md-6 col-lg-4 col-xl-3">
                             <div class="form-group">
                                 <label for="name" class="title-color">{{ ui_change('bank_no' , 'property_config') }}</label>
                                 <input type="text" class="form-control" name="bank_no">
@@ -244,7 +244,7 @@
                             </div>
                         </div>
 
-                        <div class="col-md-6 col-lg-4 col-xl-4">
+                        <div class="col-md-6 col-lg-4 col-xl-3">
                             <div class="form-group">
                                 <label for="name"
                                     class="title-color">{{ ui_change('contact_person' , 'property_config') }}</label>
@@ -256,7 +256,18 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-2">
+                          <div class="col-md-6 col-lg-4 col-xl-3">
+                            <div class="form-group">
+                                <label for="email" class="title-color">{{ ui_change('email' , 'property_config') }}</label>
+                                <input type="text" class="form-control" name="email">
+                            </div>
+                            @error('email')
+                                <div class="invalid-feedback">
+                                    {{ $message }}
+                                </div>
+                            @enderror
+                        </div>
+                        <div class="col-md-6 col-lg-4 col-xl-1">
                             <div class="form-group">
                                 <label for="name"
                                     class="title-color">{{ ui_change('dail_code' , 'property_config') }}</label>
@@ -289,11 +300,10 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-2">
+                        <div class="col-md-6 col-lg-4 col-xl-1">
                             <div class="form-group">
                                 <label for="name"
-                                    class="title-color">{{ ui_change('dail_code' , 'property_config') }}</label>
-                                {{-- <input type="text" class="form-control" name="dail_code_mobile" placeholder="+845"> --}}
+                                    class="title-color">{{ ui_change('dail_code' , 'property_config') }}</label> 
                                 <select class="js-select2-custom form-control" name="dail_code_mobile">
                                     <option value="" selected>{{ ui_change('select' , 'property_config') }}</option>
                                     @foreach ($dail_code_main as $item_dail_code)
@@ -322,21 +332,11 @@
                             @enderror
                         </div>
 
-                        <div class="col-md-6 col-lg-4 col-xl-4">
-                            <div class="form-group">
-                                <label for="email" class="title-color">{{ ui_change('email' , 'property_config') }}</label>
-                                <input type="text" class="form-control" name="email">
-                            </div>
-                            @error('email')
-                                <div class="invalid-feedback">
-                                    {{ $message }}
-                                </div>
-                            @enderror
-                        </div>
-                        <div class="col-md-6 col-lg-4 col-xl-2">
+                      
+                        <div class="col-md-6 col-lg-4 col-xl-1">
                             <div class="form-group">
                                 <label for="name"
-                                    class="title-color">{{ ui_change('property_management.dail_code' , 'property_config') }}</label>
+                                    class="title-color">{{ ui_change('dail_code' , 'property_config') }}</label>
                                 {{-- <input type="text" class="form-control" name="dail_code_fax" placeholder="+845"> --}}
                                 <select class="js-select2-custom form-control" name="dail_code_fax">
                                     <option value="" selected>{{ ui_change('select' , 'property_config') }}</option>
@@ -364,7 +364,7 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-4">
+                        <div class="col-md-6 col-lg-4 col-xl-3">
                             <div class="form-group">
                                 <label for="total_area"
                                     class="title-color">{{ ui_change('total_area' , 'property_config') }}</label>
@@ -376,11 +376,19 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-4">
+                        <div class="col-md-6 col-lg-4 col-xl-3">
                             <div class="form-group">
                                 <label for="insurance_provider"
-                                    class="title-color">{{ ui_change('insurance_provider' , 'property_config') }}</label>
-                                <input type="text" class="form-control" name="insurance_provider">
+                                    class="title-color">{{ ui_change('insurance_provider' , 'property_config') }}</label> 
+                                <select class="js-select2-custom form-control" name="insurance_provider">
+                                    <option value="" selected>{{ ui_change('select' , 'property_config') }}</option>
+                                    @foreach ($suppliers as $supplier_item)
+                                        <option value="{{ $supplier_item->id }}">
+                                            {{  $supplier_item->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                             
                             </div>
                             @error('insurance_provider')
                                 <div class="invalid-feedback">
@@ -388,7 +396,7 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-4">
+                        <div class="col-md-6 col-lg-4 col-xl-3">
                             <div class="form-group">
                                 <label for="insurance_period_from"
                                     class="title-color">{{ ui_change('insurance_period_from' , 'property_config') }}</label>
@@ -401,7 +409,7 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-4">
+                        <div class="col-md-6 col-lg-4 col-xl-3">
                             <div class="form-group">
                                 <label for="insurance_period_to"
                                     class="title-color">{{ ui_change('insurance_period_to' , 'property_config') }}</label>
@@ -414,7 +422,7 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-4">
+                        <div class="col-md-6 col-lg-4 col-xl-3">
                             <div class="form-group">
                                 <label for="insurance_type"
                                     class="title-color">{{ ui_change('insurance_type' , 'property_config') }}</label>
@@ -426,7 +434,7 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-4">
+                        <div class="col-md-6 col-lg-4 col-xl-3">
                             <div class="form-group">
                                 <label for="insurance_policy_no"
                                     class="title-color">{{ ui_change('insurance_policy_no' , 'property_config') }}</label>
@@ -438,7 +446,7 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-4">
+                        <div class="col-md-6 col-lg-4 col-xl-3">
                             <div class="form-group">
                                 <label for="insurance_holder"
                                     class="title-color">{{ ui_change('insurance_holder' , 'property_config') }}</label>
@@ -450,7 +458,7 @@
                                 </div>
                             @enderror
                         </div>
-                        <div class="col-md-6 col-lg-4 col-xl-4">
+                        <div class="col-md-6 col-lg-4 col-xl-3">
                             <div class="form-group">
                                 <label for="premium_amount"
                                     class="title-color">{{ ui_change('premium_amount' , 'property_config') }}</label>

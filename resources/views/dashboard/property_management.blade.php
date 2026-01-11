@@ -50,22 +50,22 @@
                  <div class="accordion" id="accordionExample"> 
                      <div class="accordion-item ">
                          <h2 class="accordion-header list-group-item" >
-                             <a class="accordion-button"  href="{{ route('property_management.index') }}"   >{{  ui_change('property_management' , 'property_config')  }}</a> {{-- <span class="arrow">&rsaquo;</span> --}}
+                             <a class="accordion-button"  href="{{ route('property_management.index') }}"   >{{  ui_change('building_master' , 'property_config')  }}</a> {{-- <span class="arrow">&rsaquo;</span> --}}
                          </h2>  
                      </div>
                      <div class="accordion-item ">
                          <h2 class="accordion-header list-group-item" >
-                             <a class="accordion-button"   href="{{ route('block_management.index') }}"  >{{ ui_change('block_management' , 'property_config')  }}</a> {{-- <span class="arrow">&rsaquo;</span> --}}
+                             <a class="accordion-button"   href="{{ route('block_management.index') }}"  >{{ ui_change('block_master' , 'property_config')  }}</a> {{-- <span class="arrow">&rsaquo;</span> --}}
                          </h2>  
                      </div>
                      <div class="accordion-item ">
                          <h2 class="accordion-header list-group-item" >
-                             <a class="accordion-button"   href="{{ route('floor_management.index') }}"  >{{ ui_change('floor_management' , 'property_config')  }}</a> {{-- <span class="arrow">&rsaquo;</span> --}}
+                             <a class="accordion-button"   href="{{ route('floor_management.index') }}"  >{{ ui_change('floor_master' , 'property_config')  }}</a> {{-- <span class="arrow">&rsaquo;</span> --}}
                          </h2>  
                      </div>
                      <div class="accordion-item ">
                          <h2 class="accordion-header list-group-item" >
-                             <a class="accordion-button"    href="{{ route('unit_management.index') }}"    >{{ ui_change('unit_management' , 'property_config')  }}</a> {{-- <span class="arrow">&rsaquo;</span> --}}
+                             <a class="accordion-button"    href="{{ route('unit_management.index') }}"    >{{ ui_change('unit_master' , 'property_config')  }}</a> {{-- <span class="arrow">&rsaquo;</span> --}}
                          </h2>  
                      </div> 
                      <div class="accordion-item ">

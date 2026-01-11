@@ -637,7 +637,7 @@
                                         <label
                                             for="total-area">{{ ui_change('Total_Area_Required', 'property_transaction') }}</label>
                                         <input type="number" class=" form-control" id="total-area" step="0.001"
-                                            value="{{ number_format(0, $company->decimals, '.', '') }}"
+                                            value="{{ number_format(0 ) }}"
                                             name="total_area_required[]">
                                     </div>
                                     <div class="form-group">
@@ -645,7 +645,9 @@
                                             for="area-measurement">{{ ui_change('Area_Measurement', 'property_transaction') }}</label>
                                         <select id="area-measurement" name="area_measurement[]"
                                             class="js-select2-custom form-control">
-                                            <option>{{ ui_change('Select_Unit_Type', 'property_transaction') }}</option>
+                                            <option value="">{{ ui_change('Select_Unit_Type', 'property_transaction') }}</option>
+                                            <option value="1">{{ ui_change('Sq. Mtr.', 'property_transaction') }}</option>
+                                            <option value="2">{{ ui_change('Sq. Ft.', 'property_transaction') }}</option> 
                                         </select>
                                     </div>
                                     <div class="form-group">

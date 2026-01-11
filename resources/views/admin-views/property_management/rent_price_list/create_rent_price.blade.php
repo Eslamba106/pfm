@@ -1,6 +1,6 @@
 @extends('layouts.back-end.app')
 
-@section('title', __('roles.create_rent'))
+@section('title', ui_change('create_rent'))
 
 @push('css_or_js')
 @endpush
@@ -10,96 +10,118 @@
         <!-- Page Title -->
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex gap-2">
-                {{ __('roles.create_rent') }} 
+                {{ ui_change('create_rent') }}
             </h2>
         </div>
         @include('admin-views.inline_menu.property_config.inline-menu')
+        {{-- <div class="col-md-6 col-lg-4 col-xl-12  ">
+                            <div class="form-group">
+                                <label class="floor-title">{{ ui_change('units') }}<span class="text-danger">
+                                        *</span></label>
+                                <select class="js-select2-custom form-control multiple" name="units[]" required disabled
+                                    multiple>
+
+                                </select>
+                            </div>
+                        </div> --}}
 
 
         <form class="product-form text-start" action="{{ route('rent_price.store') }}" method="POST"
-        enctype="multipart/form-data">
-        @csrf
-        <!-- general setup -->
-        <div class="card mt-3 rest-part">
-            <div class="card-header">
-                <div class="d-flex gap-2">
-                    {{-- <img src="{{ asset(main_path() . 'back-end/img/shop-information.png') }}" class="mb-1"
+            enctype="multipart/form-data">
+            @csrf
+            <!-- general setup -->
+            <div class="card mt-3 rest-part">
+                <div class="card-header">
+                    <div class="d-flex gap-2">
+                        {{-- <img src="{{ asset(main_path() . 'back-end/img/shop-information.png') }}" class="mb-1"
                         alt=""> --}}
-                    <h4 class="mb-0">{{ __('roles.create_rent') }}</h4>
+                        <h4 class="mb-0">{{ ui_change('create_rent') }}</h4>
+                    </div>
                 </div>
-            </div>
-            <div class="card-body">
-                <div class="row">
+                <div class="card-body">
+                    <div class="row">
 
-                    <div class="col-md-6 col-lg-4 col-xl-3">
-                        <div class="form-group">
-                            <label for="name" class="title-color">{{ __('property_management.property') }}<span class="text-danger"> *</span>
-                            </label>
-                            <select class="js-select2-custom form-control" name="property" required>
-                                <option selected disabled>{{ __('general.select') }}
-                                </option>
-                                @foreach ($property_managements as $property_item)
-                                    <option value="{{ $property_item->id }}">
-                                        {{ $property_item->name . ' - '.$property_item->code }}
+                        <div class="col-md-6 col-lg-4 col-xl-3">
+                            <div class="form-group">
+                                <label for="name" class="title-color">{{ ui_change('property') }}<span
+                                        class="text-danger"> *</span>
+                                </label>
+                                <select id="propertySelect" class="js-select2-custom form-control" name="property" required>
+                                    <option selected disabled>{{ ui_change('select') }}
                                     </option>
-                                @endforeach
-                            </select>
+                                    @foreach ($property_managements as $property_item)
+                                        <option value="{{ $property_item->id }}">
+                                            {{ $property_item->name . ' - ' . $property_item->code }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4 col-xl-3">
-                        <div class="form-group">
-                            <label for="name" class="title-color">{{ __('property_master.blocks') }}<span class="text-danger"> *</span>
-                            </label>
-                            <select class="js-select2-custom form-control" name="block" required disabled>
-                                <option selected>{{ __('general.select') }}
-                                </option> 
-                            </select>
+                        <div class="col-md-6 col-lg-4 col-xl-3">
+                            <div class="form-group">
+                                <label for="name" class="title-color">{{ ui_change('blocks') }}<span
+                                        class="text-danger"> *</span>
+                                </label>
+                                <select id="blockSelect" class="js-select2-custom form-control" name="block" required
+                                    disabled>
+                                    <option selected>{{ ui_change('select') }}
+                                    </option>
+                                </select>
+                            </div>
                         </div>
-                    </div>
-                 
 
-                    <div class="col-md-6 col-lg-4 col-xl-3 ">
-                        <div class="form-group">
-                        <label class="floor-title">{{ __('property_master.floors') }}<span class="text-danger"> *</span></label>
-                            <select class="js-select2-custom form-control" name="floor" required disabled>
-                                <option selected>{{ __('general.select') }}
-                                </option> 
-                            </select>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4 col-xl-3  ">
-                        <div class="form-group">
-                        <label class="floor-title">{{ __('property_transactions.rent_amount') }}<span class="text-danger"> *</span></label>
-                        <input type="number" class="form-control" name="rent_amount" required>
-                        </div>
-                    </div>
-                    <div class="col-md-6 col-lg-4 col-xl-12  ">
-                        <div class="form-group">
-                        <label class="floor-title">{{ __('property_master.units') }}<span class="text-danger"> *</span></label>
-                            <select class="js-select2-custom form-control multiple" name="units[]" required disabled multiple>
-                                 
-                            </select>
-                        </div>
-                    </div>
-                   
-                    <div class="col-md-6 col-lg-4 col-xl-3   ">
-                        <div class="form-group">
-                        <label class="floor-title">{{ __('collections.applicable_from') }}<span class="text-danger"> *</span></label>
-                        <input type="text" class="form-control applicable_date" name="applicable_date" required>
-                        </div>
-                    </div>
 
+                        <div class="col-md-6 col-lg-4 col-xl-3 ">
+                            <div class="form-group">
+                                <label class="floor-title">{{ ui_change('floors') }}<span class="text-danger">
+                                        *</span></label>
+                                <select id="floorSelect" class="js-select2-custom form-control" name="floor" required
+                                    disabled>
+                                    <option selected>{{ ui_change('select') }}
+                                    </option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 col-xl-3  ">
+                            <div class="form-group">
+                                <label class="floor-title">{{ ui_change('rent_amount') }}<span class="text-danger">
+                                        *</span></label>
+                                <input type="number" class="form-control" id="mainRentAmount" name="rent_amount" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-lg-4 col-xl-3   ">
+                            <div class="form-group">
+                                <label class="floor-title">{{ ui_change('applicable_from') }}<span class="text-danger">
+                                        *</span></label>
+                                <input type="text" class="form-control applicable_date" name="applicable_date" required>
+                            </div>
+                        </div>
+
+
+                        <div class="col-12 mt-3">
+                            <table class="table table-bordered" id="unitsTable">
+                                <thead>
+                                    <tr>
+                                        <th>{{ ui_change('unit') }}</th>
+                                        <th>{{ ui_change('rent_amount') }}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+
+                    </div>
                 </div>
+
+
             </div>
 
-
-        </div>
-
-        <div class="row justify-content-end gap-3 mt-3 mx-1">
-            <button type="reset" class="btn btn-secondary px-5">{{ __('general.reset') }}</button>
-            <button type="submit" class="btn btn--primary px-5">{{ __('general.submit') }}</button>
-        </div>
-    </form>
+            <div class="row justify-content-end gap-3 mt-3 mx-1">
+                <button type="reset" class="btn btn-secondary px-5">{{ ui_change('reset') }}</button>
+                <button type="submit" class="btn btn--primary px-5">{{ ui_change('submit') }}</button>
+            </div>
+        </form>
 
 
 
@@ -108,8 +130,172 @@
 @endsection
 @push('script')
     <script>
+        $(document).ready(function() {
+            $('#mainRentAmount').on('input', function() {
+                var value = $(this).val();
+                $('#unitsTable tbody input[name^="rent_amount"]').val(value);
+            });
+
+            function loadUnits(propertyId, blockId = null, floorId = null) {
+                $.ajax({
+                    url: '{{ route('rent_price.get_units_filtered') }}',
+                    type: 'GET',
+                    data: {
+                        property_id: propertyId,
+                        block_id: blockId,
+                        floor_id: floorId
+                    },
+                    dataType: 'json',
+                    success: function(data) {
+                        var tbody = $('#unitsTable tbody');
+                        tbody.empty();
+
+                        $.each(data.units, function(index, unit) {
+                            var row = `
+                        <tr>
+                            <input type="hidden" name="units[]" value="${unit.id}">
+                            <td>${unit.unit_management_main.name} - ${unit.unit_management_main.code}</td>
+                            <td>
+                                <input type="number" name="rent_amount[${unit.id}]" class="form-control" placeholder="Enter rent amount" value="${$('#mainRentAmount').val()}">
+                            </td>
+                        </tr>
+                    `;
+                            tbody.append(row);
+                        });
+                    }
+                });
+            }
+
+            $('#propertySelect').change(function() {
+                var propertyId = $(this).val();
+
+                $.ajax({
+                    url: '/rent_price_list/get-blocks/' + propertyId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        var blockSelect = $('#blockSelect');
+                        blockSelect.prop('disabled', false).empty().append(
+                            '<option selected disabled>Select Block</option>');
+                        $.each(data.blocks, function(index, block) {
+                            blockSelect.append(
+                                `<option value="${block.id}">${block.name}</option>`
+                            );
+                        });
+                    }
+                });
+
+                $.ajax({
+                    url: '/rent_price_list/get-floors/' + propertyId,
+                    type: 'GET',
+                    dataType: 'json',
+                    success: function(data) {
+                        var floorSelect = $('#floorSelect');
+                        floorSelect.prop('disabled', false).empty().append(
+                            '<option selected disabled>Select Floor</option>');
+                        $.each(data.floors, function(index, floor) {
+                            floorSelect.append(
+                                `<option value="${floor.id}">${floor.name}</option>`
+                            );
+                        });
+                    }
+                });
+                loadUnits(propertyId);
+            });
+            $('#blockSelect, #floorSelect').change(function() {
+                var propertyId = $('#propertySelect').val();
+                var blockId = $('#blockSelect').val();
+                var floorId = $('#floorSelect').val();
+
+                loadUnits(propertyId, blockId, floorId);
+            });
+        });
+    </script>
+    {{-- <script>
+        $('#propertySelect').change(function() {
+            var propertyId = $(this).val();
+            $('#blockSelect').prop('disabled', false);
+
+            $.ajax({
+                url: "{{ route('rent_price.get_units_filtered', 'id') }}".replace('id', propertyId),
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var blockSelect = $('#blockSelect');
+                    blockSelect.empty().append('<option selected disabled>Select Block</option>');
+                    $.each(data.blocks, function(index, block) {
+                        blockSelect.append(
+                            `<option value="${block.id}">${block.name}</option>`);
+                    }); 
+                    $('#unitsTable tbody').empty();
+                    $('#floorSelect').prop('disabled', true).empty().append(
+                        '<option selected disabled>Select Floor</option>');
+                }
+            });
+        });
+
+        $('#blockSelect').change(function() {
+            var propertyId = $('#propertySelect').val();
+            var blockId = $(this).val();
+
+            $('#floorSelect').prop('disabled', false);
+            var url =
+                "{{ route('rent_price.get_units_filtered', ['property' => ':property', 'block' => ':block']) }}";
+            url = url.replace(':property', propertyId).replace(':block', blockId);
+            $.ajax({
+                url: url,
+                type: 'GET',
+                dataType: 'json',
+                success: function(data) {
+                    var floorSelect = $('#floorSelect');
+                    floorSelect.empty().append('<option selected disabled>Select Floor</option>');
+                    $.each(data.floors, function(index, floor) {
+                        floorSelect.append(
+                            `<option value="${floor.id}">${floor.name}</option>`);
+                    });
+ 
+                    $('#unitsTable tbody').empty();
+                }
+            });
+        });
+
+        $('#floorSelect').change(function() {
+            var propertyId = $('#propertySelect').val();
+            var blockId = $('#blockSelect').val();
+            var floorId = $(this).val();
+
+            $.ajax({
+                url: '{{ route('rent_price.get_units_filtered') }}',
+                type: 'GET',
+                data: {
+                    property_id: propertyId,
+                    block_id: blockId,
+                    floor_id: floorId
+                },
+                dataType: 'json',
+                success: function(data) {
+                    var tbody = $('#unitsTable tbody');
+                    tbody.empty();
+
+                    $.each(data.units, function(index, unit) {
+                        var row = `
+                    <tr>
+                        <td>${unit.unit_management_main.name} - ${unit.unit_management_main.code}</td>
+                        <td>
+                            <input type="number" name="rent_amount[${unit.id}]" class="form-control" placeholder="Enter rent amount">
+                        </td>
+                    </tr>
+                `;
+                        tbody.append(row);
+                    });
+                }
+            });
+        });
+    </script> --}}
+
+    <script>
         flatpickr(".applicable_date", {
-            dateFormat: "d/m/Y", 
+            dateFormat: "d/m/Y",
             minDate: "today",
             defaultDate: "today",
         });
@@ -118,38 +304,40 @@
                 var property = $(this).val();
                 if (property) {
                     $.ajax({
-                        url: "{{ route('rent_price.get_blocks_by_property_id_for_rent' , ':id') }}".replace(':id', property) , 
+                        url: "{{ route('rent_price.get_blocks_by_property_id_for_rent', ':id') }}"
+                            .replace(':id', property),
                         // url: "{{ URL::to('floor_management/get_blocks_by_property_id') }}/" + property, 
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
                             if (data) {
-                                $('select[name="block"]').removeAttr('disabled'); 
+                                $('select[name="block"]').removeAttr('disabled');
                                 $('select[name="block"]').empty();
-                                $('select[name="floor"]').empty();  
-                                $('select[name="units[]"]').empty();  
+                                $('select[name="floor"]').empty();
+                                $('select[name="units[]"]').empty();
                                 $('select[name="block"]').append(
-                                        '<option value="">{{ __('general.select') }}</option>'
-                                    );
+                                    '<option value="">{{ ui_change('select') }}</option>'
+                                );
                                 $('select[name="floor"]').append(
-                                        '<option value="">{{ __('general.select') }}</option>'
-                                    );
+                                    '<option value="">{{ ui_change('select') }}</option>'
+                                );
                                 $('select[name="units[]"]').append(
-                                        '<option value="">{{ __('general.select') }}</option>'
-                                    );
+                                    '<option value="">{{ ui_change('select') }}</option>'
+                                );
                                 $.each(data, function(key, value) {
                                     $('select[name="block"]').append(
                                         '<option value="' + value.id + '">' + value
-                                        .block.name +' - ' + value.block.code+ '</option>'
+                                        .block.name + ' - ' + value.block.code +
+                                        '</option>'
                                     )
                                 })
 
                             } else {
-                                 
+
                             }
                         },
                         error: function(xhr, status, error) {
-                            console.error('Error occurred:', error); 
+                            console.error('Error occurred:', error);
                         }
                     });
                 }
@@ -159,33 +347,34 @@
                 var block = $(this).val();
                 if (block) {
                     $.ajax({
-                        url: "{{ route('rent_price.get_floors_by_block_id_for_rent' , ':id') }}".replace(':id', block) , 
+                        url: "{{ route('rent_price.get_floors_by_block_id_for_rent', ':id') }}"
+                            .replace(':id', block),
                         // url: "{{ URL::to('floor_management/get_blocks_by_block_id') }}/" + block, 
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
                             if (data) {
-                                $('select[name="floor"]').removeAttr('disabled'); 
+                                $('select[name="floor"]').removeAttr('disabled');
                                 $('select[name="floor"]').empty();
-                                $('select[name="units[]"]').empty();  
+                                $('select[name="units[]"]').empty();
                                 $('select[name="floor"]').append(
-                                        '<option value="">{{ __('general.select') }}</option>'
-                                    );
+                                    '<option value="">{{ ui_change('select') }}</option>'
+                                );
                                 $('select[name="units[]"]').append(
-                                        '<option value="">{{ __('general.select') }}</option>'
-                                    );
+                                    '<option value="">{{ ui_change('select') }}</option>'
+                                );
                                 $.each(data, function(key, value) {
                                     $('select[name="floor"]').append(
                                         '<option value="' + value.id + '">' + value
-                                        .floor_management_main.name +' - ' + value.floor_management_main.code+ '</option>'
+                                        .floor_management_main.name + ' - ' + value
+                                        .floor_management_main.code + '</option>'
                                     )
                                 })
 
-                            } else { 
-                            }
+                            } else {}
                         },
                         error: function(xhr, status, error) {
-                            console.error('Error occurred:', error); 
+                            console.error('Error occurred:', error);
                         }
                     });
                 }
@@ -195,32 +384,33 @@
                 var floor = $(this).val();
                 if (floor) {
                     $.ajax({
-                        url: "{{ route('rent_price.get_units_by_floor_id_for_rent' , ':id') }}".replace(':id', floor) ,   
+                        url: "{{ route('rent_price.get_units_by_floor_id_for_rent', ':id') }}"
+                            .replace(':id', floor),
                         type: "GET",
                         dataType: "json",
                         success: function(data) {
                             if (data) {
-                                $('select[name="units[]"]').removeAttr('disabled'); 
+                                $('select[name="units[]"]').removeAttr('disabled');
                                 $('select[name="units[]"]').empty();
                                 $.each(data, function(key, value) {
                                     $('select[name="units[]"]').append(
                                         '<option value="' + value.id + '">' + value
-                                        .unit_management_main.name +' - ' + value.unit_management_main.code+ '</option>'
+                                        .unit_management_main.name + ' - ' + value
+                                        .unit_management_main.code + '</option>'
                                     )
                                 })
 
-                            } else { 
-                            }
+                            } else {}
                         },
                         error: function(xhr, status, error) {
-                            console.error('Error occurred:', error); 
+                            console.error('Error occurred:', error);
                         }
                     });
                 }
 
             });
 
-          
+
 
         });
     </script>

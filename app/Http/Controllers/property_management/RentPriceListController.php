@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\property_management;
 
 use App\Http\Controllers\Controller;
@@ -36,9 +37,14 @@ class RentPriceListController extends Controller
                 $q->Where('enquiry_no', 'like', "%{$value}%")
                     ->orWhere('id', $value);
             }
-        })->with('unit_management:id,unit_id,property_management_id,block_management_id,floor_management_id', 'unit_management.unit_management_main:id,name,code'
-            , 'unit_management.property_unit_management:id,name,code', 'unit_management.block_unit_management:id,block_id',
-            'unit_management.block_unit_management.block:id,name,code', 'unit_management.floor_unit_management.floor_management_main:id,name,code', 'unit_management.floor_unit_management:id,floor_id'
+        })->with(
+            'unit_management:id,unit_id,property_management_id,block_management_id,floor_management_id',
+            'unit_management.unit_management_main:id,name,code',
+            'unit_management.property_unit_management:id,name,code',
+            'unit_management.block_unit_management:id,block_id',
+            'unit_management.block_unit_management.block:id,name,code',
+            'unit_management.floor_unit_management.floor_management_main:id,name,code',
+            'unit_management.floor_unit_management:id,floor_id'
         )
             ->latest()
             ->orderBy('created_at', 'desc')
@@ -107,17 +113,19 @@ class RentPriceListController extends Controller
     }
 
     public function store(Request $request)
-    {
+    { 
         $request->validate([
             'rent_amount'     => 'required',
             'property'        => 'required',
             'block'           => 'required',
             'floor'           => 'required',
-            'units'           => 'required|array',
+            // 'units'           => 'required|array',
             'applicable_date' => 'required',
         ]);
         try {
-            if ($request->applicable_date) {$applicable_date = Carbon::createFromFormat('d/m/Y', $request->applicable_date)->format('Y-m-d');}
+            if ($request->applicable_date) {
+                $applicable_date = Carbon::createFromFormat('d/m/Y', $request->applicable_date)->format('Y-m-d');
+            }
 
             foreach ($request->units as $unit_id) {
                 (new RentPriceList())->setConnection('tenant')->create([
@@ -126,18 +134,16 @@ class RentPriceListController extends Controller
                     'floor_management_id' => $request->floor,
                     'applicable_date'     => $applicable_date,
                     'unit_management_id'  => $unit_id,
-                    'rent_amount'         => $request->rent_amount,
+                    'rent_amount'         => $request->rent_amount[$unit_id],
                 ]);
             }
-            return to_route('rent_price.index')->with('success', __('property_master.added_successfully'));
-
+            return to_route('rent_price.index')->with('success', ui_change('added_successfully'));
         } catch (\Exception $e) {
             return redirect()->back()->with("error", $e->getMessage());
         }
-
     }
     public function update(Request $request, $id)
-    { 
+    {
         $unit_rent = (new RentPriceList())->setConnection('tenant')->findOrFail($id);
 
         $request->validate([
@@ -149,24 +155,24 @@ class RentPriceListController extends Controller
             'applicable_date' => 'required',
         ]);
         try {
-            if ($request->applicable_date) {$applicable_date = Carbon::createFromFormat('d/m/Y', $request->applicable_date)->format('Y-m-d');}
+            if ($request->applicable_date) {
+                $applicable_date = Carbon::createFromFormat('d/m/Y', $request->applicable_date)->format('Y-m-d');
+            }
 
-           
-                $unit_rent->update([
-                    'property_id'         => $request->property,
-                    'block_management_id' => $request->block,
-                    'floor_management_id' => $request->floor,
-                    'applicable_date'     => $applicable_date,
-                    'unit_management_id'  => $request->units,
-                    'rent_amount'         => $request->rent_amount,
-                ]);
-            
+
+            $unit_rent->update([
+                'property_id'         => $request->property,
+                'block_management_id' => $request->block,
+                'floor_management_id' => $request->floor,
+                'applicable_date'     => $applicable_date,
+                'unit_management_id'  => $request->units,
+                'rent_amount'         => $request->rent_amount,
+            ]);
+
             return to_route('rent_price.index')->with('success', __('property_master.updated_successfully'));
-
         } catch (\Exception $e) {
             return redirect()->back()->with("error", $e->getMessage());
         }
-
     }
     public function get_blocks_by_property_id_for_rent($id)
     {
@@ -193,4 +199,65 @@ class RentPriceListController extends Controller
         $rent->delete();
         return redirect()->route('rent_price.index')->with('success', __('property_master.deleted_successfully'));
     }
+
+    public function getUnits($propertyId)
+    {
+        $units = UnitManagement::where('property_management_id', $propertyId)
+            ->select(['id', 'unit_condition_id', 'unit_id', 'block_management_id', 'floor_management_id', 'unit_description_id', 'unit_type_id', 'view_id'])
+            ->with('unit_management_main:id,name,code')
+            ->get();
+
+        return response()->json(['units' => $units]);
+    }
+    public function getBlocks($propertyId)
+    {
+        $blocks = BlockManagement::where('property_management_id', $propertyId)->get(['id', 'name']);
+        return response()->json(['blocks' => $blocks]);
+    }
+
+    public function getFloors($propertyId, $blockId = null)
+    {
+        $query = FloorManagement::where('property_management_id', $propertyId);
+        if ($blockId) {
+            $query->where('block_management_id', $blockId);
+        }
+        $floors = $query->get(['id', 'name']);
+        return response()->json(['floors' => $floors]);
+    }
+
+    public function getUnitsFiltered(Request $request)
+    {
+        $units = UnitManagement::where('property_management_id', $request->property_id)
+            ->when($request->block_id, fn($q) => $q->where('block_management_id', $request->block_id))
+            ->when($request->floor_id, fn($q) => $q->where('floor_management_id', $request->floor_id))
+            ->with('unit_management_main:id,name,code')
+            ->get();
+
+        return response()->json(['units' => $units]);
+    }
+
+    // public function getBlocks($propertyId)
+    // {
+    //     $blocks = BlockManagement::where('property_management_id', $propertyId)->get(['id', 'name']);
+    //     return response()->json(['blocks' => $blocks]);
+    // }
+
+    // public function getFloors($propertyId, $blockId)
+    // {
+    //     $floors = FloorManagement::where('property_management_id', $propertyId)
+    //         ->where('block_management_id', $blockId)
+    //         ->get(['id', 'name']);
+    //     return response()->json(['floors' => $floors]);
+    // }
+
+    // public function getUnitsFiltered(Request $request)
+    // {
+    //     $units = UnitManagement::where('property_management_id', $request->property_id)
+    //         ->when($request->block_id, fn($q) => $q->where('block_management_id', $request->block_id))
+    //         ->when($request->floor_id, fn($q) => $q->where('floor_management_id', $request->floor_id))
+    //         ->with('unit_management_main:id,name,code')
+    //         ->get();
+
+    //     return response()->json(['units' => $units]);
+    // }
 }

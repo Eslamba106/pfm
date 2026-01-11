@@ -203,7 +203,7 @@
 
                                 <div class="col-md-6 col-lg-4 col-xl-3 d-none tax_status_html ">
                                     <div class="form-group">
-                                        <label for="name" class="title-color">{{ ui_change('vat_no','facility_master')  }}
+                                        <label for="name" class="title-color">{{ ui_change('VAT_no','facility_master')  }}
                                         </label>
                                         <input type="text" name="vat_no" class="form-control">
                                     </div>
@@ -273,9 +273,9 @@
                                             <td class="text-center">{{ $item->code }}</td>
                                             <td class="text-center">{{ $item->name }}</td>
                                             <td class="text-center">
-                                                {{ '(' . $item->dail_code_contact_no . ')' . $item->contact_no }}</td>
+                                                {{ isset($item->dail_code_contact_no) ? '(' . $item->dail_code_contact_no . ')' . $item->contact_no : '' }}</td>
                                             <td class="text-center">
-                                                {{ '(' . $item->dail_code_whatsapp_no . ')' . $item->whatsapp_no }}</td>
+                                                {{ isset($item->dail_code_whatsapp_no) ? '(' . $item->dail_code_whatsapp_no . ')' . $item->whatsapp_no : '' }}</td>
                                             <td class="text-center">{{ $item->city }}</td>
                                             <td class="text-center">{{ $item->state }}</td>
                                             <td class="text-center">{{ $item->country }}</td>

@@ -1,6 +1,6 @@
 @extends('layouts.back-end.app')
 
-@section('title', __('roles.all_employee_item'))
+@section('title', ui_change('all_employee_item'))
 
 @push('css_or_js')
 @endpush
@@ -11,7 +11,7 @@
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex gap-2">
                 <img src="{{ asset(main_path() . 'back-end/img/inhouse-employee_item-list.png') }}" alt="">
-                {{ __('roles.all_employee') }}
+                {{ ui_change('all_employee') }}
                 <span class="badge badge-soft-dark radius-50 fz-14 ml-1">{{ $main->total() }}</span>
             </h2>
         </div>
@@ -33,10 +33,10 @@
                                             </div>
                                         </div>
                                         <input id="datatableSearch_" type="search" name="search" class="form-control"
-                                            placeholder="{{ __('general.search_by_name') }}" aria-label="Search orders"
+                                            placeholder="{{ ui_change('search_by_name') }}" aria-label="Search orders"
                                             value="{{ request('search') }}">
                                         <input type="hidden" value="{{ request('status') }}" name="status">
-                                        <button type="submit" class="btn btn--primary">{{ __('general.search') }}</button>
+                                        <button type="submit" class="btn btn--primary">{{ ui_change('search') }}</button>
                                     </div>
                                 </form>
                                 <!-- End Search -->
@@ -46,7 +46,7 @@
 
                                 <a href="{{ route('employee.create') }}" class="btn btn--primary">
                                     <i class="tio-add"></i>
-                                    <span class="text">{{ __('roles.create_employee') }}</span>
+                                    <span class="text">{{ ui_change('create_employee') }}</span>
                                 </a>
                             </div>
                         </div>
@@ -57,14 +57,14 @@
                             class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table w-100">
                             <thead class="thead-light thead-50 text-capitalize">
                                 <tr>
-                                    <th>{{ __('general.sl') }}</th>
-                                    <th class="text-right">{{ __('property_master.code') }}</th>
-                                    <th class="text-right">{{ __('roles.name') }}</th>
-                                    <th class="text-right">{{ __('general.mobile') }}</th>
-                                    <th class="text-right">{{ __('general.office') }}</th>
-                                    <th class="text-right">{{ __('general.extension_no') }}</th>
-                                    <th class="text-center">{{ __('roles.status') }}</th>
-                                    <th class="text-center">{{ __('roles.Actions') }}</th>
+                                    <th>{{ ui_change('sl') }}</th>
+                                    <th class="text-right">{{ ui_change('code') }}</th>
+                                    <th class="text-right">{{ ui_change('name') }}</th>
+                                    <th class="text-right">{{ ui_change('mobile') }}</th>
+                                    <th class="text-right">{{ ui_change('office') }}</th>
+                                    <th class="text-right">{{ ui_change('extension_no') }}</th>
+                                    <th class="text-center">{{ ui_change('status') }}</th>
+                                    <th class="text-center">{{ ui_change('Actions') }}</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -104,28 +104,28 @@
                                                         {{ $employee_item->status == 'active' ? 'checked' : '' }}
                                                         onclick="toogleStatusModal(event,'employee_item_status{{ $employee_item->id }}',
                                                 'employee_item-status-on.png','employee_item-status-off.png',
-                                                '{{ __('general.Want_to_Turn_ON') }} {{ $employee_item->name }} ',
-                                                '{{ __('general.Want_to_Turn_OFF') }} {{ $employee_item->name }} ',
-                                                `<p>{{ __('general.if_enabled_this_employee_item_will_be_available') }}</p>`,
-                                                `<p>{{ __('general.if_disabled_this_employee_item_will_be_hidden') }}</p>`)">
+                                                '{{ ui_change('Want_to_Turn_ON') }} {{ $employee_item->name }} ',
+                                                '{{ ui_change('Want_to_Turn_OFF') }} {{ $employee_item->name }} ',
+                                                `<p>{{ ui_change('if_enabled_this_employee_item_will_be_available') }}</p>`,
+                                                `<p>{{ ui_change('if_disabled_this_employee_item_will_be_hidden') }}</p>`)">
                                                     <span class="switcher_control"></span>
                                                 </label>
                                             </form>
                                         </td>
                                         <td>
                                             <div class="d-flex justify-content-center gap-2">
-                                                {{-- <a class="btn btn-outline-info btn-sm square-btn" title="{{ __('barcode') }}"
+                                                {{-- <a class="btn btn-outline-info btn-sm square-btn" title="{{ ui_change('barcode') }}"
                                             href="{{ route('employee_item.barcode', [$employee_item['id']]) }}">
                                             <i class="tio-barcode"></i>
                                         </a> --}}
 
                                                 <a class="btn btn-outline--primary btn-sm square-btn"
-                                                    title="{{ __('edit') }}"
+                                                    title="{{ ui_change('edit') }}"
                                                     href="{{ route('employee.edit', [$employee_item->id]) }}">
                                                     <i class="tio-edit"></i>
                                                 </a>
                                                 <a class="btn btn-outline-danger btn-sm delete square-btn"
-                                                    title="{{ __('general.delete') }}" id="{{ $employee_item->id }}">
+                                                    title="{{ ui_change('delete') }}" id="{{ $employee_item->id }}">
                                                     <i class="tio-delete"></i>
                                                 </a>
                                             </div>
@@ -149,7 +149,7 @@
                         <div class="text-center p-4">
                             <img class="mb-3 w-160" src="{{ asset(main_path() . 'back-end') }}/svg/illustrations/sorry.svg"
                                 alt="Image Description">
-                            <p class="mb-0">{{ __('general.no_data_to_show') }}</p>
+                            <p class="mb-0">{{ ui_change('no_data_to_show') }}</p>
                         </div>
                     @endif
                 </div>
@@ -183,10 +183,10 @@
                 data: $(this).serialize(),
                 success: function(data) {
                     if (data.success == true) {
-                        toastr.success('{{ __('general.updated_successfully') }}');
+                        toastr.success('{{ ui_change('updated_successfully') }}');
                     } else if (data.success == false) {
                         toastr.error(
-                            '{{ __('Status_updated_failed.') }} {{ __('Product_must_be_approved') }}'
+                            '{{ ui_change('Status_updated_failed.') }} {{ ui_change('Product_must_be_approved') }}'
                         );
                         setTimeout(function() {
                             location.reload();
@@ -199,14 +199,14 @@
         $(document).on('click', '.delete', function() {
             var id = $(this).attr("id");
             Swal.fire({
-                title: "{{ __('general.are_you_sure_delete_this') }}",
-                text: "{{ __('general.you_will_not_be_able_to_revert_this') }}!",
+                title: "{{ ui_change('are_you_sure_delete_this') }}",
+                text: "{{ ui_change('you_will_not_be_able_to_revert_this') }}!",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: "{{ __('general.yes_delete_it') }}!",
-                cancelButtonText: "{{ __('general.cancel') }}",
+                confirmButtonText: "{{ ui_change('yes_delete_it') }}!",
+                cancelButtonText: "{{ ui_change('cancel') }}",
                 reverseButtons: true
             }).then((result) => {
                 if (result.value) {
@@ -222,7 +222,7 @@
                             id: id
                         },
                         success: function() {
-                            toastr.success("{{ __('general.deleted_successfully') }}");
+                            toastr.success("{{ ui_change('deleted_successfully') }}");
                             location.reload();
                         }
                     });

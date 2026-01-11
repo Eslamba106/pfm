@@ -71,7 +71,7 @@ class SupplierController extends Controller
             ]);
 
             DB::commit();
-            return redirect()->route('supplier.index')->with('success', __('property_master.added_successfully'));
+            return redirect()->route('supplier.index')->with('success', ui_change('added_successfully'));
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with("error", $e->getMessage());
