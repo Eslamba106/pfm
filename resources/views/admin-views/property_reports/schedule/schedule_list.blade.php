@@ -4,7 +4,7 @@
     $firstDay = Carbon\Carbon::now()->startOfMonth()->format('d/m/Y');
     $lastDay = Carbon\Carbon::now()->endOfMonth()->format('d/m/Y');
 @endphp
-@section('title', ui_change('pre_bill_checking','property_report') )
+@section('title', ui_change('pre_bill_checking', 'property_report'))
 
 @push('css_or_js')
 @endpush
@@ -17,7 +17,7 @@
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex gap-2">
                 {{-- <img src="{{ asset(main_path() . 'back-end/img/inhouse-subscription-list.png') }}" alt=""> --}}
-                {{ ui_change('pre_bill_checking','property_report')  }}
+                {{ ui_change('pre_bill_checking', 'property_report') }}
                 <span class="badge badge-soft-dark radius-50 fz-14 ml-1">{{ $schedules->count() }}</span>
             </h2>
         </div>
@@ -31,12 +31,12 @@
                             <div class="col-lg-2 mt-3 mt-lg-0 ">
                                 {{-- d-flex flex-wrap gap-3 justify-content-lg-end --}}
                                 <button class="btn   btn-outline-primary " data-generate_invoice="" data-toggle="modal"
-                                    data-target="#generate_invoice">{{ ui_change('Generate_Invoice','property_report') }}</button>
+                                    data-target="#generate_invoice">{{ ui_change('Generate_Invoice', 'property_report') }}</button>
                             </div>
-                             <button type="button" data-target="#filter" data-filter="" data-toggle="modal"
-                                    class="btn btn--primary btn-sm">
-                                    <i class="fas fa-filter"></i>
-                                </button>
+                            <button type="button" data-target="#filter" data-filter="" data-toggle="modal"
+                                class="btn btn--primary btn-sm">
+                                <i class="fas fa-filter"></i>
+                            </button>
                             {{-- <div class="col-lg-1  mt-3 mt-lg-0 ">
                                 <button type="button" data-target="#filter" data-filter="" data-toggle="modal"
                                     class="btn btn--primary btn-sm">
@@ -55,7 +55,8 @@
                             <div class="modal-dialog" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">{{ ui_change('Generate_Invoice','property_report')  }}</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">
+                                            {{ ui_change('Generate_Invoice', 'property_report') }}</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
@@ -75,9 +76,10 @@
                                                 }
                                                 ?>
 
-                                                <label for="">{{ ui_change('select','property_report')  }}</label>
+                                                <label for="">{{ ui_change('select', 'property_report') }}</label>
                                                 <select name="tenant_id" id="" class="form-control">
-                                                    <option value="0">{{ ui_change('all_tenants','property_report')  }}</option>
+                                                    <option value="0">{{ ui_change('all_tenants', 'property_report') }}
+                                                    </option>
                                                     @foreach ($tenants as $item)
                                                         <option value="{{ $item->id }}">
                                                             {{ $item->name ?? $item->company_name }}</option>
@@ -85,8 +87,10 @@
                                                 </select>
                                             </div>
                                             <div class="form-group">
-                                                <label for="">{{ ui_change('Invoice_Month','property_report') }}</label>
-                                                    <input type="month" name="invoice_month" id="invoice_month" class="form-control">
+                                                <label
+                                                    for="">{{ ui_change('Invoice_Month', 'property_report') }}</label>
+                                                <input type="month" name="invoice_month" id="invoice_month"
+                                                    class="form-control">
 
                                                 {{-- <select name="invoice_month" class="form-control" id="">
                                                     @foreach ($months as $key => $month)
@@ -95,7 +99,8 @@
                                                 </select> --}}
                                             </div>
                                             <div class="form-group">
-                                                <label for="">{{ ui_change('Voucher_Type','property_report')  }}</label>
+                                                <label
+                                                    for="">{{ ui_change('Voucher_Type', 'property_report') }}</label>
                                                 <select name="invoice_type" class="form-control" id="">
                                                     @foreach ($invoice_types as $invoice_type_item)
                                                         <option value="{{ $invoice_type_item->invoice_type }}">
@@ -104,7 +109,8 @@
                                                 </select>
                                             </div>
                                             <div class="form-group">
-                                                <label for="">{{ ui_change('Invoice_Date','property_report')  }}</label>
+                                                <label
+                                                    for="">{{ ui_change('Invoice_Date', 'property_report') }}</label>
                                                 <input type="text" id="invoice_date" name="invoice_date"
                                                     class="form-control"> </select>
 
@@ -112,8 +118,9 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">{{ ui_change('Cancel','property_report')  }}</button>
-                                            <button type="submit" class="btn btn--primary">{{ ui_change('Generate','property_report') }}</button>
+                                                data-dismiss="modal">{{ ui_change('Cancel', 'property_report') }}</button>
+                                            <button type="submit"
+                                                class="btn btn--primary">{{ ui_change('Generate', 'property_report') }}</button>
                                         </div>
                                     </form>
                                 </div>
@@ -124,7 +131,8 @@
                             <div class="modal-dialog modal-lg" role="document">
                                 <div class="modal-content">
                                     <div class="modal-header">
-                                        <h5 class="modal-title" id="exampleModalLabel">{{ ui_change('Generate_Invoice','property_report')  }}</h5>
+                                        <h5 class="modal-title" id="exampleModalLabel">
+                                            {{ ui_change('Generate_Invoice', 'property_report') }}</h5>
                                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                                             <span aria-hidden="true">&times;</span>
                                         </button>
@@ -141,7 +149,7 @@
                                                         $to = date('d/m/Y');
                                                     @endphp
                                                     <label class="{{ $lang == 'ar' ? 'mr-2' : 'ml-2' }} ">
-                                                        {{ ui_change('Date_Form_-_To_:','property_report')  }}
+                                                        {{ ui_change('Date_Form_-_To_:', 'property_report') }}
                                                     </label>
                                                     <div class="input-group">
                                                         <input
@@ -158,11 +166,12 @@
 
                                                 <div class="col-md-6 col-lg-4 col-xl-6">
                                                     <label for="">
-                                                        {{ ui_change('building','property_report')  }}
+                                                        {{ ui_change('building', 'property_report') }}
                                                     </label>
                                                     <select name="report_building" id="report_building"
                                                         class="form-control remv_focus" onchange="filterUnits()">
-                                                        <option value="-1" selected>{{ ui_change('All_Buildings','property_report')  }}</option>
+                                                        <option value="-1" selected>
+                                                            {{ ui_change('All_Buildings', 'property_report') }}</option>
                                                         @foreach ($all_building as $building_filter)
                                                             <option value="{{ $building_filter->id }}">
                                                                 {{ $building_filter->name }}
@@ -174,11 +183,12 @@
                                             <div class="row mt-2">
                                                 <div class="col-md-12 col-lg-4 col-xl-6">
                                                     <label for="">
-                                                        {{ ui_change('unit','property_report')  }}
+                                                        {{ ui_change('unit', 'property_report') }}
                                                     </label>
                                                     <select name="report_unit_management" id="report_unit_management"
                                                         class="form-control remv_focus" disabled>
-                                                        <option value="-1">{{ ui_change('All_Units','property_report')  }}</option>
+                                                        <option value="-1">
+                                                            {{ ui_change('All_Units', 'property_report') }}</option>
                                                         @foreach ($unit_management as $unit_management_filter)
                                                             <option value="{{ $unit_management_filter->id }}"
                                                                 data-building="{{ $unit_management_filter->property_management_id }}">
@@ -197,10 +207,11 @@
                                                 </div>
                                                 <div class="col-md-6 col-lg-4 col-xl-6">
                                                     <label for="">
-                                                        {{ ui_change('tenants','property_report')  }}
+                                                        {{ ui_change('tenants', 'property_report') }}
                                                     </label>
                                                     <select name="report_tenant" class="form-control select2">
-                                                        <option value="-1">{{ ui_change('all_tenants','property_report')  }}</option>
+                                                        <option value="-1">
+                                                            {{ ui_change('all_tenants', 'property_report') }}</option>
                                                         @foreach ($tenants as $tenant_filter)
                                                             <option value="{{ $tenant_filter->id }}">
                                                                 {{ $tenant_filter->name ?? $tenant_filter->company_name }}
@@ -213,12 +224,15 @@
                                                 <div class="col-md-6 col-lg-4 col-xl-6">
                                                     <div class="form-group">
                                                         <label for="">
-                                                            {{ ui_change('invoice_status','property_report')  }}
+                                                            {{ ui_change('invoice_status', 'property_report') }}
                                                         </label>
                                                         <select name="invoice_status" class="form-control select2">
-                                                            <option value="-1">{{ ui_change('all','property_report') }}</option>
-                                                            <option value="pending"> {{ ui_change('Pending','property_report')  }}</option>
-                                                            <option value="invoiced"> {{ ui_change('Invoiced','property_report') }}</option>
+                                                            <option value="-1">
+                                                                {{ ui_change('all', 'property_report') }}</option>
+                                                            <option value="pending">
+                                                                {{ ui_change('Pending', 'property_report') }}</option>
+                                                            <option value="invoiced">
+                                                                {{ ui_change('Invoiced', 'property_report') }}</option>
                                                         </select>
                                                     </div>
                                                 </div>
@@ -226,9 +240,9 @@
                                         </div>
                                         <div class="modal-footer">
                                             <button type="button" class="btn btn-secondary"
-                                                data-dismiss="modal">{{ ui_change('Cancel','property_report')  }}</button>
+                                                data-dismiss="modal">{{ ui_change('Cancel', 'property_report') }}</button>
                                             <button type="submit" name="bulk_action_btn" class="btn btn--primary"
-                                                value="filter">{{ ui_change('filter','property_report')  }}</button>
+                                                value="filter">{{ ui_change('filter', 'property_report') }}</button>
                                         </div>
                                     </form>
                                 </div>
@@ -256,17 +270,18 @@
                                 <thead class="thead-light thead-50 text-capitalize">
                                     <tr>
                                         <th><input id="bulk_check_all" class="bulk_check_all" type="checkbox" />
-                                            {{ ui_change('sl','property_report')  }}</th>
-                                        <th class="text-center">{{ ui_change('tenant','property_report')  }}</th>
-                                        <th class="text-center">{{ ui_change('agreement_no','property_report')  }}</th>
-                                        <th class="text-center">{{ ui_change('property','property_report')  }}</th>
-                                        <th class="text-center">{{ ui_change('unit_name','property_report')  }}</th>
-                                        <th class="text-center">{{ ui_change('services','property_report')  }}</th>
-                                        <th class="text-center">{{ ui_change('billing_month_year','property_report')  }}</th>
-                                        <th class="text-center">{{ ui_change('rent_mode','property_report')  }}</th>
-                                        <th class="text-center">{{ ui_change('net_total_amount','property_report')  }}</th>
-                                        <th class="text-center">{{ ui_change('currency_name','property_report')  }}</th>
-                                        <th class="text-center">{{ ui_change('invoice_status','property_report')  }}</th>
+                                            {{ ui_change('sl', 'property_report') }}</th>
+                                        <th class="text-center">{{ ui_change('tenant', 'property_report') }}</th>
+                                        <th class="text-center">{{ ui_change('agreement_no', 'property_report') }}</th>
+                                        <th class="text-center">{{ ui_change('property', 'property_report') }}</th>
+                                        <th class="text-center">{{ ui_change('unit_name', 'property_report') }}</th>
+                                        <th class="text-center">{{ ui_change('services', 'property_report') }}</th>
+                                        <th class="text-center">{{ ui_change('billing_month_year', 'property_report') }}
+                                        </th>
+                                        <th class="text-center">{{ ui_change('rent_mode', 'property_report') }}</th>
+                                        <th class="text-center">{{ ui_change('net_total_amount', 'property_report') }}</th>
+                                        <th class="text-center">{{ ui_change('currency_name', 'property_report') }}</th>
+                                        <th class="text-center">{{ ui_change('invoice_status', 'property_report') }}</th>
                                     </tr>
                                 </thead>
                                 <tbody>
@@ -277,13 +292,13 @@
                                                 {{ $schedules->firstItem() + $k }}</th>
 
                                             <td class="text-center">
-                                                {{ $schedules_item->tenant->type == 'individual' ? $schedules_item->tenant->name ?? ui_change('not_available','property_report')  : $schedules_item->tenant->company_name ?? ui_change('not_available','property_report')  }}
+                                                {{ $schedules_item->tenant->type == 'individual' ? $schedules_item->tenant->name ?? ui_change('not_available', 'property_report') : $schedules_item->tenant->company_name ?? ui_change('not_available', 'property_report') }}
                                             </td>
                                             <td class="text-center">
-                                                {{ $schedules_item->agreement->agreement_no ?? ui_change('not_available','property_report')  }}
+                                                {{ $schedules_item->agreement->agreement_no ?? ui_change('not_available', 'property_report') }}
                                             </td>
                                             <td class="text-center">
-                                                {{ $schedules_item->main_unit->property_unit_management->name ?? ui_change('not_available','property_report')  }}
+                                                {{ $schedules_item->main_unit->property_unit_management->name ?? ui_change('not_available', 'property_report') }}
                                             </td>
                                             <td class="text-center">
                                                 @if ($schedules_item->category == 'rent')
@@ -301,22 +316,35 @@
                                             <td class="text-center">
                                                 @if ($schedules_item->service == 'yes')
                                                     <a id="show_service_info" class="btn   "
-                                                        title="{{ ui_change('show','property_report') }}"
+                                                        title="{{ ui_change('show', 'property_report') }}"
                                                         data-receipt_settings_id="{{ $schedules_item->service_id }}"
                                                         data-target="#show_service_info">
-                                                        {{ $schedules_item->service ?? ui_change('not_available','property_report')  }}
+                                                        {{ $schedules_item->service ?? ui_change('not_available', 'property_report') }}
                                                     </a>
                                                 @else
-                                                    {{ $schedules_item->service ?? ui_change('not_available','property_report')  }}
+                                                    {{ $schedules_item->service ?? ui_change('not_available', 'property_report') }}
                                                 @endif
 
                                             </td>
                                             <td class="text-center">
-                                                {{  $schedules_item->billing_month_year ?? ui_change('not_available','property_report')  }}
+                                                {{ $schedules_item->billing_month_year ?? ui_change('not_available', 'property_report') }}
                                             </td>
                                             <td class="text-center">
-                                                {{ $rent_mode_months[$schedules_item->rent_mode] ?? ui_change('not_available','property_report')  }}
+                                                {{ $rent_mode_months[$schedules_item->rent_mode] ?? ui_change('not_available', 'property_report') }}
                                             </td>
+                                            {{-- <td class="text-center">
+                                                @php
+                                                    $formatted_amount = number_format(
+                                                        $schedules_item->total_amount,
+                                                        $company->decimals ?? 3,
+                                                        '.',
+                                                        '',
+                                                    );
+                                                @endphp
+
+                                                {{ $formatted_amount ?? ui_change('not_available', 'property_report') }}
+                                            </td> --}}
+
                                             <td class="text-center">
                                                 @php
                                                     $formatted_amount = number_format(
@@ -329,10 +357,10 @@
                                                 {{ $formatted_amount ?? ui_change('not_available','property_report')  }}
                                             </td>
                                             <td class="text-center">
-                                                {{ $schedules_item->currency ?? ui_change('not_available','property_report')  }}
+                                                {{ $schedules_item->currency ?? ui_change('not_available', 'property_report') }}
                                             </td>
                                             <td class="text-center">
-                                                {{ $schedules_item->invoice_status ?? ui_change('not_available','property_report')  }}
+                                                {{ $schedules_item->invoice_status ?? ui_change('not_available', 'property_report') }}
                                             </td>
 
 
@@ -355,7 +383,7 @@
                             <img class="mb-3 w-160"
                                 src="{{ asset(main_path() . 'back-end') }}/svg/illustrations/sorry.svg"
                                 alt="Image Description">
-                            <p class="mb-0">{{ ui_change('no_data_to_show','property_report')  }}</p>
+                            <p class="mb-0">{{ ui_change('no_data_to_show', 'property_report') }}</p>
                         </div>
                     @endif
                 </div>
@@ -368,7 +396,8 @@
         <div class="modal-dialog modal-lg" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="exampleModalLabel">{{ ui_change('service_details','property_report') }}</h5>
+                    <h5 class="modal-title" id="exampleModalLabel">{{ ui_change('service_details', 'property_report') }}
+                    </h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -382,9 +411,11 @@
                                     class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table w-100">
                                     <thead class="thead-light thead-50 text-capitalize">
                                         <tr>
-                                            <th class="text-center">{{ ui_change('services_name','property_report')  }} </th>
-                                            <th class="text-center">{{ ui_change('services_code','property_report')  }} </th>
-                                            <th class="text-center">{{ ui_change('vat_amount','property_report')  }} </th>
+                                            <th class="text-center">{{ ui_change('services_name', 'property_report') }}
+                                            </th>
+                                            <th class="text-center">{{ ui_change('services_code', 'property_report') }}
+                                            </th>
+                                            <th class="text-center">{{ ui_change('vat_amount', 'property_report') }} </th>
                                         </tr>
                                     </thead>
                                     <tbody>
@@ -409,7 +440,7 @@
                 </div>
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary"
-                        data-dismiss="modal">{{ ui_change('cancel','property_report')  }}</button>
+                        data-dismiss="modal">{{ ui_change('cancel', 'property_report') }}</button>
                 </div>
 
             </div>
@@ -483,10 +514,10 @@
                 data: $(this).serialize(),
                 success: function(data) {
                     if (data.success == true) {
-                        toastr.success('{{ ui_change('updated_successfully','property_report')  }}');
+                        toastr.success('{{ ui_change('updated_successfully', 'property_report') }}');
                     } else if (data.success == false) {
                         toastr.error(
-                            '{{ ui_change('Status_updated_failed.','property_report') }} {{ ui_change('Product_must_be_approved','property_report')  }}'
+                            '{{ ui_change('Status_updated_failed.', 'property_report') }} {{ ui_change('Product_must_be_approved', 'property_report') }}'
                         );
                         setTimeout(function() {
                             location.reload();
@@ -499,14 +530,14 @@
         $(document).on('click', '.delete', function() {
             var id = $(this).attr("id");
             Swal.fire({
-                title: "{{ ui_change('are_you_sure_delete_this','property_report')  }}",
-                text: "{{ ui_change('you_will_not_be_able_to_revert_this','property_report')  }}!",
+                title: "{{ ui_change('are_you_sure_delete_this', 'property_report') }}",
+                text: "{{ ui_change('you_will_not_be_able_to_revert_this', 'property_report') }}!",
                 type: 'warning',
                 showCancelButton: true,
                 confirmButtonColor: '#3085d6',
                 cancelButtonColor: '#d33',
-                confirmButtonText: "{{ ui_change('yes_delete_it','property_report')  }}!",
-                cancelButtonText: "{{ ui_change('cancel','property_report')  }}",
+                confirmButtonText: "{{ ui_change('yes_delete_it', 'property_report') }}!",
+                cancelButtonText: "{{ ui_change('cancel', 'property_report') }}",
                 reverseButtons: true
             }).then((result) => {
                 if (result.value) {
@@ -522,7 +553,9 @@
                             id: id
                         },
                         success: function() {
-                            toastr.success("{{ ui_change('deleted_successfully','property_report')  }}");
+                            toastr.success(
+                                "{{ ui_change('deleted_successfully', 'property_report') }}"
+                                );
                             location.reload();
                         }
                     });

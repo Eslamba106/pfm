@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\property_reports;
 
 use Mpdf\Mpdf;
@@ -120,6 +121,7 @@ class InvoiceController extends Controller
                     $all_master_invoices[] = $invoice;
                     $grand_total           = 0;
                     $tenant_debit = 0;
+                    $tenant_credit = 0;
                     if (isset($invoice)) {
                         foreach ($schedules as $schedule) {
 
@@ -140,29 +142,31 @@ class InvoiceController extends Controller
                                 'balance_due'    => ($schedule->rent_amount + ((isset($schedule->vat_amount)) ? $schedule->vat_amount : 0)),
 
                             ]);
-                            if($schedule->category == 'service'){
-                                $service = ServiceMaster::find($schedule->service_id); 
+                            if ($schedule->category == 'service') {
+                                $service = ServiceMaster::find($schedule->service_id);
                                 $service->service_ledger->update([
                                     'credit'         => $invoice_item->total,
                                 ]);
-                            }elseif($schedule->category == 'rent'){
-                                $unit_management = UnitManagement::find($schedule->unit_id); 
+                            } elseif ($schedule->category == 'rent') {
+                                $unit_management = UnitManagement::find($schedule->unit_id);
                                 $unit_management->unit_ledger->update([
-                                    'credit'         => $invoice_item->total, 
+                                    'credit'         => $invoice_item->total,
                                 ]);
                             }
 
                             $grand_total += $invoice_item->total;
-                            $tenant_credit += $invoice_item->total ;
+                            $tenant_credit += $invoice_item->total;
                             $schedule->update([
                                 'invoice_status' => 'invoiced',
                             ]);
-                        } 
+                        }
                     }
-                    $ledger = MainLedger::where('group_id' , 49)->where('main_id' , $tenant_invoice->id)->first(); 
-                    $ledger->update([
-                        'debit'    => $tenant_debit,
-                    ]);
+                    $ledger = MainLedger::where('group_id', 49)->where('main_id', $tenant_invoice->id)->first();
+                    if ($ledger) {
+                        $ledger->update([
+                            'debit' => $tenant_debit,
+                        ]);
+                    }
                     $invoice->update([
                         'total' => $grand_total,
                     ]);
@@ -173,7 +177,6 @@ class InvoiceController extends Controller
                 return back()->with('error', ui_change('you_dont_have_invoices_in_this_month'));
             }
             return redirect()->route('invoices.all_invoices')->with('success', 'Invoice All Added Successfully');
-
         } else {
             $tenant = $request->tenant_id != 0 ? (new Tenant())->setConnection('tenant')->find($request->tenant_id) : null;
             // $invoiceMonth   = date('Y-m', strtotime('01-' . $request->invoice_month));
@@ -326,7 +329,6 @@ class InvoiceController extends Controller
                     $itemArray['due']            = Carbon::now()->addMonths($i);
                     (new Invoice())->setConnection('tenant')->create($itemArray);
                 }
-
             } elseif ($rent == 2 && ! isset($invoices_later)) {
                 $itemArray['invoice_date']         = Carbon::now();
                 $itemArray['tenantId']             = $item->tenantId;
@@ -566,11 +568,9 @@ class InvoiceController extends Controller
                 (new Invoice())->setConnection('tenant')->create($itemArray);
                 // }
             }
-
         }
 
         return redirect()->route('invoices.all_invoices')->with('success', 'Generated successfully');
-
     }
 
     public function create(Request $request)
@@ -605,28 +605,28 @@ class InvoiceController extends Controller
         return view('invoices.generate_invoice', compact('schedules', 'tenant', 'invoice_month'));
     }
 
-    public function generate_invoice($id){
+    public function generate_invoice($id)
+    {
         $invoice = Invoice::with('tenant', 'items')->findOrFail($id);
         // $invoice_settings = InvoiceSettings::
         $invoice_settings    = InvoiceSettings::where('invoice_type', 'LIKE', "%{$invoice->invoice_type}%")->first();
         $company_settings    = CompanySettings::first();
         $company             = Company::first();
-        
-        $html = view('invoices.format-1', compact('invoice','company','company_settings' ,'invoice_settings'))->render();
- 
+
+        $html = view('invoices.format-1', compact('invoice', 'company', 'company_settings', 'invoice_settings'))->render();
+
         $mpdf = new Mpdf([
             'margin_top' => 10,
             'margin_bottom' => 10,
             'margin_left' => 10,
             'margin_right' => 10,
-            'default_font' => 'dejavusans'  ,
+            'default_font' => 'dejavusans',
             // 'img_dpi' => 96,
         ]);
         $mpdf->shrink_tables_to_fit = 1;
 
         $mpdf->WriteHTML($html);
- 
+
         return $mpdf->Output("invoice-{$invoice->id}.pdf", 'I');
     }
-
 }

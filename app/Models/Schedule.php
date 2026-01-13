@@ -2,8 +2,9 @@
 
 namespace App\Models;
 
-use Illuminate\Database\Eloquent\Factories\HasFactory;
+use Carbon\Carbon;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 
 class Schedule extends Model
 {
@@ -23,5 +24,16 @@ class Schedule extends Model
 
     public function agreement(){
         return $this->belongsTo(Agreement::class , 'agreement_id');
+    }
+  public function getTotalAmountAttribute()
+    {
+        $month = Carbon::now()->format('Y-m');
+
+        $servicesTotal = self::where('unit_id', $this->unit_id)
+            ->where('category', 'service')
+            ->where('billing_month_year', $month)
+            ->sum('total_service_amount');
+
+        return ($this->rent_amount ?? 0) + $servicesTotal;
     }
 }

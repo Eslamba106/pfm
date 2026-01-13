@@ -116,7 +116,7 @@ class ScheduleController extends Controller
                 $q->Where('agreement_no', 'like', "%{$value}%")
                     ->orWhere('id', $value);
             }
-        })
+        })->where('category', 'rent')
             ->with('tenant', 'agreement', 'main_unit')->where('billing_month_year', Carbon::now()->format('Y-m'))->latest()->orderBy('created_at', 'asc')->paginate()->appends($query_param);
         // }else{
         if ($request->bulk_action_btn === 'filter') {
@@ -152,7 +152,7 @@ class ScheduleController extends Controller
             if (! $request->report_unit_management && ! $request->report_building && ! $request->report_tenant && ! $request->start_date && ! $request->end_date) {
                 $report_query->whereMonth('billing_month_year', Carbon::now()->month);
             }
-            $schedules = $report_query->orderBy('created_at', 'asc')->paginate();
+            $schedules = $report_query->where('category', 'rent')->orderBy('created_at', 'asc')->paginate();
         }
         $all_building    = (new PropertyManagement())->setConnection('tenant')->all();
         $unit_management = (new UnitManagement())->setConnection('tenant')->with(['property_unit_management', 'block_unit_management', 'block_unit_management.block',
