@@ -1075,6 +1075,373 @@
             let addedUnitCondIds = [];
             let addedUnitViewIds = [];
             let addedUnitParkIds = [];
+
+
+
+            $('#add-more-unit-type').on('click', function() {
+                var start_up_unit = $('#start_up_unit').val();
+                var unit_count = $('#no_of_unit').val();
+
+                var floor = $('select[name="floor"]').val();
+                var block = $('select[name="block"]').val();
+                var property = $('select[name="property"]').val();
+                $('.unit-select-type-start option:selected, .unit-select-type-end option:selected').each(
+                    function() {
+                        const val = $(this).val();
+                        if (val && !addedUnitTypeIds.includes(parseInt(val))) {
+                            addedUnitTypeIds.push(parseInt(val));
+                        }
+                    });
+                if (floor) {
+                    $.ajax({
+                        url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
+                            "/" + block + "/" + property,
+                        type: "GET",
+                        data: {
+                            "start_up_unit": start_up_unit,
+                            "unit_count": unit_count
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            if (data) {
+                                var unitOptions = '';
+
+                                $.each(data, function(key, value) {
+                                    if (!addedUnitTypeIds.includes(value.id)) {
+                                        unitOptions +=
+                                            `<option value="${value.id}">${value.name}</option>`;
+                                    }
+                                });
+
+                                if (unitOptions === '') {
+                                    alert('You Dont Have Units');
+                                    return;
+                                }
+
+                                const unitTypeRow = `
+                    <div class="row unit-type-row mt-3">
+                        <div class="col-md-3">
+                            <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control unit-select-type-start" name="unit_start_unit_type[]">
+                                ${unitOptions}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>{{ ui_change('Unit_End', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control unit-select-type-end" name="unit_end_unit_type[]">
+                                ${unitOptions}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_type', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control" name="unit_type[]">
+                                @foreach ($unit_types as $unit_type_item)
+                                <option value="{{ $unit_type_item->id }}">{{ $unit_type_item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
+                        </div>
+                    </div>`;
+
+                                $('#unit-type-container').append(unitTypeRow);
+                                $('.js-select2-custom').select2();
+                                $('.unit-select-start option:selected, .unit-select-type-end option:selected')
+                                    .each(function() {
+                                        const val = $(this).val();
+                                        if (val && !addedUnitTypeIds.includes(val)) {
+                                            addedUnitTypeIds.push(parseInt(val));
+                                        }
+                                    });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error occurred:', error);
+                        }
+                    });
+                }
+            });
+            $(document).on('click', '.btn-remove', function() {
+                const parentRow = $(this).closest('.unit-type-row');
+                const startUnitId = parentRow.find('.unit-select-start').val();
+                const endUnitId = parentRow.find('.unit-select-end').val();
+                addedUnitTypeIds = addedUnitTypeIds.filter(id => id != startUnitId && id != endUnitId);
+                parentRow.remove();
+            });
+            $('#add-more-unit-condition').on('click', function() {
+                var start_up_unit = $('#start_up_unit').val();
+                var unit_count = $('#no_of_unit').val();
+
+                var floor = $('select[name="floor"]').val();
+                var block = $('select[name="block"]').val();
+                var property = $('select[name="property"]').val();
+                $('.unit-select-condition-start option:selected, .unit-select-condition-end option:selected')
+                    .each(function() {
+                        const val = $(this).val();
+                        if (val && !addedUnitCondIds.includes(parseInt(val))) {
+                            addedUnitCondIds.push(parseInt(val));
+                        }
+                    });
+                if (floor) {
+                    $.ajax({
+                        url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
+                            "/" + block + "/" + property,
+                        type: "GET",
+                        data: {
+                            "start_up_unit": start_up_unit,
+                            "unit_count": unit_count
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            if (data) {
+                                var unitOptions = '';
+
+                                $.each(data, function(key, value) {
+                                    if (!addedUnitCondIds.includes(value.id)) {
+                                        unitOptions +=
+                                            `<option value="${value.id}">${value.name}</option>`;
+                                    }
+                                });
+
+                                if (unitOptions === '') {
+                                    alert('You Dont Have Units');
+                                    return;
+                                }
+
+                                const unitTypeRow = `
+                    <div class="row unit-condition-row mt-3">
+                        <div class="col-md-3">
+                            <label>Unit Start</label>
+                            <select class="js-select2-custom form-control unit-select-condition-start" name="unit_start_unit_condition[]">
+                                ${unitOptions}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Unit End</label>
+                            <select class="js-select2-custom form-control unit-select-condition-end" name="unit_end_unit_condition[]">
+                                ${unitOptions}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_condition', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control" name="unit_condition[]">
+                                @foreach ($unit_conditions as $unit_condition_item)
+                                <option value="{{ $unit_condition_item->id }}">{{ $unit_condition_item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
+                        </div>
+                    </div>`;
+
+                                $('#unit-condition-container').append(unitTypeRow);
+                                $('.js-select2-custom').select2();
+                                $('.unit-select-condition-start option:selected, .unit-select-condition-end option:selected')
+                                    .each(function() {
+                                        const val = $(this).val();
+                                        if (val && !addedUnitCondIds.includes(val)) {
+                                            addedUnitCondIds.push(parseInt(val));
+                                        }
+                                    });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error occurred:', error);
+                        }
+                    });
+                }
+            });
+            $(document).on('click', '.btn-remove', function() {
+                const parentRow = $(this).closest('.unit-condition-row');
+                const startUnitId = parentRow.find('.unit-select-condition-start').val();
+                const endUnitId = parentRow.find('.unit-select-condition-end').val();
+                addedUnitCondIds = addedUnitCondIds.filter(id => id != startUnitId && id != endUnitId);
+                parentRow.remove();
+            });
+            $('#add-more-view').on('click', function() {
+                var start_up_unit = $('#start_up_unit').val();
+                var unit_count = $('#no_of_unit').val();
+
+                var floor = $('select[name="floor"]').val();
+                var block = $('select[name="block"]').val();
+                var property = $('select[name="property"]').val();
+                $('.unit-select-view-start option:selected, .unit-select-view-end option:selected').each(
+                    function() {
+                        const val = $(this).val();
+                        if (val && !addedUnitViewIds.includes(parseInt(val))) {
+                            addedUnitViewIds.push(parseInt(val));
+                        }
+                    });
+                if (floor) {
+                    $.ajax({
+                        url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
+                            "/" + block + "/" + property,
+                        type: "GET",
+                        data: {
+                            "start_up_unit": start_up_unit,
+                            "unit_count": unit_count
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            if (data) {
+                                var unitOptions = '';
+
+                                $.each(data, function(key, value) {
+                                    if (!addedUnitViewIds.includes(value.id)) {
+                                        unitOptions +=
+                                            `<option value="${value.id}">${value.name}</option>`;
+                                    }
+                                });
+
+                                if (unitOptions === '') {
+                                    alert('You Dont Have Units');
+                                    return;
+                                }
+
+                                const unitTypeRow = `
+                    <div class="row view-row mt-3">
+                        <div class="col-md-3">
+                            <label>Unit Start</label>
+                            <select class="js-select2-custom form-control unit-select-view-start" name="unit_start_view[]">
+                                ${unitOptions}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Unit End</label>
+                            <select class="js-select2-custom form-control unit-select-view-end" name="unit_end_view[]">
+                                ${unitOptions}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>{{ ui_change('view', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control" name="view[]">
+                                @foreach ($views as $unit_view_item)
+                                <option value="{{ $unit_view_item->id }}">{{ $unit_view_item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
+                        </div>
+                    </div>`;
+
+                                $('#view-container').append(unitTypeRow);
+                                $('.js-select2-custom').select2();
+                                $('.unit-select-view-start option:selected, .unit-select-view-end option:selected')
+                                    .each(function() {
+                                        const val = $(this).val();
+                                        if (val && !addedUnitViewIds.includes(val)) {
+                                            addedUnitViewIds.push(parseInt(val));
+                                        }
+                                    });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error occurred:', error);
+                        }
+                    });
+                }
+            });
+            $(document).on('click', '.btn-remove', function() {
+                const parentRow = $(this).closest('.view-row');
+                const startUnitId = parentRow.find('.unit-select-view-start').val();
+                const endUnitId = parentRow.find('.unit-select-view-end').val();
+                addedUnitViewIds = addedUnitViewIds.filter(id => id != startUnitId && id != endUnitId);
+                parentRow.remove();
+            });
+            $('#add-more-unit-parking').on('click', function() {
+                var start_up_unit = $('#start_up_unit').val();
+                var unit_count = $('#no_of_unit').val();
+
+                var floor = $('select[name="floor"]').val();
+                var block = $('select[name="block"]').val();
+                var property = $('select[name="property"]').val();
+                $('.unit-select-parking-start option:selected, .unit-select-parking-end option:selected')
+                    .each(function() {
+                        const val = $(this).val();
+                        if (val && !addedUnitParkIds.includes(parseInt(val))) {
+                            addedUnitParkIds.push(parseInt(val));
+                        }
+                    });
+                if (floor) {
+                    $.ajax({
+                        url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
+                            "/" + block + "/" + property,
+                        type: "GET",
+                        data: {
+                            "start_up_unit": start_up_unit,
+                            "unit_count": unit_count
+                        },
+                        dataType: "json",
+                        success: function(data) {
+                            if (data) {
+                                var unitOptions = '';
+
+                                $.each(data, function(key, value) {
+                                    if (!addedUnitParkIds.includes(value.id)) {
+                                        unitOptions +=
+                                            `<option value="${value.id}">${value.name}</option>`;
+                                    }
+                                });
+
+                                if (unitOptions === '') {
+                                    alert('You Dont Have Units');
+                                    return;
+                                }
+
+                                const unitTypeRow = `
+                    <div class="row unit-parking-row mt-3">
+                        <div class="col-md-3">
+                            <label>Unit Start</label>
+                            <select class="js-select2-custom form-control unit-select-parking-start" name="unit_start_unit_parking[]">
+                                ${unitOptions}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>Unit End</label>
+                            <select class="js-select2-custom form-control unit-select-parking-end" name="unit_end_unit_parking[]">
+                                ${unitOptions}
+                            </select>
+                        </div>
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_parking', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control" name="unit_parking[]">
+                                @foreach ($unit_parkings as $unit_parking_item)
+                                <option value="{{ $unit_parking_item->id }}">{{ $unit_parking_item->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
+                        </div>
+                    </div>`;
+
+                                $('#unit-parking-container').append(unitTypeRow);
+                                $('.js-select2-custom').select2();
+                                $('.unit-select-parking-start option:selected, .unit-select-parking-end option:selected')
+                                    .each(function() {
+                                        const val = $(this).val();
+                                        if (val && !addedUnitParkIds.includes(val)) {
+                                            addedUnitParkIds.push(parseInt(val));
+                                        }
+                                    });
+                            }
+                        },
+                        error: function(xhr, status, error) {
+                            console.error('Error occurred:', error);
+                        }
+                    });
+                }
+            });
+            $(document).on('click', '.btn-remove', function() {
+                const parentRow = $(this).closest('.unit-parking-row');
+                const startUnitId = parentRow.find('.unit-select-parking-start').val();
+                const endUnitId = parentRow.find('.unit-select-parking-end').val();
+                addedUnitDescIds = addedUnitDescIds.filter(id => id != startUnitId && id != endUnitId);
+                parentRow.remove();
+            });
             $('#add-more-unit-description').on('click', function() {
                 var start_up_unit = $('#start_up_unit').val();
                 var unit_count = $('#no_of_unit').val();
@@ -1082,7 +1449,208 @@
                 var floor = $('select[name="floor"]').val();
                 var block = $('select[name="block"]').val();
                 var property = $('select[name="property"]').val();
+                // $('.unit-select-description-start option:selected, .unit-select-description-end option:selected')
+                //     .each(function() {
+                //         const val = $(this).val();
+                //         if (val && !addedUnitDescIds.includes(parseInt(val))) {
+                //             addedUnitDescIds.push(parseInt(val));
+                //         }
+                //     });
+                // if (floor) {
+                //     $.ajax({
+                //         url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
+                //             "/" + block + "/" + property,
+                //         type: "GET",
+                //         data: {
+                //             "start_up_unit": start_up_unit,
+                //             "unit_count": unit_count
+                //         },
+                //         dataType: "json",
+                //         success: function(data) {
+                //             if (data) {
+                //                 var unitOptions = '';
+                //                 $.each(data, function(key, value) {
+                //                     if (!addedUnitDescIds.includes(value.id)) {
+                //                         unitOptions +=
+                //                             `<option value="${value.id}">${value.name}</option>`;
+                //                     }
+                //                 });
+                //                 console.log(unitOptions);
+                //                 if (unitOptions === '') {
+                //                     alert('You Dont Have Units');
+                //                     return;
+                //                 }
 
+                //                 const unitTypeRow = `
+            //     <div class="row unit-description-row mt-3">
+            //         <div class="col-md-3">
+            //             <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
+            //             <select class="js-select2-custom form-control unit-select-description-start" name="unit_start_unit_description[]">
+            //                 ${unitOptions}
+            //             </select>
+            //         </div>
+            //         <div class="col-md-3">
+            //             <label>{{ ui_change('Unit_End', 'property_config') }}</label>
+            //             <select class="js-select2-custom form-control unit-select-description-end" name="unit_end_unit_description[]">
+            //                 ${unitOptions}
+            //             </select>
+            //         </div>
+            //         <div class="col-md-3">
+            //             <label>{{ ui_change('unit_description', 'property_config') }}</label>
+            //             <select class="js-select2-custom form-control" name="unit_description[]">
+            //                 @foreach ($unit_descriptions as $unit_description_item)
+            //                 <option value="{{ $unit_description_item->id }}">{{ $unit_description_item->name }}</option>
+            //                 @endforeach
+            //             </select>
+            //         </div>
+            //         <div class="col-md-3 d-flex align-items-end">
+            //             <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
+            //         </div>
+            //     </div>`;
+
+                //                 $('#unit-description-container').append(unitTypeRow);
+                //                 $('.js-select2-custom').select2();
+                //                 $('.unit-select-description-start option:selected, .unit-select-description-end option:selected')
+                //                     .each(function() {
+                //                         const val = $(this).val();
+                //                         if (val && !addedUnitDescIds.includes(val)) {
+                //                             addedUnitDescIds.push(parseInt(val));
+                //                         }
+                //                     });
+                //             }
+                //         },
+                //         error: function(xhr, status, error) {
+                //             console.error('Error occurred:', error);
+                //         }
+                //     });
+                // }
+                // افترض إن هذين موجودان في الأعلى
+                // let addedUnitDescIds = []; // لتخزين الوحدات المضافة
+                // let unitCountLimit = unit_count; // عدد الوحدات المسموح إضافتها
+
+                // // التحقق من أي وحدات محددة مسبقاً
+                // $('.unit-select-description-start option:selected, .unit-select-description-end option:selected')
+                //     .each(function() {
+                //         const val = $(this).val();
+                //         if (val && !addedUnitDescIds.includes(parseInt(val))) {
+                //             addedUnitDescIds.push(parseInt(val));
+                //         }
+                //     });
+
+                // // عند اختيار الطابق
+                // if (floor) {
+                //     $.ajax({
+                //         url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
+                //             "/" + block + "/" + property,
+                //         type: "GET",
+                //         data: {
+                //             "start_up_unit": start_up_unit,
+                //             "unit_count": unitCountLimit
+                //         },
+                //         dataType: "json",
+                //         success: function(data) {
+                //             if (!data || data.length === 0) {
+                //                 alert('You Dont Have Units');
+                //                 return;
+                //             }
+
+                //             // أنشئ options للـ select
+                //             var unitOptions = '';
+                //             $.each(data, function(key, value) {
+                //                 if (!addedUnitDescIds.includes(parseInt(value.id))) {
+                //                     unitOptions +=
+                //                         `<option value="${value.id}">${value.name}</option>`;
+                //                 }
+                //             });
+
+                //             // قبل إضافة صف جديد، تحقق من الحد الأقصى
+                //             if (addedUnitDescIds.length >= unitCountLimit) {
+                //                 alert(`You cannot add more than ${unitCountLimit} units`);
+                //                 return;
+                //             }
+
+                //             // صف جديد
+                //             const unitTypeRow = `
+            //                 <div class="row unit-description-row mt-3">
+            //                     <div class="col-md-3">
+            //                         <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
+            //                         <select class="js-select2-custom form-control unit-select-description-start" name="unit_start_unit_description[]">
+            //                             ${unitOptions}
+            //                         </select>
+            //                     </div>
+            //                     <div class="col-md-3">
+            //                         <label>{{ ui_change('Unit_End', 'property_config') }}</label>
+            //                         <select class="js-select2-custom form-control unit-select-description-end" name="unit_end_unit_description[]">
+            //                             ${unitOptions}
+            //                         </select>
+            //                     </div>
+            //                     <div class="col-md-3">
+            //                         <label>{{ ui_change('unit_description', 'property_config') }}</label>
+            //                         <select class="js-select2-custom form-control" name="unit_description[]">
+            //                             @foreach ($unit_descriptions as $unit_description_item)
+            //                             <option value="{{ $unit_description_item->id }}">{{ $unit_description_item->name }}</option>
+            //                             @endforeach
+            //                         </select>
+            //                     </div>
+            //                     <div class="col-md-3 d-flex align-items-end">
+            //                         <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
+            //                     </div>
+            //                 </div>`;
+
+                //             $('#unit-description-container').append(unitTypeRow);
+                //             $('.js-select2-custom').select2();
+
+                //             $('.unit-select-description-start option:selected, .unit-select-description-end option:selected')
+                //                 .each(function() {
+                //                     const val = $(this).val();
+                //                     if (val && !addedUnitDescIds.includes(parseInt(val))) {
+                //                         addedUnitDescIds.push(parseInt(val));
+                //                     }
+                //                 });
+
+                //             $('.unit-select-description-start, .unit-select-description-end')
+                //                 .off('change').on('change', function() {
+                //                     let selectedCount = 0;
+                //                     addedUnitDescIds = [];
+
+                //                     $('.unit-select-description-start option:selected, .unit-select-description-end option:selected')
+                //                         .each(function() {
+                //                             const val = $(this).val();
+                //                             if (val) {
+                //                                 addedUnitDescIds.push(parseInt(val));
+                //                                 selectedCount++;
+                //                             }
+                //                         });
+
+                //                     if (selectedCount > unitCountLimit) {
+                //                         alert(
+                //                             `You cannot select more than ${unitCountLimit} units`);
+                //                         $(this).val(null).trigger('change');
+                //                         addedUnitDescIds = [];
+                //                         $('.unit-select-description-start option:selected, .unit-select-description-end option:selected')
+                //                             .each(function() {
+                //                                 const val = $(this).val();
+                //                                 if (val) addedUnitDescIds.push(parseInt(
+                //                                     val));
+                //                             });
+                //                     }
+                //                 });
+                //             $('.btn-remove').off('click').on('click', function() {
+                //                 const row = $(this).closest('.unit-description-row');
+                //                 row.find('option:selected').each(function() {
+                //                     const val = parseInt($(this).val());
+                //                     const index = addedUnitDescIds.indexOf(val);
+                //                     if (index > -1) addedUnitDescIds.splice(
+                //                         index, 1);
+                //                 });
+                //                 row.remove();
+                //             });
+                //         },
+                //         error: function(xhr, status, error) {
+                //             console.error('Error occurred:', error);
+                //         }
+                //     });
+                // } 
                 let addedUnitDescIds = [];
                 let unitCountLimit = unit_count;
                 $('.unit-select-description-start option:selected, .unit-select-description-end option:selected')
@@ -1195,7 +1763,9 @@
                     if (selectedCount > unitCountLimit) {
 
                         $(event.target).val(null).trigger('change');
-                    } 
+                    }
+
+                    // checkUnitLimitMessage(); 
                 }
 
                 function checkUnitLimitMessage() {
@@ -1209,644 +1779,15 @@
                     }
                 }
 
-                $(document).on('click', '.btn-remove', function() {
-                    $('#add-more-unit-description').removeClass('d-none');
-                    const parentRow = $(this).closest('.unit-description-row');
-                    const startUnitId = parentRow.find('.unit-select-description-start').val();
-                    const endUnitId = parentRow.find('.unit-select-description-end').val();
-                    addedUnitDescIds = addedUnitDescIds.filter(id => id != startUnitId && id !=
-                        endUnitId);
-                    parentRow.remove();
-                    updateAddedUnits();
-                    checkUnitLimitMessage();
-                });
+
             });
-            $('#add-more-unit-parking').on('click', function() {
-                var start_up_unit = $('#start_up_unit').val();
-                var unit_count = $('#no_of_unit').val();
-
-                var floor = $('select[name="floor"]').val();
-                var block = $('select[name="block"]').val();
-                var property = $('select[name="property"]').val();
-
-                let addedUnitParkIds = [];
-                let unitCountLimit = unit_count;
-                $('.unit-select-parking-start option:selected, .unit-select-parking-end option:selected')
-                    .each(function() {
-                        const val = $(this).val();
-                        if (val && !addedUnitParkIds.includes(parseInt(val))) {
-                            addedUnitParkIds.push(parseInt(val));
-                        }
-                    });
-
-                if (floor) {
-                    $.ajax({
-                        url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
-                            "/" + block + "/" + property,
-                        type: "GET",
-                        data: {
-                            "start_up_unit": start_up_unit,
-                            "unit_count": unitCountLimit
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            if (!data || data.length === 0) {
-                                console.log('You Dont Have Units');
-                                return;
-                            }
-
-                            let unitOptions = '';
-                            $.each(data, function(key, value) {
-                                if (!addedUnitParkIds.includes(parseInt(value.id))) {
-                                    unitOptions +=
-                                        `<option value="${value.id}">${value.name}</option>`;
-                                }
-                            });
-
-                            if (addedUnitParkIds.length >= unitCountLimit) {
-                                console.log('Reached unit limit, cannot add more rows');
-                                $('#add-more-unit-parking').addClass('d-none');
-                                return;
-                            } else {
-                                $('#add-more-unit-parking').removeClass('d-none');
-                            }
-
-                            const unitTypeRow = `
-                <div class="row unit-parking-row mt-3">
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-parking-start" name="unit_start_unit_parking[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_End', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-parking-end" name="unit_end_unit_parking[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('unit_parking', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control" name="unit_parking[]">
-                            @foreach ($unit_parkings as $unit_parking_item)
-                            <option value="{{ $unit_parking_item->id }}">{{ $unit_parking_item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
-                    </div>
-                </div>`;
-
-                            $('#unit-parking-container').append(unitTypeRow);
-                            $('.js-select2-custom').select2();
-
-                            updateAddedUnitsParking();
-
-                            $('.unit-select-parking-start, .unit-select-parking-end')
-                                .off('change').on('change', function() {
-                                    updateAddedUnitsParking();
-                                });
-
-                            $('.btn-remove').off('click').on('click', function() {
-                                const row = $(this).closest('.unit-parking-row');
-                                row.find('option:selected').each(function() {
-                                    const val = parseInt($(this).val());
-                                    const index = addedUnitParkIds.indexOf(val);
-                                    if (index > -1) addedUnitParkIds.splice(
-                                        index, 1);
-                                });
-                                row.remove();
-                                checkUnitLimitMessageParking();
-                            });
-
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error occurred:', error);
-                        }
-                    });
-                }
-
-                function updateAddedUnitsParking() {
-                    addedUnitParkIds = [];
-                    let selectedCount = 0;
-
-                    $('.unit-select-parking-start option:selected, .unit-select-parking-end option:selected')
-                        .each(function() {
-                            const val = $(this).val();
-                            if (val) {
-                                addedUnitParkIds.push(parseInt(val));
-                                selectedCount++;
-                            }
-                        });
-
-                    if (selectedCount > unitCountLimit) {
-
-                        $(event.target).val(null).trigger('change');
-                    }
-
-                    // checkUnitLimitMessage(); 
-                }
-
-                function checkUnitLimitMessageParking() {
-                    if (addedUnitParkIds.length >= unitCountLimit) {
-                        if ($('#unit-limit-parking-message').length === 0) {
-                            $('<div id="unit-limit-parking-message" class="text-danger mt-2">{{ ui_change('You cannot add more than') }}</div>')
-                                .insertBefore('#unit-parking-container');
-                        }
-                    } else {
-                        $('#unit-limit-parking-message').remove();
-                    }
-                }
-
-                $(document).on('click', '.btn-remove', function() {
-                    $('#add-more-unit-parking').removeClass('d-none');
-                    const parentRow = $(this).closest('.unit-parking-row');
-                    const startUnitId = parentRow.find('.unit-select-parking-start').val();
-                    const endUnitId = parentRow.find('.unit-select-parking-end').val();
-                    addedUnitParkIds = addedUnitParkIds.filter(id => id != startUnitId && id !=
-                        endUnitId);
-                    parentRow.remove();
-                    updateAddedUnitsParking();
-                    checkUnitLimitMessageParking();
-
-
-                });
+            $(document).on('click', '.btn-remove', function() {
+                const parentRow = $(this).closest('.unit-description-row');
+                const startUnitId = parentRow.find('.unit-select-description-start').val();
+                const endUnitId = parentRow.find('.unit-select-description-end').val();
+                addedUnitDescIds = addedUnitDescIds.filter(id => id != startUnitId && id != endUnitId);
+                parentRow.remove();
             });
-
-
-
-
-            // Unit Type
-            $('#add-more-unit-type').on('click', function() {
-                var start_up_unit = $('#start_up_unit').val();
-                var unit_count = $('#no_of_unit').val();
-
-                var floor = $('select[name="floor"]').val();
-                var block = $('select[name="block"]').val();
-                var property = $('select[name="property"]').val();
-
-                let addedUnitTypeIds = [];
-                let unitCountLimit = unit_count;
-                $('.unit-select-type-start option:selected, .unit-select-type-end option:selected')
-                    .each(function() {
-                        const val = $(this).val();
-                        if (val && !addedUnitTypeIds.includes(parseInt(val))) {
-                            addedUnitTypeIds.push(parseInt(val));
-                        }
-                    });
-
-                if (floor) {
-                    $.ajax({
-                        url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
-                            "/" + block + "/" + property,
-                        type: "GET",
-                        data: {
-                            "start_up_unit": start_up_unit,
-                            "unit_count": unitCountLimit
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            if (!data || data.length === 0) {
-                                console.log('You Dont Have Units');
-                                return;
-                            }
-
-                            let unitOptions = '';
-                            $.each(data, function(key, value) {
-                                if (!addedUnitTypeIds.includes(parseInt(value.id))) {
-                                    unitOptions +=
-                                        `<option value="${value.id}">${value.name}</option>`;
-                                }
-                            });
-
-                            if (addedUnitTypeIds.length >= unitCountLimit) {
-                                console.log('Reached unit limit, cannot add more rows');
-                                $('#add-more-unit-type').addClass('d-none');
-                                return;
-                            } else {
-                                $('#add-more-unit-type').removeClass('d-none');
-                            }
-
-                            const unitTypeRow = `
-                <div class="row unit-type-row mt-3">
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-type-start" name="unit_start_unit_type[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_End', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-type-end" name="unit_end_unit_type[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('unit_type', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control" name="unit_type[]">
-                            @foreach ($unit_types as $unit_type_item)
-                            <option value="{{ $unit_type_item->id }}">{{ $unit_type_item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
-                    </div>
-                </div>`;
-
-                            $('#unit-type-container').append(unitTypeRow);
-                            $('.js-select2-custom').select2();
-
-                            updateAddedUnitsType();
-
-                            $('.unit-select-type-start, .unit-select-type-end')
-                                .off('change').on('change', function() {
-                                    updateAddedUnitsType();
-                                });
-
-                            $('.btn-remove').off('click').on('click', function() {
-                                const row = $(this).closest('.unit-type-row');
-                                row.find('option:selected').each(function() {
-                                    const val = parseInt($(this).val());
-                                    const index = addedUnitTypeIds.indexOf(val);
-                                    if (index > -1) addedUnitTypeIds.splice(
-                                        index, 1);
-                                });
-                                row.remove();
-                                checkUnitLimitMessageType();
-                            });
-
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error occurred:', error);
-                        }
-                    });
-                }
-
-                function updateAddedUnitsType() {
-                    addedUnitTypeIds = [];
-                    let selectedCount = 0;
-
-                    $('.unit-select-type-start option:selected, .unit-select-type-end option:selected')
-                        .each(function() {
-                            const val = $(this).val();
-                            if (val) {
-                                addedUnitTypeIds.push(parseInt(val));
-                                selectedCount++;
-                            }
-                        });
-
-                    if (selectedCount > unitCountLimit) {
-
-                        $(event.target).val(null).trigger('change');
-                    }
-
-                    // checkUnitLimitMessage(); 
-                }
-
-                function checkUnitLimitMessageType() {
-                    if (addedUnitTypeIds.length >= unitCountLimit) {
-                        if ($('#unit-limit-type-message').length === 0) {
-                            $('<div id="unit-limit-type-message" class="text-danger mt-2">{{ ui_change('You cannot add more than') }}</div>')
-                                .insertBefore('#unit-type-container');
-                        }
-                    } else {
-                        $('#unit-limit-type-message').remove();
-                    }
-                }
-
-                $(document).on('click', '.btn-remove', function() {
-                    $('#add-more-unit-type').removeClass('d-none');
-                    const parentRow = $(this).closest('.unit-type-row');
-                    const startUnitId = parentRow.find('.unit-select-type-start').val();
-                    const endUnitId = parentRow.find('.unit-select-type-end').val();
-                    addedUnitTypeIds = addedUnitTypeIds.filter(id => id != startUnitId && id !=
-                        endUnitId);
-                    parentRow.remove();
-                    updateAddedUnitsType();
-                    checkUnitLimitMessageType();
-
-
-                });
-            });
-
-
-
-
-            // Unit Condition
-            $('#add-more-unit-condition').on('click', function() {
-                var start_up_unit = $('#start_up_unit').val();
-                var unit_count = $('#no_of_unit').val();
-
-                var floor = $('select[name="floor"]').val();
-                var block = $('select[name="block"]').val();
-                var property = $('select[name="property"]').val();
-
-                let addedUnitCondIds = [];
-                let unitCountLimit = unit_count;
-                $('.unit-select-condition-start option:selected, .unit-select-condition-end option:selected')
-                    .each(function() {
-                        const val = $(this).val();
-                        if (val && !addedUnitCondIds.includes(parseInt(val))) {
-                            addedUnitCondIds.push(parseInt(val));
-                        }
-                    });
-
-                if (floor) {
-                    $.ajax({
-                        url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
-                            "/" + block + "/" + property,
-                        type: "GET",
-                        data: {
-                            "start_up_unit": start_up_unit,
-                            "unit_count": unitCountLimit
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            if (!data || data.length === 0) {
-                                console.log('You Dont Have Units');
-                                return;
-                            }
-
-                            let unitOptions = '';
-                            $.each(data, function(key, value) {
-                                if (!addedUnitCondIds.includes(parseInt(value.id))) {
-                                    unitOptions +=
-                                        `<option value="${value.id}">${value.name}</option>`;
-                                }
-                            });
-
-                            if (addedUnitCondIds.length >= unitCountLimit) {
-                                console.log('Reached unit limit, cannot add more rows');
-                                $('#add-more-unit-condition').addClass('d-none');
-                                return;
-                            } else {
-                                $('#add-more-unit-condition').removeClass('d-none');
-                            }
-
-                            const unitTypeRow = `
-                <div class="row unit-condition-row mt-3">
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-condition-start" name="unit_start_unit_condition[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_End', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-condition-end" name="unit_end_unit_condition[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('unit_condition', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control" name="unit_condition[]">
-                            @foreach ($unit_conditions as $unit_condition_item)
-                            <option value="{{ $unit_condition_item->id }}">{{ $unit_condition_item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
-                    </div>
-                </div>`;
-
-                            $('#unit-condition-container').append(unitTypeRow);
-                            $('.js-select2-custom').select2();
-
-                            updateAddedUnitsCondition();
-
-                            $('.unit-select-condition-start, .unit-select-condition-end')
-                                .off('change').on('change', function() {
-                                    updateAddedUnitsCondition();
-                                });
-
-                            $('.btn-remove').off('click').on('click', function() {
-                                const row = $(this).closest('.unit-condition-row');
-                                row.find('option:selected').each(function() {
-                                    const val = parseInt($(this).val());
-                                    const index = addedUnitCondIds.indexOf(val);
-                                    if (index > -1) addedUnitCondIds.splice(
-                                        index, 1);
-                                });
-                                row.remove();
-                                checkUnitLimitMessageCondition();
-                            });
-
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error occurred:', error);
-                        }
-                    });
-                }
-
-                function updateAddedUnitsCondition() {
-                    addedUnitCondIds = [];
-                    let selectedCount = 0;
-
-                    $('.unit-select-condition-start option:selected, .unit-select-condition-end option:selected')
-                        .each(function() {
-                            const val = $(this).val();
-                            if (val) {
-                                addedUnitCondIds.push(parseInt(val));
-                                selectedCount++;
-                            }
-                        });
-
-                    if (selectedCount > unitCountLimit) {
-
-                        $(event.target).val(null).trigger('change');
-                    }
-
-                    // checkUnitLimitMessage(); 
-                }
-
-                function checkUnitLimitMessageCondition() {
-                    if (addedUnitCondIds.length >= unitCountLimit) {
-                        if ($('#unit-limit-condition-message').length === 0) {
-                            $('<div id="unit-limit-condition-message" class="text-danger mt-2">{{ ui_change('You cannot add more than') }}</div>')
-                                .insertBefore('#unit-condition-container');
-                        }
-                    } else {
-                        $('#unit-limit-condition-message').remove();
-                    }
-                }
-
-                $(document).on('click', '.btn-remove', function() {
-                    $('#add-more-unit-condition').removeClass('d-none');
-                    const parentRow = $(this).closest('.unit-condition-row');
-                    const startUnitId = parentRow.find('.unit-select-condition-start').val();
-                    const endUnitId = parentRow.find('.unit-select-condition-end').val();
-                    addedUnitCondIds = addedUnitCondIds.filter(id => id != startUnitId && id !=
-                        endUnitId);
-                    parentRow.remove();
-                    updateAddedUnitsType();
-                    checkUnitLimitMessageType();
-
-
-                });
-            });
-
-
-
-
-            // View
-            $('#add-more-view').on('click', function() {
-                var start_up_unit = $('#start_up_unit').val();
-                var unit_count = $('#no_of_unit').val();
-
-                var floor = $('select[name="floor"]').val();
-                var block = $('select[name="block"]').val();
-                var property = $('select[name="property"]').val();
-
-                let addedUnitViewIds = [];
-                let unitCountLimit = unit_count;
-                $('.unit-select-view-start option:selected, .unit-select-view-end option:selected')
-                    .each(function() {
-                        const val = $(this).val();
-                        if (val && !addedUnitViewIds.includes(parseInt(val))) {
-                            addedUnitViewIds.push(parseInt(val));
-                        }
-                    });
-
-                if (floor) {
-                    $.ajax({
-                        url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
-                            "/" + block + "/" + property,
-                        type: "GET",
-                        data: {
-                            "start_up_unit": start_up_unit,
-                            "unit_count": unitCountLimit
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            if (!data || data.length === 0) {
-                                console.log('You Dont Have Units');
-                                return;
-                            }
-
-                            let unitOptions = '';
-                            $.each(data, function(key, value) {
-                                if (!addedUnitViewIds.includes(parseInt(value.id))) {
-                                    unitOptions +=
-                                        `<option value="${value.id}">${value.name}</option>`;
-                                }
-                            });
-
-                            if (addedUnitViewIds.length >= unitCountLimit) {
-                                console.log('Reached unit limit, cannot add more rows');
-                                $('#add-more-view').addClass('d-none');
-                                return;
-                            } else {
-                                $('#add-more-view').removeClass('d-none');
-                            }
-
-                            const unitTypeRow = `
-                <div class="row view-row mt-3">
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-view-start" name="unit_start_view[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_End', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-view-end" name="unit_end_view[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('view', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control" name="view[]">
-                            @foreach ($views as $view_item)
-                            <option value="{{ $view_item->id }}">{{ $view_item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
-                    </div>
-                </div>`;
-
-                            $('#view-container').append(unitTypeRow);
-                            $('.js-select2-custom').select2();
-
-                            updateAddedView();
-
-                            $('.unit-select-view-start, .unit-select-view-end')
-                                .off('change').on('change', function() {
-                                    updateAddedView();
-                                });
-
-                            $('.btn-remove').off('click').on('click', function() {
-                                const row = $(this).closest('.view-row');
-                                row.find('option:selected').each(function() {
-                                    const val = parseInt($(this).val());
-                                    const index = addedUnitViewIds.indexOf(val);
-                                    if (index > -1) addedUnitViewIds.splice(
-                                        index, 1);
-                                });
-                                row.remove();
-                                checkUnitLimitMessageView();
-                            });
-
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error occurred:', error);
-                        }
-                    });
-                }
-
-                function updateAddedView() {
-                    addedUnitViewIds = [];
-                    let selectedCount = 0;
-
-                    $('.unit-select-view-start option:selected, .unit-select-view-end option:selected')
-                        .each(function() {
-                            const val = $(this).val();
-                            if (val) {
-                                addedUnitViewIds.push(parseInt(val));
-                                selectedCount++;
-                            }
-                        });
-
-                    if (selectedCount > unitCountLimit) {
-
-                        $(event.target).val(null).trigger('change');
-                    }
-
-                    // checkUnitLimitMessage(); 
-                }
-
-                function checkUnitLimitMessageView() {
-                    if (addedUnitViewIds.length >= unitCountLimit) {
-                        if ($('#unit-limit-view-message').length === 0) {
-                            $('<div id="unit-limit-view-message" class="text-danger mt-2">{{ ui_change('You cannot add more than') }}</div>')
-                                .insertBefore('#view-container');
-                        }
-                    } else {
-                        $('#unit-limit-view-message').remove();
-                    }
-                }
-
-                $(document).on('click', '.btn-remove', function() {
-                    $('#add-more-view').removeClass('d-none');
-                    const parentRow = $(this).closest('.view-row');
-                    const startUnitId = parentRow.find('.unit-select-view-start').val();
-                    const endUnitId = parentRow.find('.unit-select-view-end').val();
-                    addedUnitViewIds = addedUnitViewIds.filter(id => id != startUnitId && id !=
-                        endUnitId);
-                    parentRow.remove();
-                    updateAddedView();
-                    checkUnitLimitMessageView();
-
-
-                });
-            });
-
-
-
 
 
         });

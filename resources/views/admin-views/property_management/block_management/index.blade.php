@@ -2,7 +2,7 @@
 @php
     $lang = Session::get('locale');
 @endphp
-@section('title', ui_change('block', 'property_config'))
+@section('title', ui_change('blocks_list', 'property_config'))
 @push('css_or_js')
     <!-- Custom styles for this page -->
     <link href="{{ asset('public/assets/back-end') }}/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -52,7 +52,7 @@
         <div class="mb-3 d-flex align-items-center justify-content-between">
             <h2 class="h1 mb-0 d-flex gap-2 align-items-center">
                 {{-- <img width="60" src="{{ asset('/public/assets/back-end/img/block.jpg') }}" alt=""> --}}
-                {{ ui_change('block', 'property_config') }}
+                {{ ui_change('blocks_list', 'property_config') }}
             </h2>
 
         </div>

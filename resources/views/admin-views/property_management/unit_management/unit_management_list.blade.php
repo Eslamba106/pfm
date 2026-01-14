@@ -1,6 +1,6 @@
 @extends('layouts.back-end.app')
 
-@section('title', ui_change('all_unit_management' , 'property_config'))
+@section('title', ui_change('units_list' , 'property_config'))
 
 @push('css_or_js')
 @endpush
@@ -11,7 +11,7 @@
         <div class="mb-3">
             <h2 class="h1 mb-0 text-capitalize d-flex gap-2">
                 {{-- <img src="{{ asset(main_path() . 'back-end/img/inhouse-subscription-list.png') }}" alt=""> --}}
-                {{ ui_change('all_unit_management' , 'property_config') }}
+                {{ ui_change('units_list' , 'property_config') }}
                 <span class="badge badge-soft-dark radius-50 fz-14 ml-1">{{ $unit_management->total() }}</span>
             </h2>
         </div>
