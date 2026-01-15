@@ -806,59 +806,59 @@
                 $('.view').addClass('d-none');
             })
 
-            $('#unit_type_mode_range').on('click', function() {
-                $('#general_unit_type').attr('disabled', true);
-                $('.unit_type').removeClass('d-none');
-                var start_up_unit = $('#start_up_unit').val();
-                var unit_count = $('#no_of_unit').val();
+            // $('#unit_type_mode_range').on('click', function() {
+            //     $('#general_unit_type').attr('disabled', true);
+            //     $('.unit_type').removeClass('d-none');
+            //     var start_up_unit = $('#start_up_unit').val();
+            //     var unit_count = $('#no_of_unit').val();
 
-                var floor = $('select[name="floor"]').val();
-                var block = $('select[name="block"]').val();
-                var property = $('select[name="property"]').val();
-                if (floor) {
-                    $.ajax({
-                        url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
-                            "/" + block + "/" + property,
-                        type: "GET",
-                        data: {
-                            "start_up_unit": start_up_unit,
-                            "unit_count": unit_count
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            if (data) {
-                                $('select[name="unit_start_unit_type"]').removeAttr('disabled');
+            //     var floor = $('select[name="floor"]').val();
+            //     var block = $('select[name="block"]').val();
+            //     var property = $('select[name="property"]').val();
+            //     if (floor) {
+            //         $.ajax({
+            //             url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
+            //                 "/" + block + "/" + property,
+            //             type: "GET",
+            //             data: {
+            //                 "start_up_unit": start_up_unit,
+            //                 "unit_count": unit_count
+            //             },
+            //             dataType: "json",
+            //             success: function(data) {
+            //                 if (data) {
+            //                     $('select[name="unit_start_unit_type"]').removeAttr('disabled');
 
-                                $('select[name="unit_start_unit_type"]').empty().append(
-                                    '<option value=""  selected>{{ ui_change('select', 'property_config') }}</option>'
-                                );
-                                $('select[name="unit_start_unit_type[]"]').empty();
-                                $('select[name="unit_end_unit_type[]"]').empty();
-                                $.each(data, function(key, value) {
-                                    $('select[name="unit_start_unit_type[]"]').append(
-                                        '<option value="' + value.id +
-                                        '">' + value.name + '</option>'
-                                    )
-                                    $('select[name="unit_end_unit_type[]"]').append(
-                                        '<option value="' + value.id +
-                                        '">' + value.name + '</option>'
-                                    )
-                                })
+            //                     $('select[name="unit_start_unit_type"]').empty().append(
+            //                         '<option value=""  selected>{{ ui_change('select', 'property_config') }}</option>'
+            //                     );
+            //                     $('select[name="unit_start_unit_type[]"]').empty();
+            //                     $('select[name="unit_end_unit_type[]"]').empty();
+            //                     $.each(data, function(key, value) {
+            //                         $('select[name="unit_start_unit_type[]"]').append(
+            //                             '<option value="' + value.id +
+            //                             '">' + value.name + '</option>'
+            //                         )
+            //                         $('select[name="unit_end_unit_type[]"]').append(
+            //                             '<option value="' + value.id +
+            //                             '">' + value.name + '</option>'
+            //                         )
+            //                     })
 
-                            } else {
-                                // $('input[name="token"]').removeAttr('disabled')
-                            }
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error occurred:', error);
-                            // $('input[name="token"]').removeAttr('disabled')
-                            //
-                        }
-                    });
-                }
+            //                 } else {
+            //                     // $('input[name="token"]').removeAttr('disabled')
+            //                 }
+            //             },
+            //             error: function(xhr, status, error) {
+            //                 console.error('Error occurred:', error);
+            //                 // $('input[name="token"]').removeAttr('disabled')
+            //                 //
+            //             }
+            //         });
+            //     }
 
 
-            })
+            // })
             $('#unit_description_mode_range').on('click', function() {
                 $('#general_unit_description').attr('disabled', true);
                 $('.unit_description').removeClass('d-none');
@@ -911,158 +911,650 @@
 
 
             })
+            // $('#unit_condition_mode_range').on('click', function() {
+            //     $('#general_unit_condition').attr('disabled', true);
+            //     $('.unit_condition').removeClass('d-none');
+            //     var start_up_unit = $('#start_up_unit').val();
+            //     var unit_count = $('#no_of_unit').val();
+
+            //     var floor = $('select[name="floor"]').val();
+            //     var block = $('select[name="block"]').val();
+            //     var property = $('select[name="property"]').val();
+            //     if (floor) {
+            //         $.ajax({
+            //             url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
+            //                 "/" + block + "/" + property,
+            //             type: "GET",
+            //             data: {
+            //                 "start_up_unit": start_up_unit,
+            //                 "unit_count": unit_count
+            //             },
+            //             dataType: "json",
+            //             success: function(data) {
+            //                 if (data) {
+            //                     $('select[name="unit_start_unit_condition"]').removeAttr(
+            //                         'disabled');
+
+            //                     $('select[name="unit_start_unit_condition"]').empty().append(
+            //                         '<option value=""  selected>{{ ui_change('select', 'property_config') }}</option>'
+            //                     );
+            //                     $('select[name="unit_start_unit_condition[]"]').empty();
+            //                     $('select[name="unit_end_unit_condition[]"]').empty();
+            //                     $.each(data, function(key, value) {
+            //                         $('select[name="unit_start_unit_condition[]"]')
+            //                             .append(
+            //                                 '<option value="' + value.id +
+            //                                 '">' + value.name + '</option>'
+            //                             )
+            //                         $('select[name="unit_end_unit_condition[]"]')
+            //                             .append(
+            //                                 '<option value="' + value.id +
+            //                                 '">' + value.name + '</option>'
+            //                             )
+            //                     })
+
+            //                 } else {}
+            //             },
+            //             error: function(xhr, status, error) {
+            //                 console.error('Error occurred:', error);
+            //             }
+            //         });
+            //     }
+
+
+            // })
+            // $('#unit_parking_mode_range').on('click', function() {
+            //     $('#general_unit_parking').attr('disabled', true);
+            //     $('.unit_parking').removeClass('d-none');
+            //     var start_up_unit = $('#start_up_unit').val();
+            //     var unit_count = $('#no_of_unit').val();
+
+            //     var floor = $('select[name="floor"]').val();
+            //     var block = $('select[name="block"]').val();
+            //     var property = $('select[name="property"]').val();
+            //     if (floor) {
+            //         $.ajax({
+            //             url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
+            //                 "/" + block + "/" + property,
+            //             type: "GET",
+            //             data: {
+            //                 "start_up_unit": start_up_unit,
+            //                 "unit_count": unit_count
+            //             },
+            //             dataType: "json",
+            //             success: function(data) {
+            //                 if (data) {
+            //                     $('select[name="unit_start_unit_parking"]').removeAttr(
+            //                         'disabled');
+
+            //                     $('select[name="unit_start_unit_parking"]').empty().append(
+            //                         '<option value=""  selected>{{ ui_change('select', 'property_config') }}</option>'
+            //                     );
+            //                     $('select[name="unit_start_unit_parking[]"]').empty();
+            //                     $('select[name="unit_end_unit_parking[]"]').empty();
+            //                     $.each(data, function(key, value) {
+            //                         $('select[name="unit_start_unit_parking[]"]')
+            //                             .append(
+            //                                 '<option value="' + value.id +
+            //                                 '">' + value.name + '</option>'
+            //                             )
+            //                         $('select[name="unit_end_unit_parking[]"]').append(
+            //                             '<option value="' + value.id +
+            //                             '">' + value.name + '</option>'
+            //                         )
+            //                     })
+
+            //                 } else {}
+            //             },
+            //             error: function(xhr, status, error) {
+            //                 console.error('Error occurred:', error);
+            //             }
+            //         });
+            //     }
+
+
+            // })
+            // $('#view_mode_range').on('click', function() {
+            //     $('#general_view').attr('disabled', true);
+            //     $('.view').removeClass('d-none');
+            //     var start_up_unit = $('#start_up_unit').val();
+            //     var unit_count = $('#no_of_unit').val();
+
+            //     var floor = $('select[name="floor"]').val();
+            //     var block = $('select[name="block"]').val();
+            //     var property = $('select[name="property"]').val();
+            //     if (floor) {
+            //         $.ajax({
+            //             url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
+            //                 "/" + block + "/" + property,
+            //             type: "GET",
+            //             data: {
+            //                 "start_up_unit": start_up_unit,
+            //                 "unit_count": unit_count
+            //             },
+            //             dataType: "json",
+            //             success: function(data) {
+            //                 if (data) {
+            //                     $('select[name="unit_start_view"]').removeAttr('disabled');
+
+            //                     $('select[name="unit_start_view"]').empty().append(
+            //                         '<option value=""  selected>{{ ui_change('select', 'property_config') }}</option>'
+            //                     );
+            //                     $('select[name="unit_start_view[]"]').empty();
+            //                     $('select[name="unit_end_view[]"]').empty();
+            //                     $.each(data, function(key, value) {
+            //                         $('select[name="unit_start_view[]"]').append(
+            //                             '<option value="' + value.id +
+            //                             '">' + value.name + '</option>'
+            //                         )
+            //                         $('select[name="unit_end_view[]"]').append(
+            //                             '<option value="' + value.id +
+            //                             '">' + value.name + '</option>'
+            //                         )
+            //                     })
+
+            //                 } else {}
+            //             },
+            //             error: function(xhr, status, error) {
+            //                 console.error('Error occurred:', error);
+            //             }
+            //         });
+            //     }
+
+
+            // })
+
+
+
+            $('#unit_type_mode_range').on('click', function() {
+
+                $('#general_unit_type').prop('disabled', true);
+                $('.general_unit_type').addClass('d-none');
+                $('.unit_type').removeClass('d-none');
+
+                let $typeContainer = $('#unit-type-container');
+                $typeContainer.empty();
+
+                let hasDescription = $('.unit-description-row').length > 0;
+
+                if (hasDescription) {
+
+                    $('.unit-description-row').each(function() {
+
+                        let startVal = $(this)
+                            .find('.unit-select-description-start')
+                            .val();
+
+                        let endVal = $(this)
+                            .find('.unit-select-description-end')
+                            .val();
+
+                        let startText = $(this)
+                            .find('.unit-select-description-start option:selected')
+                            .text();
+
+                        let endText = $(this)
+                            .find('.unit-select-description-end option:selected')
+                            .text();
+
+                        if (!startVal || !endVal) return;
+
+                        appendTypeRow(startVal, startText, endVal, endText);
+                    });
+
+                    $('.js-select2-custom').select2();
+                    return;
+                }
+
+                let start_up_unit = $('#start_up_unit').val();
+                let unit_count = $('#no_of_unit').val();
+                let floor = $('select[name="floor"]').val();
+                let block = $('select[name="block"]').val();
+                let property = $('select[name="property"]').val();
+
+                if (!floor) return;
+
+                $.ajax({
+                    url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" +
+                        floor + "/" + block + "/" + property,
+                    type: "GET",
+                    data: {
+                        start_up_unit: start_up_unit,
+                        unit_count: unit_count
+                    },
+                    dataType: "json",
+                    success: function(data) {
+
+                        if (!data || data.length === 0) return;
+
+                        let first = data[0];
+                        let last = data[data.length - 1];
+
+                        appendTypeRow(
+                            first.id,
+                            first.name,
+                            last.id,
+                            last.name
+                        );
+
+                        $('.js-select2-custom').select2();
+                    }
+                });
+            });
+
+            function appendTypeRow(startVal, startText, endVal, endText) {
+
+                let row = `
+                    <div class="row unit-type-row mt-3">
+
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_start', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control"
+                                name="unit_start_unit_type[]">
+                                <option value="${startVal}" selected>${startText}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_end', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control"
+                                name="unit_end_unit_type[]">
+                                <option value="${endVal}" selected>${endText}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_type', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control"
+                                name="unit_type[]">
+                                @foreach ($unit_types as $type)
+                                    <option value="{{ $type->id }}">{{ $type->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-remove-type">
+                                <i class="tio-delete"></i>
+                            </button>
+                        </div>
+
+                    </div>`;
+
+                $('#unit-type-container').append(row);
+            }
+
+            $(document).on('click', '.btn-remove-type', function() {
+                $(this).closest('.unit-type-row').remove();
+            });
+
             $('#unit_condition_mode_range').on('click', function() {
-                $('#general_unit_condition').attr('disabled', true);
+
+                $('#general_unit_condition').prop('disabled', true);
+                $('.general_unit_condition').addClass('d-none');
                 $('.unit_condition').removeClass('d-none');
-                var start_up_unit = $('#start_up_unit').val();
-                var unit_count = $('#no_of_unit').val();
 
-                var floor = $('select[name="floor"]').val();
-                var block = $('select[name="block"]').val();
-                var property = $('select[name="property"]').val();
-                if (floor) {
-                    $.ajax({
-                        url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
-                            "/" + block + "/" + property,
-                        type: "GET",
-                        data: {
-                            "start_up_unit": start_up_unit,
-                            "unit_count": unit_count
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            if (data) {
-                                $('select[name="unit_start_unit_condition"]').removeAttr(
-                                    'disabled');
+                let $conditionContainer = $('#unit-condition-container');
+                $conditionContainer.empty();
 
-                                $('select[name="unit_start_unit_condition"]').empty().append(
-                                    '<option value=""  selected>{{ ui_change('select', 'property_config') }}</option>'
-                                );
-                                $('select[name="unit_start_unit_condition[]"]').empty();
-                                $('select[name="unit_end_unit_condition[]"]').empty();
-                                $.each(data, function(key, value) {
-                                    $('select[name="unit_start_unit_condition[]"]')
-                                        .append(
-                                            '<option value="' + value.id +
-                                            '">' + value.name + '</option>'
-                                        )
-                                    $('select[name="unit_end_unit_condition[]"]')
-                                        .append(
-                                            '<option value="' + value.id +
-                                            '">' + value.name + '</option>'
-                                        )
-                                })
+                let hasDescription = $('.unit-description-row').length > 0;
 
-                            } else {}
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error occurred:', error);
-                        }
+                if (hasDescription) {
+
+                    $('.unit-description-row').each(function() {
+
+                        let startVal = $(this)
+                            .find('.unit-select-description-start')
+                            .val();
+
+                        let endVal = $(this)
+                            .find('.unit-select-description-end')
+                            .val();
+
+                        let startText = $(this)
+                            .find('.unit-select-description-start option:selected')
+                            .text();
+
+                        let endText = $(this)
+                            .find('.unit-select-description-end option:selected')
+                            .text();
+
+                        if (!startVal || !endVal) return;
+
+                        appendConditionRow(startVal, startText, endVal, endText);
                     });
+
+                    $('.js-select2-custom').select2();
+                    return;
                 }
 
+                let start_up_unit = $('#start_up_unit').val();
+                let unit_count = $('#no_of_unit').val();
+                let floor = $('select[name="floor"]').val();
+                let block = $('select[name="block"]').val();
+                let property = $('select[name="property"]').val();
 
-            })
+                if (!floor) return;
+
+                $.ajax({
+                    url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" +
+                        floor + "/" + block + "/" + property,
+                    type: "GET",
+                    data: {
+                        start_up_unit: start_up_unit,
+                        unit_count: unit_count
+                    },
+                    dataType: "json",
+                    success: function(data) {
+
+                        if (!data || data.length === 0) return;
+
+                        let first = data[0];
+                        let last = data[data.length - 1];
+
+                        appendConditionRow(
+                            first.id,
+                            first.name,
+                            last.id,
+                            last.name
+                        );
+
+                        $('.js-select2-custom').select2();
+                    }
+                });
+            });
+
+            function appendConditionRow(startVal, startText, endVal, endText) {
+
+                let row = `
+                    <div class="row unit-condition-row mt-3">
+
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_start', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control"
+                                name="unit_start_unit_condition[]">
+                                <option value="${startVal}" selected>${startText}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_end', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control"
+                                name="unit_end_unit_condition[]">
+                                <option value="${endVal}" selected>${endText}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_condition', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control"
+                                name="unit_condition[]">
+                                @foreach ($unit_conditions as $condition)
+                                    <option value="{{ $condition->id }}">{{ $condition->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-remove-condition">
+                                <i class="tio-delete"></i>
+                            </button>
+                        </div>
+
+                    </div>`;
+
+                $('#unit-condition-container').append(row);
+            }
+
+            $(document).on('click', '.btn-remove-condition', function() {
+                $(this).closest('.unit-condition-row').remove();
+            });
+
+
             $('#unit_parking_mode_range').on('click', function() {
-                $('#general_unit_parking').attr('disabled', true);
+
+                $('#general_unit_parking').prop('disabled', true);
+                $('.general_unit_parking').addClass('d-none');
                 $('.unit_parking').removeClass('d-none');
-                var start_up_unit = $('#start_up_unit').val();
-                var unit_count = $('#no_of_unit').val();
 
-                var floor = $('select[name="floor"]').val();
-                var block = $('select[name="block"]').val();
-                var property = $('select[name="property"]').val();
-                if (floor) {
-                    $.ajax({
-                        url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
-                            "/" + block + "/" + property,
-                        type: "GET",
-                        data: {
-                            "start_up_unit": start_up_unit,
-                            "unit_count": unit_count
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            if (data) {
-                                $('select[name="unit_start_unit_parking"]').removeAttr(
-                                    'disabled');
+                let $parkingContainer = $('#unit-parking-container');
+                $parkingContainer.empty();
 
-                                $('select[name="unit_start_unit_parking"]').empty().append(
-                                    '<option value=""  selected>{{ ui_change('select', 'property_config') }}</option>'
-                                );
-                                $('select[name="unit_start_unit_parking[]"]').empty();
-                                $('select[name="unit_end_unit_parking[]"]').empty();
-                                $.each(data, function(key, value) {
-                                    $('select[name="unit_start_unit_parking[]"]')
-                                        .append(
-                                            '<option value="' + value.id +
-                                            '">' + value.name + '</option>'
-                                        )
-                                    $('select[name="unit_end_unit_parking[]"]').append(
-                                        '<option value="' + value.id +
-                                        '">' + value.name + '</option>'
-                                    )
-                                })
+                let hasDescription = $('.unit-description-row').length > 0;
 
-                            } else {}
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error occurred:', error);
-                        }
+                if (hasDescription) {
+
+                    $('.unit-description-row').each(function() {
+
+                        let startVal = $(this)
+                            .find('.unit-select-description-start')
+                            .val();
+
+                        let endVal = $(this)
+                            .find('.unit-select-description-end')
+                            .val();
+
+                        let startText = $(this)
+                            .find('.unit-select-description-start option:selected')
+                            .text();
+
+                        let endText = $(this)
+                            .find('.unit-select-description-end option:selected')
+                            .text();
+
+                        if (!startVal || !endVal) return;
+
+                        appendParkingRow(startVal, startText, endVal, endText);
                     });
+
+                    $('.js-select2-custom').select2();
+                    return;
                 }
 
+                let start_up_unit = $('#start_up_unit').val();
+                let unit_count = $('#no_of_unit').val();
+                let floor = $('select[name="floor"]').val();
+                let block = $('select[name="block"]').val();
+                let property = $('select[name="property"]').val();
 
-            })
+                if (!floor) return;
+
+                $.ajax({
+                    url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" +
+                        floor + "/" + block + "/" + property,
+                    type: "GET",
+                    data: {
+                        start_up_unit: start_up_unit,
+                        unit_count: unit_count
+                    },
+                    dataType: "json",
+                    success: function(data) {
+
+                        if (!data || data.length === 0) return;
+
+                        let first = data[0];
+                        let last = data[data.length - 1];
+
+                        appendParkingRow(
+                            first.id,
+                            first.name,
+                            last.id,
+                            last.name
+                        );
+
+                        $('.js-select2-custom').select2();
+                    }
+                });
+            });
+
+            function appendParkingRow(startVal, startText, endVal, endText) {
+
+                let row = `
+                    <div class="row unit-parking-row mt-3">
+
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_start', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control"
+                                name="unit_start_unit_parking[]">
+                                <option value="${startVal}" selected>${startText}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_end', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control"
+                                name="unit_end_unit_parking[]">
+                                <option value="${endVal}" selected>${endText}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_parking', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control"
+                                name="unit_parking[]">
+                                @foreach ($unit_parkings as $parking)
+                                    <option value="{{ $parking->id }}">{{ $parking->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-remove-parking">
+                                <i class="tio-delete"></i>
+                            </button>
+                        </div>
+
+                    </div>`;
+
+                $('#unit-parking-container').append(row);
+            }
+
+            $(document).on('click', '.btn-remove-parking', function() {
+                $(this).closest('.unit-parking-row').remove();
+            });
             $('#view_mode_range').on('click', function() {
-                $('#general_view').attr('disabled', true);
+
+                $('#general_view').prop('disabled', true);
+                $('.general_view').addClass('d-none');
                 $('.view').removeClass('d-none');
-                var start_up_unit = $('#start_up_unit').val();
-                var unit_count = $('#no_of_unit').val();
 
-                var floor = $('select[name="floor"]').val();
-                var block = $('select[name="block"]').val();
-                var property = $('select[name="property"]').val();
-                if (floor) {
-                    $.ajax({
-                        url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" + floor +
-                            "/" + block + "/" + property,
-                        type: "GET",
-                        data: {
-                            "start_up_unit": start_up_unit,
-                            "unit_count": unit_count
-                        },
-                        dataType: "json",
-                        success: function(data) {
-                            if (data) {
-                                $('select[name="unit_start_view"]').removeAttr('disabled');
+                let $viewContainer = $('#view-container');
+                $viewContainer.empty();
 
-                                $('select[name="unit_start_view"]').empty().append(
-                                    '<option value=""  selected>{{ ui_change('select', 'property_config') }}</option>'
-                                );
-                                $('select[name="unit_start_view[]"]').empty();
-                                $('select[name="unit_end_view[]"]').empty();
-                                $.each(data, function(key, value) {
-                                    $('select[name="unit_start_view[]"]').append(
-                                        '<option value="' + value.id +
-                                        '">' + value.name + '</option>'
-                                    )
-                                    $('select[name="unit_end_view[]"]').append(
-                                        '<option value="' + value.id +
-                                        '">' + value.name + '</option>'
-                                    )
-                                })
+                let hasDescription = $('.unit-description-row').length > 0;
 
-                            } else {}
-                        },
-                        error: function(xhr, status, error) {
-                            console.error('Error occurred:', error);
-                        }
+                if (hasDescription) {
+
+                    $('.unit-description-row').each(function() {
+
+                        let startVal = $(this)
+                            .find('.unit-select-description-start')
+                            .val();
+
+                        let endVal = $(this)
+                            .find('.unit-select-description-end')
+                            .val();
+
+                        let startText = $(this)
+                            .find('.unit-select-description-start option:selected')
+                            .text();
+
+                        let endText = $(this)
+                            .find('.unit-select-description-end option:selected')
+                            .text();
+
+                        if (!startVal || !endVal) return;
+
+                        appendViewRow(startVal, startText, endVal, endText);
                     });
+
+                    $('.js-select2-custom').select2();
+                    return;
                 }
 
+                let start_up_unit = $('#start_up_unit').val();
+                let unit_count = $('#no_of_unit').val();
+                let floor = $('select[name="floor"]').val();
+                let block = $('select[name="block"]').val();
+                let property = $('select[name="property"]').val();
 
-            })
+                if (!floor) return;
+
+                $.ajax({
+                    url: "{{ URL::to('unit_management/get_units_by_floor_id') }}/" +
+                        floor + "/" + block + "/" + property,
+                    type: "GET",
+                    data: {
+                        start_up_unit: start_up_unit,
+                        unit_count: unit_count
+                    },
+                    dataType: "json",
+                    success: function(data) {
+
+                        if (!data || data.length === 0) return;
+
+                        let first = data[0];
+                        let last = data[data.length - 1];
+
+                        appendViewRow(
+                            first.id,
+                            first.name,
+                            last.id,
+                            last.name
+                        );
+
+                        $('.js-select2-custom').select2();
+                    }
+                });
+            });
+
+            function appendViewRow(startVal, startText, endVal, endText) {
+
+                let row = `
+                    <div class="row view-row mt-3">
+
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_start', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control"
+                                name="unit_start_view[]">
+                                <option value="${startVal}" selected>${startText}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>{{ ui_change('unit_end', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control"
+                                name="unit_end_view[]">
+                                <option value="${endVal}" selected>${endText}</option>
+                            </select>
+                        </div>
+
+                        <div class="col-md-3">
+                            <label>{{ ui_change('view', 'property_config') }}</label>
+                            <select class="js-select2-custom form-control"
+                                name="view[]">
+                                @foreach ($views as $view)
+                                    <option value="{{ $view->id }}">{{ $view->name }}</option>
+                                @endforeach
+                            </select>
+                        </div>
+
+                        <div class="col-md-3 d-flex align-items-end">
+                            <button type="button" class="btn btn-danger btn-remove-view">
+                                <i class="tio-delete"></i>
+                            </button>
+                        </div>
+
+                    </div>`;
+
+                $('#view-container').append(row);
+            }
+
+            $(document).on('click', '.btn-remove-view', function() {
+                $(this).closest('.view-row').remove();
+            });
+
+
 
 
         });
@@ -1110,6 +1602,7 @@
                             }
 
                             let unitOptions = '';
+                            console.log(data);
                             $.each(data, function(key, value) {
                                 if (!addedUnitDescIds.includes(parseInt(value.id))) {
                                     unitOptions +=
@@ -1124,39 +1617,40 @@
                             }
 
                             const unitTypeRow = `
-                <div class="row unit-description-row mt-3">
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-description-start" name="unit_start_unit_description[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_End', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-description-end" name="unit_end_unit_description[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('unit_description', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control" name="unit_description[]">
-                            @foreach ($unit_descriptions as $unit_description_item)
-                            <option value="{{ $unit_description_item->id }}">{{ $unit_description_item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
-                    </div>
-                </div>`;
+                            <div class="row unit-description-row mt-3">
+                                <div class="col-md-3">
+                                    <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
+                                    <select class="js-select2-custom form-control unit-select-description-start" name="unit_start_unit_description[]">
+                                        ${unitOptions}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>{{ ui_change('Unit_End', 'property_config') }}</label>
+                                    <select class="js-select2-custom form-control unit-select-description-end" name="unit_end_unit_description[]">
+                                        ${unitOptions}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>{{ ui_change('unit_description', 'property_config') }}</label>
+                                    <select class="js-select2-custom form-control" name="unit_description[]">
+                                        @foreach ($unit_descriptions as $unit_description_item)
+                                        <option value="{{ $unit_description_item->id }}">{{ $unit_description_item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
+                                </div>
+                            </div>`;
 
                             $('#unit-description-container').append(unitTypeRow);
                             $('.js-select2-custom').select2();
 
                             updateAddedUnits();
 
-                            $('.unit-select-description-start, .unit-select-description-end')
-                                .off('change').on('change', function() {
+                            $(document).on('change',
+                                '.unit-select-description-start, .unit-select-description-end',
+                                function() {
                                     updateAddedUnits();
                                 });
 
@@ -1195,7 +1689,7 @@
                     if (selectedCount > unitCountLimit) {
 
                         $(event.target).val(null).trigger('change');
-                    } 
+                    }
                 }
 
                 function checkUnitLimitMessage() {
@@ -1221,6 +1715,7 @@
                     checkUnitLimitMessage();
                 });
             });
+
             $('#add-more-unit-parking').on('click', function() {
                 var start_up_unit = $('#start_up_unit').val();
                 var unit_count = $('#no_of_unit').val();
@@ -1272,42 +1767,46 @@
                             }
 
                             const unitTypeRow = `
-                <div class="row unit-parking-row mt-3">
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-parking-start" name="unit_start_unit_parking[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_End', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-parking-end" name="unit_end_unit_parking[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('unit_parking', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control" name="unit_parking[]">
-                            @foreach ($unit_parkings as $unit_parking_item)
-                            <option value="{{ $unit_parking_item->id }}">{{ $unit_parking_item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
-                    </div>
-                </div>`;
+                                <div class="row unit-parking-row mt-3">
+                                    <div class="col-md-3">
+                                        <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
+                                        <select class="js-select2-custom form-control unit-select-parking-start" name="unit_start_unit_parking[]">
+                                            ${unitOptions}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>{{ ui_change('Unit_End', 'property_config') }}</label>
+                                        <select class="js-select2-custom form-control unit-select-parking-end" name="unit_end_unit_parking[]">
+                                            ${unitOptions}
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3">
+                                        <label>{{ ui_change('unit_parking', 'property_config') }}</label>
+                                        <select class="js-select2-custom form-control" name="unit_parking[]">
+                                            @foreach ($unit_parkings as $unit_parking_item)
+                                            <option value="{{ $unit_parking_item->id }}">{{ $unit_parking_item->name }}</option>
+                                            @endforeach
+                                        </select>
+                                    </div>
+                                    <div class="col-md-3 d-flex align-items-end">
+                                        <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
+                                    </div>
+                                </div>`;
 
                             $('#unit-parking-container').append(unitTypeRow);
                             $('.js-select2-custom').select2();
 
                             updateAddedUnitsParking();
 
-                            $('.unit-select-parking-start, .unit-select-parking-end')
-                                .off('change').on('change', function() {
+                            // $('.unit-select-parking-start, .unit-select-parking-end')
+                            //     .off('change').on('change', function() {
+                            //         updateAddedUnitsParking();
+                            //     });
+                            $(document).on('change',
+                                '.unit-select-parking-start, .unit-select-parking-end',
+                                function() {
                                     updateAddedUnitsParking();
                                 });
-
                             $('.btn-remove').off('click').on('click', function() {
                                 const row = $(this).closest('.unit-parking-row');
                                 row.find('option:selected').each(function() {
@@ -1429,39 +1928,44 @@
                             }
 
                             const unitTypeRow = `
-                <div class="row unit-type-row mt-3">
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-type-start" name="unit_start_unit_type[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_End', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-type-end" name="unit_end_unit_type[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('unit_type', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control" name="unit_type[]">
-                            @foreach ($unit_types as $unit_type_item)
-                            <option value="{{ $unit_type_item->id }}">{{ $unit_type_item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
-                    </div>
-                </div>`;
+                            <div class="row unit-type-row mt-3">
+                                <div class="col-md-3">
+                                    <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
+                                    <select class="js-select2-custom form-control unit-select-type-start" name="unit_start_unit_type[]">
+                                        ${unitOptions}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>{{ ui_change('Unit_End', 'property_config') }}</label>
+                                    <select class="js-select2-custom form-control unit-select-type-end" name="unit_end_unit_type[]">
+                                        ${unitOptions}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>{{ ui_change('unit_type', 'property_config') }}</label>
+                                    <select class="js-select2-custom form-control" name="unit_type[]">
+                                        @foreach ($unit_types as $unit_type_item)
+                                        <option value="{{ $unit_type_item->id }}">{{ $unit_type_item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
+                                </div>
+                            </div>`;
 
                             $('#unit-type-container').append(unitTypeRow);
                             $('.js-select2-custom').select2();
 
                             updateAddedUnitsType();
 
-                            $('.unit-select-type-start, .unit-select-type-end')
-                                .off('change').on('change', function() {
+                            // $('.unit-select-type-start, .unit-select-type-end')
+                            //     .off('change').on('change', function() {
+                            //         updateAddedUnitsType();
+                            //     });
+                            $(document).on('change',
+                                '.unit-select-type-start, .unit-select-type-end',
+                                function() {
                                     updateAddedUnitsType();
                                 });
 
@@ -1586,39 +2090,44 @@
                             }
 
                             const unitTypeRow = `
-                <div class="row unit-condition-row mt-3">
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-condition-start" name="unit_start_unit_condition[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_End', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-condition-end" name="unit_end_unit_condition[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('unit_condition', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control" name="unit_condition[]">
-                            @foreach ($unit_conditions as $unit_condition_item)
-                            <option value="{{ $unit_condition_item->id }}">{{ $unit_condition_item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
-                    </div>
-                </div>`;
+                            <div class="row unit-condition-row mt-3">
+                                <div class="col-md-3">
+                                    <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
+                                    <select class="js-select2-custom form-control unit-select-condition-start" name="unit_start_unit_condition[]">
+                                        ${unitOptions}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>{{ ui_change('Unit_End', 'property_config') }}</label>
+                                    <select class="js-select2-custom form-control unit-select-condition-end" name="unit_end_unit_condition[]">
+                                        ${unitOptions}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>{{ ui_change('unit_condition', 'property_config') }}</label>
+                                    <select class="js-select2-custom form-control" name="unit_condition[]">
+                                        @foreach ($unit_conditions as $unit_condition_item)
+                                        <option value="{{ $unit_condition_item->id }}">{{ $unit_condition_item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
+                                </div>
+                            </div>`;
 
                             $('#unit-condition-container').append(unitTypeRow);
                             $('.js-select2-custom').select2();
 
                             updateAddedUnitsCondition();
 
-                            $('.unit-select-condition-start, .unit-select-condition-end')
-                                .off('change').on('change', function() {
+                            // $('.unit-select-condition-start, .unit-select-condition-end')
+                            //     .off('change').on('change', function() {
+                            //         updateAddedUnitsCondition();
+                            //     });
+                            $(document).on('change',
+                                '.unit-select-condition-start, .unit-select-condition-end',
+                                function() {
                                     updateAddedUnitsCondition();
                                 });
 
@@ -1743,42 +2252,46 @@
                             }
 
                             const unitTypeRow = `
-                <div class="row view-row mt-3">
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-view-start" name="unit_start_view[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('Unit_End', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control unit-select-view-end" name="unit_end_view[]">
-                            ${unitOptions}
-                        </select>
-                    </div>
-                    <div class="col-md-3">
-                        <label>{{ ui_change('view', 'property_config') }}</label>
-                        <select class="js-select2-custom form-control" name="view[]">
-                            @foreach ($views as $view_item)
-                            <option value="{{ $view_item->id }}">{{ $view_item->name }}</option>
-                            @endforeach
-                        </select>
-                    </div>
-                    <div class="col-md-3 d-flex align-items-end">
-                        <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
-                    </div>
-                </div>`;
+                            <div class="row view-row mt-3">
+                                <div class="col-md-3">
+                                    <label>{{ ui_change('Unit_Start', 'property_config') }}</label>
+                                    <select class="js-select2-custom form-control unit-select-view-start" name="unit_start_view[]">
+                                        ${unitOptions}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>{{ ui_change('Unit_End', 'property_config') }}</label>
+                                    <select class="js-select2-custom form-control unit-select-view-end" name="unit_end_view[]">
+                                        ${unitOptions}
+                                    </select>
+                                </div>
+                                <div class="col-md-3">
+                                    <label>{{ ui_change('view', 'property_config') }}</label>
+                                    <select class="js-select2-custom form-control" name="view[]">
+                                        @foreach ($views as $view_item)
+                                        <option value="{{ $view_item->id }}">{{ $view_item->name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                                <div class="col-md-3 d-flex align-items-end">
+                                    <button type="button" class="btn btn-danger btn-remove"><i class="tio-delete"></i></button>
+                                </div>
+                            </div>`;
 
                             $('#view-container').append(unitTypeRow);
                             $('.js-select2-custom').select2();
 
                             updateAddedView();
 
-                            $('.unit-select-view-start, .unit-select-view-end')
-                                .off('change').on('change', function() {
+                            // $('.unit-select-view-start, .unit-select-view-end')
+                            //     .off('change').on('change', function() {
+                            //         updateAddedView();
+                            //     });
+                            $(document).on('change',
+                                '.unit-select-view-start, .unit-select-view-end',
+                                function() {
                                     updateAddedView();
                                 });
-
                             $('.btn-remove').off('click').on('click', function() {
                                 const row = $(this).closest('.view-row');
                                 row.find('option:selected').each(function() {
