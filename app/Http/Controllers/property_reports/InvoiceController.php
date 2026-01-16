@@ -8,6 +8,7 @@ use App\Models\Tenant;
 use App\Models\Company;
 use App\Models\Invoice;
 use App\Models\Schedule;
+use App\Models\Agreement;
 use Illuminate\Support\Str;
 use App\Models\InvoiceItems;
 use Illuminate\Http\Request;
@@ -68,12 +69,30 @@ class InvoiceController extends Controller
     {
         $invoice       = (new Invoice())->setConnection('tenant')->findOrFail($id);
         $invoice_items = (new InvoiceItems())->setConnection('tenant')->where('invoice_id', $id)->get();
-        ///dd($invoice);
+        $invoice_per_item = $invoice_items->first();
+        $agreement = (new Agreement())->setConnection('tenant')->select('id' , 'agreement_no')->where('id', $invoice_per_item->agreement_id)->first();
+        $period = (new AgreementUnits())->setConnection('tenant')->select('commencement_date' ,'payment_mode', 'expiry_date' , 'id' ,'agreement_id')->where('agreement_id', $invoice_per_item->agreement_id)->first();
+            $start_date = Carbon::parse($period->commencement_date);
+                if ($period->payment_mode == 2) { 
+                        $start_date->addMonth(); 
+                } elseif ($period->payment_mode == 3) { 
+                        $start_date->addMonths(2); 
+                } elseif ($period->payment_mode == 4) { 
+                        $start_date->addMonths(3); 
+                } elseif ($period->payment_mode == 5) { 
+                        $start_date->addMonths(6); 
+                } elseif ($period->payment_mode == 6) { 
+                        $start_date->addMonths(12); 
+                }
+                $buildings=[];
+                foreach($invoice_items as $item){
+                    $buildings[] = (new UnitManagement())->setConnection('tenant')->find($item->unit_id)->property_unit_management?->name;
+                }  
         $invoice_settings    = (new InvoiceSettings())->setConnection('tenant')->where('invoice_type', 'LIKE', "%{$invoice->invoice_type}%")->first();
         $company_settings    = (new CompanySettings())->setConnection('tenant')->first();
         $company             = auth()->user();
         ($invoice) ? $tenant = (new Tenant())->setConnection('tenant')->where('id', $invoice->tenant_id)->first() : $tenant = null;
-        return view('admin-views.property_reports.invoices.generate_invoice', compact('invoice', 'tenant', 'company_settings', 'company', 'invoice_settings', 'invoice_items'));
+        return view('admin-views.property_reports.invoices.generate_invoice', compact('buildings','agreement', 'start_date', 'period','invoice', 'tenant', 'company_settings', 'company', 'invoice_settings', 'invoice_items'));
     }
     public function storeInvoice(Request $request)
     {

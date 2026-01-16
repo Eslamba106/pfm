@@ -126,6 +126,11 @@
             font-size: 1rem;
             font-weight: bold;
         }
+            .bank-details p {
+        margin: 2px 0; 
+        line-height: 1.3;
+    }
+
     </style>
 @endpush
 
@@ -214,8 +219,12 @@
                                         class="bold-two">{{ $invoice->invoice_number }}</span></p>
                                 <p><span class="bold-two">{{ ui_change('invoice_date', 'property_report') }}:</span>
                                     {{ \Carbon\Carbon::parse($invoice->invoice_date)->format('j-M-Y') }} </p>
-                                <p><span class="bold-two">{{ ui_change('invoice_month_year', 'property_report') }}:</span>
-                                    {{ $invoice->invoice_month_year }}</p>
+                                <p><span class="bold-two">{{ ui_change('invoice_for_period', 'property_report') }}:</span>
+                                    {{ \Carbon\Carbon::parse($period->commencement_date)->format('j-M-Y') }} to {{ \Carbon\Carbon::parse($start_date)->format('j-M-Y') }}</p>
+                                <p><span class="bold-two">{{ ui_change('agreement_no', 'property_report') }}:</span>
+                                    {{ $agreement->agreement_no }}</p>
+                                <p><span class="bold-two">{{ ui_change('buildings', 'property_report') }}:</span>
+                                    {{ implode(', ', $buildings) }}</p>
                                 {{-- <p><span class="bold-two">{{ ui_change('','property_report')('collections.invoice_type') }}:</span>
                                     {{ $invoice->invoice_type }}</p> --}}
                                 {{-- <p><span class="bold-two">Payment Terms:</span></p>
@@ -229,10 +238,10 @@
                     <table class="invoice">
                         <tr>
                             <th>{{ ui_change('sl', 'property_report') }}</th>
-                            <th>{{ ui_change('agreement_no', 'property_report') }}</th>
+                            {{-- <th>{{ ui_change('agreement_no', 'property_report') }}</th> --}}
                             <th>{{ ui_change('category', 'property_report') }}</th>
                             <th>{{ ui_change('unit_description', 'property_report') }}</th>
-                            <th>{{ ui_change('amount_Exl. VAT', 'property_report') . ' ( ' . $company->currency_code . ' )' }}
+                            <th>{{ ui_change('amount_Exl. VAT', 'property_report') . ' ( ' . $company->currency_code . ' )' }}
                             </th>
                             <th>{{ ui_change('VAT', 'property_report') }} %</th>
                             <th>{{ ui_change('VAT_amount', 'property_report') }}</th>
@@ -245,17 +254,22 @@
                         @foreach ($invoice_items as $k => $invoice_item_main)
                             <tr>
                                 <td>{{ $loop->index + 1 }}</td>
-                                <td>{{ $invoice_item_main->agreement->agreement_no }}</td>
+                                {{-- <td>{{ $invoice_item_main->agreement->agreement_no }}</td> --}}
                                 <td>{{ ucfirst($invoice_item_main->category) }}</td>
                                 <td>
                                     {{-- @if ($invoice_item_main->category == 'rent') --}}
-                                    {{ $invoice_item_main->building->name .
+                                    {{   $invoice_item_main->unit_management->block_unit_management->block->name .
+                                        '-' .
+                                        $invoice_item_main->unit_management->floor_unit_management->floor_management_main->name .
+                                        '- ' .
+                                        $invoice_item_main->unit_management->unit_management_main->name }}
+                                    {{-- {{ $invoice_item_main->building->name .
                                         '-' .
                                         $invoice_item_main->unit_management->block_unit_management->block->name .
                                         '-' .
                                         $invoice_item_main->unit_management->floor_unit_management->floor_management_main->name .
                                         '-' .
-                                        $invoice_item_main->unit_management->unit_management_main->name }}
+                                        $invoice_item_main->unit_management->unit_management_main->name }} --}}
                                     {{-- @else
                                         {{ optional((new App\Models\ServiceMaster())->setConnection('tenant')->where('id', $invoice_item_main->service_id)->first())->name }}
                                     @endif --}}
@@ -275,21 +289,21 @@
                     <table class="invoice">
                         <tr>
                             <td class="total">{{ ui_change('Sub_Total', 'property_report') }}
-                                {{ ' ( ' . $company->currency_code . ' )' }} :</td>
+                                {{ ' ( ' . $company->currency_code . ' )' }} : {{ amount_in_words($sub_total  , $company->decimals) }}</td>
                             <td  @if($dir == 'rtl') style="text-align: left;" @else  style="text-align: right;"  @endif>{{ number_format($sub_total, $company->decimals ?? 2) }} </td>
                         </tr>
                         <tr>
                             <td class="total">{{ ui_change('VAT_amount', 'property_report') }}
-                                {{ ' ( ' . $company->currency_code . ' )' }} :</td>
+                                {{ ' ( ' . $company->currency_code . ' )' }} : {{ amount_in_words(  $total_vat, $company->decimals) }}</td>
                             <td  @if($dir == 'rtl') style="text-align: left;" @else  style="text-align: right;"  @endif>{{ number_format($total_vat, $company->decimals ?? 2) }}</td>
                         </tr>
                         <tr>
                             <td class="total">{{ ui_change('Grand_Total', 'property_report') }}
-                                {{ ' ( ' . $company->currency_code . ' )' }} </td>
+                                {{ ' ( ' . $company->currency_code . ' )' }}  {{ amount_in_words($sub_total + $total_vat, $company->decimals) }}</td>
                             <td  @if($dir == 'rtl') style="text-align: left;" @else  style="text-align: right;"  @endif>{{ number_format($sub_total + $total_vat, $company->decimals ?? 2) }}</td>
                         </tr>
                     </table>
-                    <div class="invoice">
+                    {{-- <div class="invoice">
                         <div class="amount-box">
                             <span>{{ ui_change('Sub_Total_Amount_in_words', 'property_report') }} ({{ $company->currency_code }})
                                 {{ amount_in_words($sub_total  , $company->decimals) }}</span>
@@ -302,7 +316,7 @@
                             <span>{{ ui_change('Amount_in_words', 'property_report') }} ({{ $company->currency_code }})
                                 {{ amount_in_words($sub_total + $total_vat, $company->decimals) }}</span>
                         </div>
-                    </div>
+                    </div> --}}
                     <div class="row d-flex align-items-start m-5">
 
                         @if (isset($invoice_settings->ledger->account_name))

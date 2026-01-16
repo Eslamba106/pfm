@@ -11,14 +11,13 @@ class Invoice extends Model
     protected $guarded = ['id'];
     // protected $connection = 'tenant';
 
-    public function items(){
-        return $this->hasMany(InvoiceItems::class , 'invoice_id');
+    public function items()
+    {
+        return $this->hasMany(InvoiceItems::class, 'invoice_id');
     }
 
     public function tenant()
-{
-    return $this->belongsTo(Tenant::class, 'tenant_id');
+    {
+        return $this->belongsTo(Tenant::class, 'tenant_id');
+    }
 }
-
-}
-

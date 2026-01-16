@@ -320,6 +320,16 @@ class AgreementController extends Controller
                     $ewa_limit                = $request->input("ewa_limit-$i");
                     $notice_period            = $request->input("notice_period-$i");
                     // $total =
+                     $baseAmount  = (float)$request->input("rent_amount-$i");
+
+                if ($rentMode === $paymentMode) {
+
+                    $rentAmount = $baseAmount;
+                } else {
+                    $rentAmount = calc_rent_amount($rentMode, $paymentMode, $baseAmount, $rentAmount);
+                    $total_net_rent_amount = ($rentAmount * ($vat_percentage / 100 )) + $rentAmount;
+                    $security_deposit_amount = $rentAmount * $security_deposit;
+                }
                     $agreement_units = (new AgreementUnits())->setConnection('tenant')->create([
                         'agreement_id'             => $agreement->id,
                         'property_id'              => $propertyId,
