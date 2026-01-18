@@ -235,6 +235,21 @@
                                 </a>
                             </li>
                         @endif
+                        @if (\App\Helpers\Helpers::module_permission_check('billing_&_collection'))
+                            <li class="navbar-vertical-aside-has-menu {{ Request::is('billing_collection-side*') || Request::is('receipt*')  || Request::is('sales-return*') || Request::is('invoice*') || Request::is('schedules*') || Request::is('billing_collection-side*') ? 'active' : '' }}"
+                                style="font-size: 1rem">
+                                <a class="js-navbar-vertical-aside-menu-link nav-link "
+                                    href="{{ route('billing_&_collection_side') }}"
+                                    title="{{ ui_change('Billing_&_Collection') }}">
+                                    <i class="fas fa-hand-holding-usd"></i>
+
+                                    <span class="navbar-vertical-aside-mini-mode-hidden-elements text-truncate"
+                                        style="{{ $lang == 'ar' ? 'margin-right: 8px;' : 'margin-left: 8px;' }}">
+                                        {{ ui_change('Billing_&_Collection') }}
+                                    </span>
+                                </a>
+                            </li>
+                        @endif
                         {{-- @if (\App\Helpers\Helpers::module_permission_check('collections'))
                             <li class="navbar-vertical-aside-has-menu {{ Request::is('collections-side*') || Request::is('receipts*') ? 'active' : '' }}"
                                 style="font-size: 1rem">

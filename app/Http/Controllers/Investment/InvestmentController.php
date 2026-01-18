@@ -60,7 +60,7 @@ class InvestmentController extends Controller
         // newest 
 
         $investors = Investor::select('id', 'name' , 'company_name' ,'type')->get(); 
-        $buildings = PropertyManagement::select('id', 'name' , 'code' , 'property_type_id')
+        $buildings = PropertyManagement::forUser()->select('id', 'name' , 'code' , 'property_type_id')
         ->with('units_managment')->get();
         // ->with('blocks_management_child' , 'blocks_management_child.block' , 'blocks_management_child.floors_management_child'
         //  ,'blocks_management_child.floors_management_child.floor_management_main',

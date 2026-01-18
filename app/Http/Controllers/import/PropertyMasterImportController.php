@@ -10,7 +10,6 @@ use App\Models\PropertyType;
 use Illuminate\Http\Request;
 use App\Models\UnitCondition;
 use App\Models\UnitManagement;
-use App\Jobs\ImportPropertyJob;
 use App\Models\BlockManagement;
 use App\Models\FloorManagement;
 use App\Models\UnitDescription;

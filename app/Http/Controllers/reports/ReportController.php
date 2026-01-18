@@ -168,7 +168,7 @@ class ReportController extends Controller
                 ->paginate()
                 ->appends($query_param);
         }
-        $all_building    = (new PropertyManagement())->setConnection('tenant')->select('id', 'name')->get();
+        $all_building    = (new PropertyManagement())->setConnection('tenant')->forUser()->select('id', 'name')->get();
         $unit_management = (new UnitManagement())->setConnection('tenant')->with(['property_unit_management', 'block_unit_management', 'floor_unit_management', 'unit_management_main', 'unit_description'])->get();
         $data            = [
             'all_building'    => $all_building,
@@ -182,7 +182,7 @@ class ReportController extends Controller
         $ids             = $request->bulk_ids;
         $search          = $request['search'];
         $query_param     = $search ? ['search' => $request['search']] : '';
-        $all_building    = (new PropertyManagement())->setConnection('tenant')->select('id', 'name')->get();
+        $all_building    = (new PropertyManagement())->setConnection('tenant')->forUser()->select('id', 'name')->get();
         $unit_management = (new UnitManagement())->setConnection('tenant')->with(['property_unit_management', 'block_unit_management', 'floor_unit_management', 'unit_management_main', 'unit_description'])->get();
 
         $currentMonth = Carbon::now()->format('Y-m');

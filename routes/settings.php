@@ -1,11 +1,13 @@
 <?php
 
-use App\Http\Controllers\property_transactions\PropertyTransactionSettingsController;
+use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\settings\SettingController;
+use App\Http\Controllers\settings\CurrencyController;
+use App\Http\Controllers\settings\UserSettingsController;
 use App\Http\Controllers\settings\CompanySettingsController;
 use App\Http\Controllers\settings\ComplaintSettingsController;
-use App\Http\Controllers\settings\CurrencyController;
-use App\Http\Controllers\settings\SettingController;
-use Illuminate\Support\Facades\Route;
+use App\Http\Controllers\Room_Reservation\ReservationSettingsController;
+use App\Http\Controllers\property_transactions\PropertyTransactionSettingsController;
 
 Route::group(["prefix" => "settings"], function () {
     Route::group(["prefix" => "ui-settings"], function () {
@@ -16,7 +18,6 @@ Route::group(["prefix" => "settings"], function () {
         Route::any('auto-translate/{position?}', [SettingController::class, 'auto_translate'])->name('admin.settings.ui_settings.auto-translate');
         Route::get('translate-list/{position?}', [SettingController::class, 'translate_list'])->name('admin.settings.ui_settings.translate.list');
         Route::post('change-submit/{position?}', [SettingController::class, 'translate_submit'])->name('admin.settings.ui_settings.translate-submit');
-
     });
 
     Route::get('/company', [CompanySettingsController::class, 'index'])->name('company_settings');
@@ -33,6 +34,11 @@ Route::group(["prefix" => "settings"], function () {
     Route::patch('/investment/update', [PropertyTransactionSettingsController::class, 'investmentUpdate'])->name('investment_settings.store');
     Route::get('/complaint', [ComplaintSettingsController::class, 'complaintIndex'])->name('complaint_settings');
     Route::patch('/complaint/update', [ComplaintSettingsController::class, 'complaintUpdate'])->name('complaint_settings.store');
+    Route::group(['prefix' => 'user_settings', 'as' => 'user.'], function () {
+        Route::get('/', [UserSettingsController::class, 'index'])->name('user_settings');
+        Route::patch('settings-update/{id}', [UserSettingsController::class, 'update'])->name('user_settings.update');
+        Route::patch('settings-update-buildings', [UserSettingsController::class, 'update_buildings'])->name('user_settings.update_buildings');
+    });
 });
 
 Route::group(['prefix' => 'currency', 'as' => 'admin.currency.'], function () {
@@ -44,4 +50,9 @@ Route::group(['prefix' => 'currency', 'as' => 'admin.currency.'], function () {
     Route::post('delete', [CurrencyController::class, 'delete'])->name('delete');
     Route::post('status', [CurrencyController::class, 'status'])->name('status');
     Route::post('system-currency-update', [CurrencyController::class, 'systemCurrencyUpdate'])->name('system-currency-update');
+});
+Route::group(['prefix' => 'room-reservation/settings', 'as' => 'room_reservation.settings.'], function () {
+    // Reservation Settings Routes can be added here in the future
+        Route::get('/', [ReservationSettingsController::class, 'room_reservation'])->name('room_reservation_settings');
+    Route::patch('/update', [ReservationSettingsController::class, 'room_reservation_update'])->name('room_reservation_settings.store');
 });

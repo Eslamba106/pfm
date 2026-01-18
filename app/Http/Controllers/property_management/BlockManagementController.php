@@ -37,7 +37,7 @@ class BlockManagementController extends Controller
     {
         // $this->authorize('create_block');
 
-        $property_managements = (new PropertyManagement())->setConnection('tenant')->select('id', 'name', 'code')->get();
+        $property_managements = (new PropertyManagement())->setConnection('tenant')->forUser()->select('id', 'name', 'code')->get();
         $blocks               = (new Block())->setConnection('tenant')->select('id', 'name', 'code')->get();
         $data                 = [
             "property_managements" => $property_managements,
@@ -51,7 +51,7 @@ class BlockManagementController extends Controller
         // $this->authorize('create_block');
 
         $main_block           = (new BlockManagement())->setConnection('tenant')->with('block')->findOrFail($id);
-        $property_managements = (new PropertyManagement())->setConnection('tenant')->all();
+        $property_managements = (new PropertyManagement())->setConnection('tenant')->forUser()->all();
         $block_management     = (new BlockManagement())->setConnection('tenant')->pluck('block_id');
         // $block_management = $block_management->except($main_block->block->id);
         $blocks = Block::whereNotIn('id', $block_management)->get();
@@ -141,7 +141,7 @@ class BlockManagementController extends Controller
         // $this->authorize('show_image_block');
 
         $block    = (new BlockManagement())->setConnection('tenant')->findOrFail($id);
-        $property = (new PropertyManagement())->setConnection('tenant')->where('id', $block->property_management_id)->with('blocks_management_child', 'blocks_management_child.block'
+        $property = (new PropertyManagement())->setConnection('tenant')->forUser()->where('id', $block->property_management_id)->with('blocks_management_child', 'blocks_management_child.block'
             , 'blocks_management_child.floors_management_child', 'blocks_management_child.floors_management_child.floor_management_main',
             'blocks_management_child.floors_management_child.unit_management_child', 'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->first();
@@ -157,7 +157,7 @@ class BlockManagementController extends Controller
         // $this->authorize('show_image_block');
 
         $block    = (new BlockManagement())->setConnection('tenant')->findOrFail($id);
-        $property = (new PropertyManagement())->setConnection('tenant')->where('id', $block->property_management_id)->with('blocks_management_child', 'blocks_management_child.block'
+        $property = (new PropertyManagement())->setConnection('tenant')->forUser()->where('id', $block->property_management_id)->with('blocks_management_child', 'blocks_management_child.block'
             , 'blocks_management_child.floors_management_child', 'blocks_management_child.floors_management_child.floor_management_main',
             'blocks_management_child.floors_management_child.unit_management_child', 'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->first();

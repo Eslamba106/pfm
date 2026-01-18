@@ -1,10 +1,5 @@
-@extends('layouts.back-end.app')
-@php
-    $currentUrl = url()->current();
-    $segments = explode('/', $currentUrl);
-    $end = end($segments);
-@endphp
-@section('title', __('general.settings'))
+@extends('layouts.back-end.app') 
+@section('title', ui_change('settings'))
 
 @push('css_or_js')
     <link href="{{ asset('public/assets/select2/css/select2.min.css')}}" rel="stylesheet">

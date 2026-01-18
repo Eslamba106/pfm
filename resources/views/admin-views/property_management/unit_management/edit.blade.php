@@ -100,7 +100,19 @@
                                 </select>
                             </div>
                         </div>
-
+                        <div class="col-md-6 col-lg-4 col-xl-3">
+                            <div class="form-group">
+                                <label for="name" class="title-color">{{ ui_change('type', 'property_config') }}
+                                </label>
+                                <select class="js-select2-custom form-control" name="type" required  >
+                                    <option selected>{{ ui_change('select', 'property_config') }} </option>
+                                    <option {{ ($selected_unit->long_status == "long_term") ? 'selected' : '' }} value="long_term">{{ ui_change('long_term', 'property_config') }}</option>
+                                    <option {{ ($selected_unit->long_status == "short_term") ? 'selected' : '' }} value="short_term">{{ ui_change('short_term', 'property_config') }}</option>
+                                    <option {{ ($selected_unit->long_status == "daily") ? 'selected' : '' }} value="daily">{{ ui_change('daily', 'property_config') }}</option>
+                                    <option {{ ($selected_unit->long_status == "others") ? 'selected' : '' }} value="others">{{ ui_change('others', 'property_config') }}</option> 
+                                </select>
+                            </div>
+                        </div>
                         <div class="col-md-6 col-lg-4 col-xl-3">
 
                             <div class="form-group">

@@ -1,16 +1,17 @@
 <?php
 namespace App\Http\Controllers\property_transactions;
 
-use App\Http\Controllers\Controller;
-use App\Models\Agreement;
-use App\Models\AgreementDetails;
-use App\Models\AgreementUnits;
-use App\Models\CountryMaster;
-use App\Models\property_transactions\Termination;
-use App\Models\ServiceMaster;
 use Carbon\Carbon;
+use App\Models\Agreement;
 use Illuminate\Http\Request;
+use App\Models\CountryMaster;
+use App\Models\ServiceMaster;
+use App\Models\AgreementUnits;
+use App\Models\AgreementDetails;
+use App\Models\PropertyManagement;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use App\Models\property_transactions\Termination;
 
 class TerminationController extends Controller
 {
@@ -219,7 +220,7 @@ class TerminationController extends Controller
         $country_master           = (new CountryMaster())->setConnection('tenant')->get();
         $live_withs               = DB::connection('tenant')->table('live_withs')->get();
         $business_activities      = DB::connection('tenant')->table('business_activities')->get();
-        $buildings                = DB::connection('tenant')->table('property_management')->get();
+        $buildings                = PropertyManagement::forUser()->get();
         $unit_descriptions        = DB::connection('tenant')->table('unit_descriptions')->get();
         $unit_conditions          = DB::connection('tenant')->table('unit_conditions')->get();
         $unit_types               = DB::connection('tenant')->table('unit_types')->get();

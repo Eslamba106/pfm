@@ -46,4 +46,20 @@ class PropertyManagement extends Model
     {
         return $this->belongsTo(Investment::class, 'investment_id', 'id');
     }
+
+
+     public function scopeForUser($query, $userId = null)
+    {
+        $userId = $userId ?? auth()->id(); 
+        $settings = UserSettings::where('user_id', $userId)->first(); 
+        $buildingIds = $settings?->building_ids ?? []; 
+        if (is_string($buildingIds)) {
+            $buildingIds = json_decode($buildingIds, true) ?? [];
+        } 
+        if (!empty($buildingIds)) {
+            $query->whereIn('id', $buildingIds);
+        }
+
+        return $query;
+    }
 }

@@ -23,7 +23,7 @@ class PropertyManagementController extends Controller
         $ids         = $request->bulk_ids;
         $search      = $request['search'];
         $query_param = $search ? ['search' => $request['search']] : '';
-        $property    = (new PropertyManagement())->setConnection('tenant')->when($request['search'], function ($q) use ($request) {
+        $property    = (new PropertyManagement())->setConnection('tenant')->forUser()->when($request['search'], function ($q) use ($request) {
             $key = explode(' ', $request['search']);
             foreach ($key as $value) {
                 $q->Where('name', 'like', "%{$value}%")
@@ -63,7 +63,7 @@ class PropertyManagementController extends Controller
         $country_master      = (new CountryMaster())->setConnection('tenant')->all();
         $property_type       = (new PropertyType())->setConnection('tenant')->all();
         $owner_ship          = (new Ownership())->setConnection('tenant')->all();
-        $property_management = (new PropertyManagement())->setConnection('tenant')->findOrFail($id);
+        $property_management = (new PropertyManagement())->setConnection('tenant')->forUser()->findOrFail($id);
         $dail_code_main      = DB::connection('tenant')->table('countries')->select('id', 'dial_code')->get();
 
         $data = [
@@ -263,7 +263,7 @@ class PropertyManagementController extends Controller
 
     public function view_image($id)
     {
-        $property = (new PropertyManagement())->setConnection('tenant')->with(
+        $property = (new PropertyManagement())->setConnection('tenant')->forUser()->with(
             'blocks_management_child',
             'blocks_management_child.block',
             'blocks_management_child.floors_management_child',
@@ -279,7 +279,7 @@ class PropertyManagementController extends Controller
     }
     public function list_view($id)
     {
-        $property = (new PropertyManagement())->setConnection('tenant')->with(
+        $property = (new PropertyManagement())->setConnection('tenant')->forUser()->with(
             'blocks_management_child',
             'blocks_management_child.block',
             'blocks_management_child.floors_management_child',

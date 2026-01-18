@@ -50,6 +50,7 @@ use App\Http\Controllers\facility_master\EmployeeTypeController;
 use App\Http\Controllers\hierarchy\CostCenterCategoryController;
 use App\Http\Controllers\property_master\PropertyTypeController;
 use App\Http\Controllers\property_transactions\TenantController;
+use App\Http\Controllers\Room_Reservation\BookingRoomController;
 use App\Http\Controllers\facility_master\MainComplaintController;
 use App\Http\Controllers\property_master\EnquiryStatusController;
 use App\Http\Controllers\property_master\UnitConditionController;
@@ -118,7 +119,7 @@ Route::group(['prefix' => 'custom-role'], function () {
 // Dashboard
 // Route::group(['middleware' => 'database.set'], function () {
 Route::group(["prefix" => "dashboard"], function () {
-    Route::get("/", [DashboardController::class, "index"])->name("dashboard")->middleware('auth');
+    // Route::get("/", [DashboardController::class, "index"])->name("dashboard")->middleware('auth');
     Route::get("/get_units_by_booking_status/{status}", [DashboardController::class, "get_units_by_booking_status"])->name("dashboard.get_units_by_booking_status");
 });
 // Route::get("/get_unit_details/{id}", [DashboardController::class, "get_unit_details"])->name("general.get_unit_details");
@@ -154,6 +155,9 @@ Route::get('/property_transactions-side', function () {
 Route::get('/property_reports-side', function () {
     return view('dashboard.property_reports');
 })->name('property_reports_side');
+Route::get('/billing_collection-side', function () {
+    return view('dashboard.billing_&_collection');
+})->name('billing_&_collection_side');
 
 Route::get('/collections-side', function () {
     return view('dashboard.collections_side');
@@ -881,7 +885,7 @@ Route::group(['prefix' => 'asset'], function () {
 ################################################## Start Property Reports #############################################
 
 // Schedules
-Route::group(['prefix' => 'property_reports/schedules'], function () {
+Route::group(['prefix' => 'schedules'], function () {
     Route::get('/', [ScheduleController::class, 'index'])->name('schedules.index');
     // Route::get('/create', [ScheduleController::class,'create'])->name('shedules.create');
     // Route::post('store', [ScheduleController::class,'store'])->name('shedules.store');
@@ -893,7 +897,7 @@ Route::group(['prefix' => 'property_reports/schedules'], function () {
 });
 
 // Invoice
-Route::group(['prefix' => 'property_reports/invoice'], function () {
+Route::group(['prefix' => 'invoice'], function () {
     Route::post('/create', [InvoiceController::class, 'storeInvoice'])->name('invoice_generate.store');
     // Route::get('/', [ScheduleController::class,'create'])->name('invoice.index');
     Route::get('/all_invoices', [InvoiceController::class, 'index'])->name('invoices.all_invoices');
@@ -909,7 +913,7 @@ Route::group(['prefix' => 'property_reports/invoice'], function () {
 });
 
 // Sales Return 
-Route::group(['prefix' => 'property_reports/sales-return'], function () {
+Route::group(['prefix' => 'sales-return'], function () {
     Route::post('/create', [InvoiceReturnController::class, 'storeInvoice'])->name('invoice_return_generate.store');
     Route::get('/get-tenant-invoices', [InvoiceReturnController::class, 'get_tenant_invoices'])->name('get.tenant.invoices');
     Route::get('/all_invoices', [InvoiceReturnController::class, 'index'])->name('invoices_return.all_invoices');
@@ -992,7 +996,7 @@ Route::get('/get-receipt-no', function (Request $request) {
 
 // Add Building To Sub Groups
 Route::get('add_property_to_cost', function () {
-    $units   = PropertyManagement::get();
+    $units   = PropertyManagement::forUser()->get();
     $company = auth()->user() ?? User::first();
     foreach ($units as $unit_management) {
         $ledger = CostCenterCategory::create([
@@ -1173,4 +1177,17 @@ Route::group(['prefix' => 'room_reservation/master'], function () {
         Route::get('edit/{id}', [RoomController::class, 'edit'])->name('room_unit.edit');
         Route::get('/get-floors-by-building-and-block/{building_id}/{block_id}', [RoomController::class, 'get_floors'])->name('room_unit.get_floors');
     });
+});
+Route::group(['prefix' => 'room_reservation/booking'], function () {
+
+    // ------------------------ room types ----------------------
+    Route::group(['prefix' => 'booking-room'], function () {
+        Route::get('list', [BookingRoomController::class, 'index'])->name('booking_room.list');
+        Route::post('store', [BookingRoomController::class, 'store'])->name('booking_room.store');
+        Route::patch('update', [BookingRoomController::class, 'update'])->name('booking_room.update');
+        Route::get('delete', [BookingRoomController::class, 'delete'])->name('booking_room.delete');
+        Route::get('edit/{id}', [BookingRoomController::class, 'edit'])->name('booking_room.edit');
+    });
+
+   
 });

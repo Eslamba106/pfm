@@ -311,7 +311,7 @@
                                                         href="{{ route($route . '.edit', $value->id) }}">
                                                         <i class="tio-edit"></i>
                                                     </a>
-                                                    @if (!$value->isUsed())
+                                                    @if (!in_array($route ,$facility_masters) &&!$value->isUsed())
                                                         <a class="btn btn-outline-danger btn-sm delete square-btn"
                                                             title="{{ ui_change('delete', 'property_master') }}"
                                                             id="{{ $value['id'] }}">

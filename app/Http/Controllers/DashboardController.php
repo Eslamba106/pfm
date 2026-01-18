@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 use App\Models\View;
 use App\Models\Tenant;
 use App\Models\Company;
+use App\Models\PropertyManagement;
 use App\Models\UnitType;
 use Illuminate\Http\Request;
 use App\Models\UnitCondition;
@@ -70,7 +71,7 @@ class DashboardController extends Controller
             ->where('status', 'canceled')
             ->count();
 
-        $buildings         = DB::table('property_management')->select('name' , 'id' , 'code' )->get();
+        $buildings         = PropertyManagement::forUser()->select('name' , 'id' , 'code' )->get();
         $unit_descriptions = DB::table('unit_descriptions')->select('id' ,'name' , 'code')->get();
         $unit_conditions   = DB::table('unit_conditions')->select('id' ,'name' , 'code')->get();
         $unit_types        = DB::table('unit_types')->select('id' ,'name' , 'code')->get();
@@ -238,7 +239,7 @@ class DashboardController extends Controller
         ]);
     }
     public function search_unit_side(){
-        $buildings =  DB::connection('tenant')->table('property_management')->select('id' , 'name')->get();
+        $buildings = PropertyManagement::forUser()->select('id' , 'name')->get();
         $unit_descriptions =  DB::connection('tenant')->table('unit_descriptions')->select('id' , 'name')->get();
         $unit_conditions =  DB::connection('tenant')->table('unit_conditions')->select('id' , 'name')->get();
         $unit_types =   DB::connection('tenant')->table('unit_types')->select('id' , 'name')->get();

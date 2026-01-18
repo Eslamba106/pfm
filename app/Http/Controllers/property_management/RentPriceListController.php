@@ -97,7 +97,7 @@ class RentPriceListController extends Controller
 
     public function create()
     {
-        $property_managements = (new PropertyManagement())->setConnection('tenant')->select('id', 'name', 'code')->get();
+        $property_managements = (new PropertyManagement())->setConnection('tenant')->forUser()->select('id', 'name', 'code')->get();
 
         $data = [
             'property_managements' => $property_managements,
@@ -109,7 +109,7 @@ class RentPriceListController extends Controller
     public function edit($id)
     {
         $unit_rent            = (new RentPriceList())->setConnection('tenant')->findOrFail($id);
-        $property_managements = (new PropertyManagement())->setConnection('tenant')->select('id', 'name', 'code')->get();
+        $property_managements = (new PropertyManagement())->setConnection('tenant')->forUser()->select('id', 'name', 'code')->get();
 
         $data = [
             'property_managements' => $property_managements,

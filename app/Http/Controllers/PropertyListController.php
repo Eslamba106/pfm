@@ -13,7 +13,7 @@ class PropertyListController extends Controller
        
         
          
-        $property     = (new PropertyManagement())->setConnection('tenant')->get();
+        $property     = (new PropertyManagement())->setConnection('tenant')->forUser()->get();
         // if ($property->isEmpty()) {
         //     $property = (new PropertyManagement())->setConnection('tenant')->get();
         // }
@@ -26,7 +26,7 @@ class PropertyListController extends Controller
      public function image_view($id  )
     {
         $property_unit = (new UnitManagement())->setConnection('tenant')->where('property_management_id' , $id)->get();
-        $property = (new PropertyManagement())->setConnection('tenant')->with('blocks_management_child', 'blocks_management_child.block'
+        $property = (new PropertyManagement())->setConnection('tenant')->forUser()->with('blocks_management_child', 'blocks_management_child.block'
             , 'blocks_management_child.floors_management_child', 'blocks_management_child.floors_management_child.floor_management_main',
             'blocks_management_child.floors_management_child.unit_management_child', 'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->findOrFail($id);
@@ -41,7 +41,7 @@ class PropertyListController extends Controller
     {
               
         $property_unit = (new UnitManagement())->setConnection('tenant')->where('property_management_id' , $id)->get();
-        $property = (new PropertyManagement())->setConnection('tenant')->with('blocks_management_child', 'blocks_management_child.block'
+        $property = (new PropertyManagement())->setConnection('tenant')->forUser()->with('blocks_management_child', 'blocks_management_child.block'
             , 'blocks_management_child.floors_management_child', 'blocks_management_child.floors_management_child.floor_management_main',
             'blocks_management_child.floors_management_child.unit_management_child', 'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->findOrFail($id);

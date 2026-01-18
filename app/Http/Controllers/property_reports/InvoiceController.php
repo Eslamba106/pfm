@@ -60,7 +60,7 @@ class InvoiceController extends Controller
         }
         $invoices = $invoices_query->paginate();
         // dd($invoices);
-        $all_building    = (new PropertyManagement())->setConnection('tenant')->all();
+        $all_building    = (new PropertyManagement())->setConnection('tenant')->forUser()->all();
         $tenants         = (new Tenant())->setConnection('tenant')->get();
         $unit_management = (new UnitManagement())->setConnection('tenant')->with(['property_unit_management', 'block_unit_management', 'floor_unit_management', 'unit_management_main', 'unit_description'])->get();
         return view('admin-views.property_reports.invoices.invoices', compact('invoices', 'unit_management', 'all_building', 'tenants'));

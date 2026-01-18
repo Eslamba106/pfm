@@ -8,10 +8,10 @@
             <div class="navbar-brand-wrapper">
                 <!-- Logo -->
                 <a class="navbar-brand" href="" aria-label="">
-                    <img class="navbar-brand-logo" onerror="this.src='{{ asset( 'assets/finexerp_logo.png') }}'"
-                        src="{{ asset(main_path().'assets/finexerp_logo.png') }}" alt="Logo">
-                    <img class="navbar-brand-logo-mini" onerror="this.src='{{ asset( 'assets/finexerp_logo.png') }}'"
-                        src="{{ asset(main_path().'assets/finexerp_logo.png') }}" alt="Logo">
+                    <img class="navbar-brand-logo" onerror="this.src='{{ asset('assets/finexerp_logo.png') }}'"
+                        src="{{ asset(main_path() . 'assets/finexerp_logo.png') }}" alt="Logo">
+                    <img class="navbar-brand-logo-mini" onerror="this.src='{{ asset('assets/finexerp_logo.png') }}'"
+                        src="{{ asset(main_path() . 'assets/finexerp_logo.png') }}" alt="Logo">
                 </a>
                 <!-- End Logo -->
             </div>
@@ -30,13 +30,56 @@
             <button type="button" onclick="window.history.back();"
                 class="btn btn--primary">{{ ui_change('back') }}</button>
             <a href="{{ route('enquiry.general_check_property') }}"
-                class="m-1 btn btn--primary">{{ ui_change('enquiry_quick_search' , 'property_transaction') }}</a>
+                class="m-1 btn btn--primary">{{ ui_change('enquiry_quick_search', 'property_transaction') }}</a>
             <a href="{{ route('general_image_view') }}"
-                class="m-1 btn btn--primary">{{ ui_change('image_view' , 'property_transaction') }}</a>
+                class="m-1 btn btn--primary">{{ ui_change('image_view', 'property_transaction') }}</a>
             <a href="{{ route('general_list_view') }}"
-                class="m-1 btn btn--primary">{{ ui_change('list_view' , 'property_transaction') }}</a>
+                class="m-1 btn btn--primary">{{ ui_change('list_view', 'property_transaction') }}</a>
             <a href="https://www.finexerp.com/"
-                class="m-1 btn btn--primary">{{ ui_change('Finexerp' , 'property_transaction') }}</a>
+                class="m-1 btn btn--primary">{{ ui_change('Finexerp', 'property_transaction') }}</a>
+            <li class="nav-item d-none d-md-inline-block">
+                <div class="hs-unfold">
+                    <div>
+                        @php
+                            $local = session()->has('local') ? session('local') : 'en';
+
+                            $user_buildings = \App\Models\UserSettings::where('user_id', auth()->id())->first();
+
+                            $buildings = \App\Models\PropertyManagement::select('id', 'name')->get();
+
+                            $selectedBuildings = json_decode(optional($user_buildings)->building_ids ?? '[]', true);
+                        @endphp
+
+
+                        <div
+                            class="topbar-text dropdown disable-autohide {{ Session::get('direction') === 'rtl' ? 'ml-3' : 'm-1' }} text-capitalize">
+                            <a class="topbar-link dropdown-toggle d-flex align-items-center title-color" href="#"
+                                data-toggle="dropdown">
+                                {{ ui_change('user_buildings') }}
+                            </a>
+                            <ul class="dropdown-menu">
+                                <form action="{{ route('user.user_settings.update_buildings') }}" method="POST"
+                                    class="text-right m-1">
+                                    @csrf
+                                    @method('patch')
+                                    @foreach ($buildings as $key => $building)
+                                        <li>
+                                            <label class="d-flex align-items-center m-1" style="cursor:pointer">
+                                                <input type="checkbox" name="buildings[]" value="{{ $building->id }}"
+                                                    {{ in_array($building->id, $selectedBuildings) ? 'checked' : '' }}
+                                                    class="mr-2">
+
+                                                {{ $building->name }}
+                                            </label>
+                                        </li>
+                                    @endforeach
+                                    <button type="submit" class="btn-sm btn--primary ">{{ ui_change('save') }}</button>
+                                </form>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </li>
             <!-- Secondary Content -->
             <div class="navbar-nav-wrap-content-right"
                 style="{{ Session::get('locale') === 'ar' ? 'margin-left:unset; margin-right: auto' : 'margin-right:unset; margin-left: auto' }}">
@@ -46,14 +89,14 @@
                 <ul class="navbar-nav align-items-center flex-row">
 
 
-               
-                    <li class="nav-item dropdown">
+
+                    {{-- <li class="nav-item dropdown">
                         <a class="nav-link" data-toggle="dropdown" href="#">
                             <i class="far fa-bell"></i>
                             <span class="badge badge-warning navbar-badge">0</span>
                         </a>
                         <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
-                            {{-- <span class="dropdown-item dropdown-header">15 Notifications</span>
+                             <span class="dropdown-item dropdown-header">15 Notifications</span>
                             <div class="dropdown-divider"></div>
                             <a href="#" class="dropdown-item">
                                 <i class="fas fa-envelope mr-2"></i> 4 new messages
@@ -70,9 +113,9 @@
                                 <span class="float-right text-muted text-sm">2 days</span>
                             </a>
                             <div class="dropdown-divider"></div>
-                            <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a> --}}
+                            <a href="#" class="dropdown-item dropdown-footer">See All Notifications</a> 
                         </div>
-                    </li>
+                    </li> --}}
                     {{-- <li class="nav-item d-none d-md-inline-block">
                         <div class="hs-unfold">
                             <a title="Website home"
@@ -97,7 +140,7 @@
 
 
 
-                    <li class="nav-item d-none d-md-inline-block">
+                    {{-- <li class="nav-item d-none d-md-inline-block">
                         <div class="hs-unfold">
                             <div>
                                 @php( $local = session()->has('local')?session('local'):'en')
@@ -106,8 +149,8 @@
                                     class="topbar-text dropdown disable-autohide {{Session::get('direction') === "rtl" ? 'ml-3' : 'm-1'}} text-capitalize">
                                     <a class="topbar-link dropdown-toggle d-flex align-items-center title-color"
                                        href="#" data-toggle="dropdown">
-                                        @foreach(json_decode($lang['value'],true) as $data)
-                                            @if($data['code']==$local)
+                                        @foreach (json_decode($lang['value'], true) as $data)
+                                            @if ($data['code'] == $local)
                                                 <img class="{{Session::get('direction') === "rtl" ? 'ml-2' : 'mr-2'}}"
                                                      width="20"
                                                      src="{{asset(main_path().'assets/front-end')}}/img/flags/{{$data['code']}}.png"
@@ -118,8 +161,8 @@
                                     </a>
                                     <ul class="dropdown-menu">
                                         
-                                        @foreach(json_decode($lang['value'],true) as $key =>$data)
-                                            @if($data['status']==1)
+                                        @foreach (json_decode($lang['value'], true) as $key => $data)
+                                            @if ($data['status'] == 1)
                                                 <li>
                                                     <a class="dropdown-item py-1"
                                                        href="{{route('lang',[$data['code']])}}">
@@ -137,7 +180,7 @@
                                 </div>
                             </div>
                         </div>
-                    </li>
+                    </li> --}}
                     <li class="nav-item view-web-site-info">
                         <div class="hs-unfold">
                             <a onclick="openInfoWeb()" href="javascript:"
@@ -202,10 +245,10 @@
 
                                 <div class="dropdown-divider"></div>
 
-                                {{-- <a class="dropdown-item" href="">
+                                <a class="dropdown-item" href="{{ route('user.user_settings') }}">
                                     <span class="text-truncate pr-2"
-                                        title="Settings">{{ __('settings.settings') }}</span>
-                                </a> --}}
+                                        title="Settings">{{ ui_change('settings') }}</span>
+                                </a>
 
                                 <div class="dropdown-divider"></div>
 

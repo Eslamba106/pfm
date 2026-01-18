@@ -60,7 +60,7 @@ class AssetController extends Controller
         $amc               = (new AmcProvider())->setConnection('tenant')->get();
         $maintenance_types = (new MaintenanceType())->setConnection('tenant')->get();
         $warranty_types    = (new WarrantyType())->setConnection('tenant')->get();
-        $all_building      = (new PropertyManagement())->setConnection('tenant')->select('id', 'name')->get();
+        $all_building      = (new PropertyManagement())->setConnection('tenant')->forUser()->select('id', 'name')->get();
         $unit_management   = (new UnitManagement())->setConnection('tenant')->with(['property_unit_management', 'block_unit_management', 'block_unit_management.block',
             'floor_unit_management', 'floor_unit_management.floor_management_main', 'unit_management_main', 'unit_description'])
             ->select('property_management_id', 'id', 'unit_id', 'floor_management_id', 'block_management_id')->get();
@@ -180,7 +180,7 @@ class AssetController extends Controller
         $asset_groups      = (new AssetGroup())->setConnection('tenant')->get();
         $maintenance_types = (new MaintenanceType())->setConnection('tenant')->get();
         $warranty_types    = (new WarrantyType())->setConnection('tenant')->get();
-        $all_building      = (new PropertyManagement())->setConnection('tenant')->select('id', 'name')->get();
+        $all_building      = (new PropertyManagement())->setConnection('tenant')->forUser()->select('id', 'name')->get();
         $unit_management   = (new UnitManagement())->setConnection('tenant')->with(['property_unit_management', 'block_unit_management', 'block_unit_management.block',
             'floor_unit_management', 'floor_unit_management.floor_management_main', 'unit_management_main', 'unit_description'])
             ->select('property_management_id', 'id', 'unit_id', 'floor_management_id', 'block_management_id')->get();

@@ -101,7 +101,7 @@ class ProposalController extends Controller
         $country_master           = (new CountryMaster())->setConnection('tenant')->get();
         $live_withs               = DB::connection('tenant')->table('live_withs')->get();
         $business_activities      = DB::connection('tenant')->table('business_activities')->get();
-        $buildings                = DB::connection('tenant')->table('property_management')->get();
+        $buildings                = PropertyManagement::forUser()->get();
         $unit_descriptions        = DB::connection('tenant')->table('unit_descriptions')->get();
         $unit_conditions          = DB::connection('tenant')->table('unit_conditions')->get();
         $unit_types               = DB::connection('tenant')->table('unit_types')->get();
@@ -396,7 +396,7 @@ class ProposalController extends Controller
         $country_master           = (new CountryMaster())->setConnection('tenant')->get();
         $live_withs               = DB::connection('tenant')->table('live_withs')->get();
         $business_activities      = DB::connection('tenant')->table('business_activities')->get();
-        $buildings                = DB::connection('tenant')->table('property_management')->get();
+        $buildings                = PropertyManagement::forUser()->get();
         $unit_descriptions        = DB::connection('tenant')->table('unit_descriptions')->get();
         $unit_conditions          = DB::connection('tenant')->table('unit_conditions')->get();
         $unit_types               = DB::connection('tenant')->table('unit_types')->get();
@@ -440,7 +440,7 @@ class ProposalController extends Controller
         $country_master           = (new CountryMaster())->setConnection('tenant')->get();
         $live_withs               = DB::connection('tenant')->table('live_withs')->get();
         $business_activities      = DB::connection('tenant')->table('business_activities')->get();
-        $buildings                = DB::connection('tenant')->table('property_management')->get();
+        $buildings                = PropertyManagement::forUser()->get();
         $unit_descriptions        = DB::connection('tenant')->table('unit_descriptions')->get();
         $unit_conditions          = DB::connection('tenant')->table('unit_conditions')->get();
         $unit_types               = DB::connection('tenant')->table('unit_types')->get();
@@ -707,7 +707,7 @@ class ProposalController extends Controller
         $country_master           = (new CountryMaster())->setConnection('tenant')->get();
         $live_withs               = DB::connection('tenant')->table('live_withs')->get();
         $business_activities      = DB::connection('tenant')->table('business_activities')->get();
-        $buildings                = DB::connection('tenant')->table('property_management')->get();
+        $buildings                = PropertyManagement::forUser()->get();
         $unit_descriptions        = DB::connection('tenant')->table('unit_descriptions')->get();
         $unit_conditions          = DB::connection('tenant')->table('unit_conditions')->get();
         $unit_types               = DB::connection('tenant')->table('unit_types')->get();
@@ -753,7 +753,7 @@ class ProposalController extends Controller
         $country_master           = (new CountryMaster())->setConnection('tenant')->get();
         $live_withs               = DB::connection('tenant')->table('live_withs')->get();
         $business_activities      = DB::connection('tenant')->table('business_activities')->get();
-        $buildings                = DB::connection('tenant')->table('property_management')->get();
+        $buildings                = PropertyManagement::forUser()->get();
         $unit_descriptions        = DB::connection('tenant')->table('unit_descriptions')->get();
         $unit_conditions          = DB::connection('tenant')->table('unit_conditions')->get();
         $unit_types               = DB::connection('tenant')->table('unit_types')->get();
@@ -819,7 +819,7 @@ class ProposalController extends Controller
         $property_ids = $units->pluck('property_management_id')->toArray();
         $property     = (new PropertyManagement())->setConnection('tenant')->whereIn('id', $property_ids)->get();
         if ($property->isEmpty()) {
-            $property = (new PropertyManagement())->setConnection('tenant')->get();
+            $property = (new PropertyManagement())->setConnection('tenant')->forUser()->get();
         }
         $data = [
             'properties' => $property,
@@ -1362,7 +1362,7 @@ class ProposalController extends Controller
             )->lazy();
         $live_withs          = (new LiveWith())->setConnection('tenant')->select('id', 'name')->lazy();
         $business_activities = (new BusinessActivity())->setConnection('tenant')->select('id', 'name')->lazy();
-        $buildings           = (new PropertyManagement())->setConnection('tenant')->select('id', 'name')->lazy();
+        $buildings           = (new PropertyManagement())->setConnection('tenant')->forUser()->select('id', 'name')->lazy();
         $unit_descriptions   = (new UnitDescription())->setConnection('tenant')->select('id', 'name')->lazy();
         $unit_conditions     = (new UnitCondition())->setConnection('tenant')->select('id', 'name')->lazy();
         $unit_types          = (new UnitType())->setConnection('tenant')->select('id', 'name')->lazy();

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\property_management;
 
 use App\Models\Floor;
@@ -37,9 +38,9 @@ class FloorManagementController extends Controller
     }
     public function create()
     {
-        $property = (new PropertyManagement())->setConnection('tenant')->select('id' , 'name' , 'code')->get();
-        $blocks   = (new BlockManagement())->setConnection('tenant')->select('id' , 'block_id'  )->with('block:id,name,code')->get();
-        $floors   = (new Floor())->setConnection('tenant')->select('id' , 'name' , 'code')->get();
+        $property = (new PropertyManagement())->setConnection('tenant')->forUser()->select('id', 'name', 'code')->get();
+        $blocks   = (new BlockManagement())->setConnection('tenant')->select('id', 'block_id')->with('block:id,name,code')->get();
+        $floors   = (new Floor())->setConnection('tenant')->select('id', 'name', 'code')->get();
         $data     = [
             "property" => $property,
             "floors"   => $floors,
@@ -47,12 +48,11 @@ class FloorManagementController extends Controller
         ];
 
         return view("admin-views.property_management.floor_management.create")->with($data);
-
     }
     public function edit($id)
     {
         $old_floor = (new FloorManagement())->setConnection('tenant')->findOrFail($id);
-        $property  = (new PropertyManagement())->setConnection('tenant')->get();
+        $property  = (new PropertyManagement())->setConnection('tenant')->forUser()->get();
         $blocks    = (new BlockManagement())->setConnection('tenant')->get();
         $floors    = (new Floor())->setConnection('tenant')->get();
         $data      = [
@@ -63,7 +63,6 @@ class FloorManagementController extends Controller
         ];
 
         return view("admin-views.property_management.floor_management.edit")->with($data);
-
     }
     public function store(Request $request)
     {
@@ -73,12 +72,13 @@ class FloorManagementController extends Controller
             'floors' => 'required|array',
             'property' => 'required',
             'block' => 'required',
+            'type' => 'required',
         ];
-    
+
         foreach ($request->floors as $index => $floorId) {
             $rules["floors.$index"] = [
                 'required',
-                Rule::unique('floor_management', 'floor_id')  
+                Rule::unique('floor_management', 'floor_id')
                     ->where(function ($query) use ($request) {
                         return $query
                             ->where('property_management_id', $request->property)
@@ -86,28 +86,29 @@ class FloorManagementController extends Controller
                     })
             ];
         }
-    
+
         $validator = Validator::make($request->all(), $rules);
-    
+
         if ($validator->fails()) {
             return back()->withErrors($validator)->withInput();
         }
-    
+
         try {
             foreach ($request->floors as $floor) {
                 $property = (new FloorManagement())->setConnection('tenant')->create([
                     "floor_id"               => $floor,
                     "property_management_id" => $request->property,
                     "block_management_id"    => $request->block,
+                    "long_status"            => $request->type,
                 ]);
             }
-    
+
             return redirect()->route("floor_management.index")->with("success", __('property_master.added_successfully'));
         } catch (\Exception $e) {
             return redirect()->back()->with("error", $e->getMessage());
         }
     }
-    public function update(Request $request , $id)
+    public function update(Request $request, $id)
     {
         app()->make('db')->setDefaultConnection('tenant');
 
@@ -119,21 +120,23 @@ class FloorManagementController extends Controller
                 Rule::unique('floor_management', 'floor_id')
                     ->where(function ($query) use ($request) {
                         return $query->where('property_management_id', $request->property)
-                                     ->where('block_management_id', $request->block);
+                            ->where('block_management_id', $request->block);
                     })
-                    ->ignore($id)  
+                    ->ignore($id)
             ],
             'property' => 'required',
             'block'    => 'required',
         ]);
-    
+
         try {
             $property = (new FloorManagement())->setConnection('tenant')->findOrFail($id);
-    
+
             $property->update([
                 "floor_id"               => $request->floor,
                 "property_management_id" => $request->property,
                 "block_management_id"    => $request->block,
+                "long_status"            => $request->type,
+
             ]);
             return redirect()->route("floor_management.index")->with("success", __('general.updated_successfully'));
         } catch (\Exception $e) {

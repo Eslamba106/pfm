@@ -146,7 +146,7 @@ class EnquiryController extends Controller
             )->lazy();
         $live_withs          = (new LiveWith())->setConnection('tenant')->select('id', 'name')->lazy();
         $business_activities = (new BusinessActivity())->setConnection('tenant')->select('id', 'name')->lazy();
-        $buildings           = (new PropertyManagement())->setConnection('tenant')->select('id', 'name')->lazy();
+        $buildings           = (new PropertyManagement())->setConnection('tenant')->forUser()->select('id', 'name')->lazy();
         $unit_descriptions   = (new UnitDescription())->setConnection('tenant')->select('id', 'name')->lazy();
         $unit_conditions     = (new UnitCondition())->setConnection('tenant')->select('id', 'name')->lazy();
         $unit_types          = (new UnitType())->setConnection('tenant')->select('id', 'name')->lazy();
@@ -181,7 +181,7 @@ class EnquiryController extends Controller
         $country_master           = CountryMaster::get();
         $live_withs               = DB::connection('tenant')->table('live_withs')->get();
         $business_activities      = DB::connection('tenant')->table('business_activities')->get();
-        $buildings                = DB::connection('tenant')->table('property_management')->get();
+        $buildings                = PropertyManagement::forUser()->get();
         $unit_descriptions        = DB::connection('tenant')->table('unit_descriptions')->get();
         $unit_conditions          = DB::connection('tenant')->table('unit_conditions')->get();
         $unit_types               = DB::connection('tenant')->table('unit_types')->get();
@@ -232,7 +232,7 @@ class EnquiryController extends Controller
         $country_master           = (new CountryMaster())->setConnection('tenant')->get();
         $live_withs               = DB::connection('tenant')->table('live_withs')->get();
         $business_activities      = DB::connection('tenant')->table('business_activities')->get();
-        $buildings                = DB::connection('tenant')->table('property_management')->get();
+        $buildings                = PropertyManagement::forUser()->get();
         $unit_descriptions        = DB::connection('tenant')->table('unit_descriptions')->get();
         $unit_conditions          = DB::connection('tenant')->table('unit_conditions')->get();
         $unit_types               = DB::connection('tenant')->table('unit_types')->get();
@@ -402,7 +402,7 @@ class EnquiryController extends Controller
                 }
             }
             DB::commit();
-            return to_route('enquiry.index')->with('success', __('general.updated_successfully'));
+            return to_route('enquiry.index')->with('success', ui_change('updated_successfully'));
         } catch (\Exception $e) {
             DB::rollBack();
             return redirect()->back()->with("error", $e->getMessage());
@@ -563,7 +563,7 @@ class EnquiryController extends Controller
         $country_master           = (new CountryMaster())->setConnection('tenant')->get();
         $live_withs               = DB::connection('tenant')->table('live_withs')->get();
         $business_activities      = DB::connection('tenant')->table('business_activities')->get();
-        $buildings                = DB::connection('tenant')->table('property_management')->get();
+        $buildings                = PropertyManagement::forUser()->get();
         $unit_descriptions        = DB::connection('tenant')->table('unit_descriptions')->get();
         $unit_conditions          = DB::connection('tenant')->table('unit_conditions')->get();
         $unit_types               = DB::connection('tenant')->table('unit_types')->get();
@@ -865,7 +865,7 @@ class EnquiryController extends Controller
             ->paginate();
         $floors            = FloorManagement::select('id', 'floor_id')->with('floor_management_main')->get();
         $blocks            = BlockManagement::select('id', 'block_id')->with('block')->get();
-        $buildings         = PropertyManagement::select('id', 'name')->get();
+        $buildings         = PropertyManagement::select('id', 'name')->forUser()->get();
         $unit_descriptions = UnitDescription::select('id', 'name')->get();
         $unit_conditions   = UnitCondition::select('id', 'name')->get();
         $unit_types        = UnitType::select('id', 'name')->get();
@@ -971,7 +971,7 @@ class EnquiryController extends Controller
         $property_ids = $units->pluck('property_management_id')->toArray();
         $property     = (new PropertyManagement())->setConnection('tenant')->whereIn('id', $property_ids)->get();
         if ($property->isEmpty()) {
-            $property = (new PropertyManagement())->setConnection('tenant')->get();
+            $property = (new PropertyManagement())->setConnection('tenant')->forUser()->get();
         }
         $data = [
             'properties' => $property,
@@ -1185,7 +1185,7 @@ class EnquiryController extends Controller
             'blocks_management_child.floors_management_child.floor_management_main',
             'blocks_management_child.floors_management_child.unit_management_child',
             'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
-        )->get();
+        )->forUser()->get();
         // $property = PropertyManagement::findOrFail($id);
         // dd($enquiry_unit);
         $data = [
@@ -1202,7 +1202,7 @@ class EnquiryController extends Controller
             'blocks_management_child.floors_management_child.floor_management_main',
             'blocks_management_child.floors_management_child.unit_management_child',
             'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
-        )->get();
+        )->forUser()->get();
 
         $data = [
             'property_items' => $property,
