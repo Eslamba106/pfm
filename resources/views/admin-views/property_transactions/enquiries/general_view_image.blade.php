@@ -2,7 +2,7 @@
 @php
     $lang = Session::get('locale');
 @endphp
-@section('title', ui_change('view_image' , 'property_transaction'))
+@section('title', ui_change('view_image', 'property_transaction'))
 @push('css_or_js')
     <!-- Custom styles for this page -->
     <link href="{{ asset('assets/back-end') }}/vendor/datatables/dataTables.bootstrap4.min.css" rel="stylesheet">
@@ -132,7 +132,7 @@
         <div class="mb-3 d-flex align-items-center justify-content-between">
             <h2 class="h1 mb-0 d-flex gap-2 align-items-center">
                 {{-- <img width="60" src="{{ asset('/assets/back-end/img/property.jpg') }}" alt=""> --}}
-                {{ ui_change('property' , 'property_transaction') }}
+                {{ ui_change('property', 'property_transaction') }}
             </h2>
             {{-- <a href="{{ route('property_management.create') }}"
                 class="btn btn--primary">{{ ui_change('property_management.add_new_property' , 'property_transaction') }}</a> --}}
@@ -140,30 +140,59 @@
         <!-- End Page Title -->
         @include('admin-views.inline_menu.property_transaction.inline-menu')
 
-        <!-- Content Row -->
-        {{-- {{dd($enquiry_units)}} --}}
-        @foreach ($property_items as $property_item)
-            
-       
+        <form id="productForm" method="get" class="d-flex flex-wrap gap-2">
+            <button type="submit" onclick="setFormAction('{{ route('enquiry.create_with_select_unit') }}')"
+                class="btn btn--primary createButton">
+                <i class="tio-add"></i>
+                <span class="text">{{ ui_change('create_enquiry', 'property_transaction') }}</span>
+            </button>
+
+            <button type="submit" onclick="setFormAction('{{ route('proposal.create_with_select_unit') }}')"
+                class="btn btn--primary createButton">
+                <i class="tio-add"></i>
+                <span class="text">{{ ui_change('create_proposal', 'property_transaction') }}</span>
+            </button>
+
+            <button type="submit" onclick="setFormAction('{{ route('booking.create_with_select_unit') }}')"
+                class="btn btn--primary createButton">
+                <i class="tio-add"></i>
+                <span class="text">{{ ui_change('create_booking', 'property_transaction') }}</span>
+            </button>
+
+            <button type="submit" onclick="setFormAction('{{ route('agreement.create_with_select_unit') }}')"
+                class="btn btn--primary createButton">
+                <i class="tio-add"></i>
+                <span class="text">{{ ui_change('create_agreement', 'property_transaction') }}</span>
+            </button>
+    </div>
+
+
+    @foreach ($property_items as $property_item)
         <div class="row mt-5 @if ($lang == 'ar') rtl text-start @else ltr @endif">
 
             <div class="col-md-12">
                 <div class="card">
                     <div class="px-3 py-4">
                         <div class="legend">
-                            <div><span style="background-color: teal;"></span> {{ ui_change('Floors' , 'property_transaction') }}</div>
-                            <div><span style="background-color: #fff;"></span> {{ ui_change('Empty_Units' , 'property_transaction') }}</div>
-                            <div><span style="background-color: #ffeb3b;"></span> {{ ui_change('Proposed_Units' , 'property_transaction') }}</div>
-                            <div><span style="background-color: #d500f9;"></span> {{ ui_change('Booked_Units' , 'property_transaction') }}</div>
-                            <div><span style="background-color: #f44336;"></span> {{ ui_change('Agreement_Units' , 'property_transaction') }}</div>
-                            <div><span style="background-color: #372be2;"></span> {{ ui_change('Proposal_Pending' , 'property_transaction') }}</div>
+                            <div><span style="background-color: teal;"></span>
+                                {{ ui_change('Floors', 'property_transaction') }}</div>
+                            <div><span style="background-color: #fff;"></span>
+                                {{ ui_change('Empty_Units', 'property_transaction') }}</div>
+                            <div><span style="background-color: #ffeb3b;"></span>
+                                {{ ui_change('Proposed_Units', 'property_transaction') }}</div>
+                            <div><span style="background-color: #d500f9;"></span>
+                                {{ ui_change('Booked_Units', 'property_transaction') }}</div>
+                            <div><span style="background-color: #f44336;"></span>
+                                {{ ui_change('Agreement_Units', 'property_transaction') }}</div>
+                            <div><span style="background-color: #372be2;"></span>
+                                {{ ui_change('Proposal_Pending', 'property_transaction') }}</div>
                         </div>
                         {{-- @forelse ($properties as $property_item) --}}
                         <div class="grid-title">
                             <h3 style="color: var(--primary)">{{ $property_item->name }}</h3>
                         </div>
                         <div class="grid-container">
-                            @foreach ($property_item->blocks_management_child as $block_item)
+                            {{-- @foreach ($property_item->blocks_management_child as $block_item)
                                 <div class="grid-title">{{ $block_item->block->name }}</div>
                                 @foreach ($block_item->floors_management_child as $floor_item)
                                     <div class="grid">
@@ -230,6 +259,7 @@
                                                         {{ optional(optional(optional($unit_item->agreement_main)->agreement)->tenant)->contact_no }}
                                                     </div>
                                                 </div>
+                                                
                                             @elseif($unit_item->booking_status == 'empty')
                                                 <div style="background-color:#fff;" class="unit  hover-info empty ">
                                                     {{ $unit_item->unit_management_main->name }}
@@ -249,81 +279,213 @@
                                                 {{ $unit_item->unit_management_main->name . ' - ' . optional($unit_item->rent_schedules->first())->rent_amount }}
                                                 
                                                  
-                                                {{-- <div class="info-box">
-                                                    {{ optional(optional(optional($unit_item->enquiry)->main_enquiry)->tenant)->name ?? optional(optional(optional($unit_item->enquiry)->main_enquiry)->tenant)->company_name }}
-                                                    <br>
-                                                    {{ optional(optional($unit_item->enquiry)->main_enquiry)->enquiry_no }}
-                                                </div>  
-                                            </div> --}}
+                                                
                                         @endforeach
 
 
                                     </div>
                                     <hr>
                                 @endforeach
+                            @endforeach --}}
+                            @foreach ($property_item->blocks_management_child as $block_item)
+                                <div class="grid-title">{{ $block_item->block->name }}</div>
+
+                                @foreach ($block_item->floors_management_child as $floor_item)
+                                    <div class="grid">
+                                        <div class="floor">{{ $floor_item->floor_management_main->name }}</div>
+
+                                        @foreach ($floor_item->unit_management_child as $unit_item)
+                                            @if ($unit_item->booking_status == 'enquiry')
+                                                <div style="background-color:blue;color:white; position:relative"
+                                                    class="unit hover-info">
+                                                    @php
+                                                        $periodFrom = optional($unit_item->enquiry)->period_from;
+                                                    @endphp
+                                                    @if ($periodFrom && Carbon\Carbon::parse($periodFrom)->gt(Carbon\Carbon::today()))
+                                                        <input type="checkbox" name="bulk_ids[]"
+                                                            value="{{ $unit_item->id }}"
+                                                            class="unit-checkbox check_bulk_item check_bulk_item"
+                                                            style="position:absolute; top:5px; left:5px; z-index:10;">
+                                                    @endif
+
+                                                    {{ $unit_item->unit_management_main->name }}
+
+                                                    <div class="info-box">
+                                                        {{ optional(optional(optional($unit_item->enquiry)->main_enquiry)->tenant)->name ??
+                                                            optional(optional(optional($unit_item->enquiry)->main_enquiry)->tenant)->company_name }}
+                                                        <br>
+                                                        {{ optional(optional($unit_item->enquiry)->main_enquiry)->enquiry_no }}
+                                                        <br>
+                                                        {{ optional($unit_item->rent_schedules->first())->rent_amount ??
+                                                            optional($unit_item->main_enquiry)->rent_amount }}
+                                                        <br>
+                                                        {{ optional(optional(optional($unit_item->enquiry)->main_enquiry)->tenant)->contact_no }}
+                                                    </div>
+                                                </div>
+
+                                                {{-- PROPOSAL --}}
+                                            @elseif($unit_item->booking_status == 'proposal')
+                                                <div style="background-color:#ffeb3b; position:relative"
+                                                    class="unit hover-info">
+                                                    @php
+                                                        $periodFrom = optional($unit_item->proposal_main)
+                                                            ->commencement_date;
+                                                    @endphp
+                                                    @if ($periodFrom && Carbon\Carbon::parse($periodFrom)->gt(Carbon\Carbon::today()))
+                                                        <input type="checkbox" name="bulk_ids[]"
+                                                            value="{{ $unit_item->id }}"
+                                                            class="unit-checkbox check_bulk_item check_bulk_item"
+                                                            style="position:absolute; top:5px; left:5px; z-index:10;">
+                                                    @endif
+
+
+                                                    {{ $unit_item->unit_management_main->name }}
+
+                                                    <div class="info-box">
+                                                        {{ optional(optional(optional($unit_item->proposal_main)->proposal)->tenant)->name ??
+                                                            optional(optional(optional($unit_item->proposal_main)->proposal)->tenant)->company_name }}
+                                                        <br>
+                                                        {{ optional(optional($unit_item->proposal_main)->proposal)->proposal_no }}
+                                                        <br>
+                                                        {{ optional($unit_item->rent_schedules->first())->rent_amount ??
+                                                            optional($unit_item->proposal_main)->rent_amount }}
+                                                        <br>
+                                                        {{ optional(optional(optional($unit_item->proposal_main)->proposal)->tenant)->contact_no }}
+                                                    </div>
+                                                </div>
+
+                                                {{-- BOOKING --}}
+                                            @elseif($unit_item->booking_status == 'booking')
+                                                <div style="background-color:#d500f9; position:relative"
+                                                    class="unit hover-info">
+                                                    @php
+                                                        $periodFrom = optional($unit_item->booking_main)
+                                                            ->commencement_date;
+                                                    @endphp
+                                                    @if ($periodFrom && Carbon\Carbon::parse($periodFrom)->gt(Carbon\Carbon::today()))
+                                                        <input type="checkbox" name="bulk_ids[]"
+                                                            value="{{ $unit_item->id }}"
+                                                            class="unit-checkbox check_bulk_item check_bulk_item"
+                                                            style="position:absolute; top:5px; left:5px; z-index:10;">
+                                                    @endif
+
+                                                    {{ $unit_item->unit_management_main->name }}
+
+                                                    <div class="info-box">
+                                                        {{ optional(optional(optional($unit_item->booking_main)->booking)->tenant)->name ??
+                                                            optional(optional(optional($unit_item->booking_main)->booking)->tenant)->company_name }}
+                                                        <br>
+                                                        {{ optional(optional($unit_item->booking_main)->booking)->booking_no }}
+                                                        <br>
+                                                        {{ optional($unit_item->rent_schedules->first())->rent_amount ??
+                                                            optional($unit_item->booking_main)->rent_amount }}
+                                                        <br>
+                                                        {{ optional(optional(optional($unit_item->booking_main)->booking)->tenant)->contact_no }}
+                                                    </div>
+                                                </div>
+
+                                                {{-- AGREEMENT --}}
+                                            @elseif($unit_item->booking_status == 'agreement')
+                                                <div style="background-color:#f44336; position:relative"
+                                                    class="unit hover-info">
+                                                    @php
+                                                        $periodFrom = optional($unit_item->agreement_main)
+                                                            ->commencement_date;
+                                                    @endphp
+                                                    @if ($periodFrom && Carbon\Carbon::parse($periodFrom)->gt(Carbon\Carbon::today()))
+                                                        <input type="checkbox" name="bulk_ids[]"
+                                                            value="{{ $unit_item->id }}"
+                                                            class="unit-checkbox check_bulk_item check_bulk_item"
+                                                            style="position:absolute; top:5px; left:5px; z-index:10;">
+                                                    @endif
+
+                                                    {{ $unit_item->unit_management_main->name }}
+
+                                                    <div class="info-box">
+                                                        {{ optional(optional(optional($unit_item->agreement_main)->agreement)->tenant)->name ??
+                                                            optional(optional(optional($unit_item->agreement_main)->agreement)->tenant)->company_name }}
+                                                        <br>
+                                                        {{ optional(optional($unit_item->agreement_main)->agreement)->agreement_no }}
+                                                        <br>
+                                                        {{ optional($unit_item->rent_schedules->first())->rent_amount ??
+                                                            optional($unit_item->agreement_main)->rent_amount }}
+                                                        <br>
+                                                        {{ optional(optional(optional($unit_item->agreement_main)->agreement)->tenant)->contact_no }}
+                                                    </div>
+                                                </div>
+
+                                                {{-- EMPTY --}}
+                                            @elseif($unit_item->booking_status == 'empty')
+                                                <div style="background-color:#fff; position:relative"
+                                                    class="unit hover-info empty">
+
+                                                    <input type="checkbox" name="bulk_ids[]" value="{{ $unit_item->id }}"
+                                                        class="unit-checkbox check_bulk_item check_bulk_item"
+                                                        style="position:absolute; top:5px; left:5px; z-index:10;">
+
+                                                    {{ $unit_item->unit_management_main->name }}
+
+                                                    <div class="info-box">
+                                                        {{ optional($unit_item->rent_schedules->first())->rent_amount }}
+                                                    </div>
+                                                </div>
+                                            @endif
+                                        @endforeach
+                                    </div>
+
+                                    <hr>
+                                @endforeach
                             @endforeach
 
                         </div>
                         <hr>
-                        {{-- @empty --}}
 
-                        {{-- @endforelse --}}
-                        {{-- <div class="grid-container">
-                            <div class="grid-title">Block: Block D</div>
-                            <div class="grid">
-                                <div class="floor">FLR004</div>
-                                <div class="unit booked">UNIT015</div>
-                                <div class="unit empty">UNIT016</div>
-                                <div class="unit empty">UNIT017</div>
-                                <div class="unit empty">UNIT018</div>
-
-                                <div class="floor">FLR003</div>
-                                <div class="unit empty">UNIT010</div>
-                                <div class="unit empty">UNIT011</div>
-                                <div class="unit proposed">UNIT012</div>
-                                <div class="unit booked">UNIT013</div>
-                                <div class="unit booked">UNIT014</div>
-
-                                <div class="floor">FLR002</div>
-                                <div class="unit empty">UNIT006</div>
-                                <div class="unit empty">UNIT007</div>
-                                <div class="unit empty">UNIT008</div>
-                                <div class="unit empty">UNIT009</div>
-
-                                <div class="floor">FLR001</div>
-                                <div class="unit empty">UNIT001</div>
-                                <div class="unit empty">UNIT002</div>
-                                <div class="unit empty">UNIT003</div>
-                                <div class="unit empty">UNIT004</div>
-                                <div class="unit empty">UNIT005</div>
-                            </div>
-                        </div>
-
-                        <div class="grid-container">
-                            <div class="grid-title">Block: Block A</div>
-                            <div class="grid">
-                                <div class="floor">FLR002</div>
-                                <div class="unit booked">UNIT011</div>
-                                <div class="unit agreement">UNIT012</div>
-                                <div class="unit booked">UNIT013</div>
-                                <div class="unit booked">UNIT014</div>
-                                <div class="unit booked">UNIT015</div>
-
-                                <div class="floor">FLR001</div>
-                                <div class="unit empty">UNIT001</div>
-                                <div class="unit agreement">UNIT002</div>
-                                <div class="unit empty">UNIT003</div>
-                                <div class="unit empty">UNIT004</div>
-                                <div class="unit empty">UNIT005</div>
-                            </div>
-                        </div> --}}
                     </div>
                 </div>
             </div>
         </div>
-         @endforeach
+    @endforeach
     </div>
 @endsection
 
 @push('script')
+    <script>
+        function setFormAction(actionUrl) {
+            document.getElementById('productForm').action = actionUrl;
+        }
+        document.addEventListener("DOMContentLoaded", function() {
+
+            const form = document.querySelector("form");
+            const checkboxes = document.querySelectorAll(".unit-checkbox");
+            const bulkCheckAll = document.querySelector(".bulk_check_all");
+            const createEnquiryButton = document.querySelector(".createButton");
+
+            form.addEventListener("submit", function(event) {
+                if (event.submitter === createEnquiryButton) {
+
+                    const checkedItems = document.querySelectorAll(".unit-checkbox:checked").length;
+
+                    if (checkedItems === 0) {
+                        event.preventDefault();
+                        alert("Please Select Unit");
+                    }
+                }
+            });
+
+            if (bulkCheckAll) {
+                bulkCheckAll.addEventListener("change", function() {
+                    checkboxes.forEach(cb => cb.checked = this.checked);
+                });
+            }
+
+            checkboxes.forEach(checkbox => {
+                checkbox.addEventListener("change", function() {
+                    if (bulkCheckAll && !this.checked) {
+                        bulkCheckAll.checked = false;
+                    }
+                });
+            });
+
+        });
+    </script>
 @endpush

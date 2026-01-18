@@ -154,7 +154,7 @@
                             <div class="form-group">
                                 <label for="">{{ ui_change('enquiry_date', 'property_transaction') }}</label>
                                 <input type="text" class="form-control" id="enquiry_date_edit" name="enquiry_date"
-                                    value="{{ \Carbon\Carbon::now()->format('d-m-Y') }}" class="form-control">
+                                    value="{{ \Carbon\Carbon::now()->format('d/m/Y') }}" class="form-control">
                             </div>
                         </div>
 

@@ -14,16 +14,7 @@
             </h2>
         </div>
         @include('admin-views.inline_menu.property_config.inline-menu')
-        {{-- <div class="col-md-6 col-lg-4 col-xl-12  ">
-                            <div class="form-group">
-                                <label class="floor-title">{{ ui_change('units') }}<span class="text-danger">
-                                        *</span></label>
-                                <select class="js-select2-custom form-control multiple" name="units[]" required disabled
-                                    multiple>
-
-                                </select>
-                            </div>
-                        </div> --}}
+      
 
 
         <form class="product-form text-start" action="{{ route('rent_price.store') }}" method="POST"
@@ -47,8 +38,8 @@
                                         class="text-danger"> *</span>
                                 </label>
                                 <select id="propertySelect" class="js-select2-custom form-control" name="property" required>
-                                    <option selected disabled>{{ ui_change('select') }}
-                                    </option>
+                                    <option selected disabled>{{ ui_change('select') }} </option>
+                                    <option value="-1">{{ ui_change('all') }} </option>
                                     @foreach ($property_managements as $property_item)
                                         <option value="{{ $property_item->id }}">
                                             {{ $property_item->name . ' - ' . $property_item->code }}
@@ -62,7 +53,7 @@
                                 <label for="name" class="title-color">{{ ui_change('blocks') }}<span
                                         class="text-danger"> *</span>
                                 </label>
-                                <select id="blockSelect" class="js-select2-custom form-control" name="block" required
+                                <select id="blockSelect" class="js-select2-custom form-control" name="block"  
                                     disabled>
                                     <option selected>{{ ui_change('select') }}
                                     </option>
@@ -75,7 +66,7 @@
                             <div class="form-group">
                                 <label class="floor-title">{{ ui_change('floors') }}<span class="text-danger">
                                         *</span></label>
-                                <select id="floorSelect" class="js-select2-custom form-control" name="floor" required
+                                <select id="floorSelect" class="js-select2-custom form-control" name="floor"  
                                     disabled>
                                     <option selected>{{ ui_change('select') }}
                                     </option>
@@ -146,23 +137,41 @@
                         floor_id: floorId
                     },
                     dataType: 'json',
-                    success: function(data) {
-                        var tbody = $('#unitsTable tbody');
-                        tbody.empty();
+                   success: function(data) {
+    var tbody = $('#unitsTable tbody');
+    tbody.empty();
 
-                        $.each(data.units, function(index, unit) {
-                            var row = `
-                        <tr>
-                            <input type="hidden" name="units[]" value="${unit.id}">
-                            <td>${unit.unit_management_main.name} - ${unit.unit_management_main.code}</td>
-                            <td>
-                                <input type="number" name="rent_amount[${unit.id}]" class="form-control" placeholder="Enter rent amount" value="${$('#mainRentAmount').val()}">
-                            </td>
-                        </tr>
-                    `;
-                            tbody.append(row);
-                        });
-                    }
+    $.each(data.units, function(index, unit) {
+
+        const unitName = [
+            unit.property_unit_management?.name,
+            unit.block_unit_management?.block?.name,
+            unit.floor_unit_management?.floor_management_main?.name,
+            unit.unit_management_main?.name,
+            unit.unit_description?.name,
+            unit.unit_condition?.name,
+            unit.unit_type?.name,
+            unit.view?.name
+        ].filter(Boolean).join(' - ');
+
+        var row = `
+            <tr>
+                <input type="hidden" name="units[]" value="${unit.id}">
+                <td>${unitName}</td>
+                <td>
+                    <input type="number"
+                           name="rent_amount[${unit.id}]"
+                           class="form-control"
+                           placeholder="Enter rent amount"
+                           value="${$('#mainRentAmount').val()}">
+                </td>
+            </tr>
+        `;
+
+        tbody.append(row);
+    });
+}
+
                 });
             }
 

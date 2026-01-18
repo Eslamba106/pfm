@@ -48,7 +48,13 @@
                     </div>
                     <form action="" method="get">
                         <div class="px-3 py-4">
-                            <div class="row align-items-center">
+                            <div class="row align-items-center"  >
+                                <div class="col-12 d-flex justify-content-end">
+                                     <button type="submit" name="bulk_action_btn" value="delete"
+                                    class="btn btn--primary">
+                                    <i class="tio-delete"></i> {{ ui_change('delete','property_report')  }}
+                                </button>
+                                </div>
                             </div>
                         </div>
                         <div class="table-responsive">
@@ -57,8 +63,8 @@
                                 class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table w-100">
                                 <thead class="thead-light thead-50 text-capitalize">
                                     <tr>
-                                        <th><input id="bulk_check_all" class="bulk_check_all" type="checkbox" />
-                                            {{ ui_change('sl') }}</th>
+                                        <th><input id="bulk_check_all" class="bulk_check_all"
+                                                type="checkbox" />{{ ui_change('sl') }}</th>
                                         <th class="text-center">{{ ui_change('unit') }}</th>
                                         <th class="text-center">{{ ui_change('rent_amount') }}</th>
                                         <th class="text-center">{{ ui_change('applicable_from') }}</th>
@@ -98,7 +104,8 @@
                                                         <i class="tio-edit"></i>
                                                     </a>
                                                     <a class="btn btn-outline-danger btn-sm delete square-btn"
-                                                        title="{{ ui_change('delete') }}" id="{{ $rent_price_list_item->id }}">
+                                                        title="{{ ui_change('delete') }}"
+                                                        id="{{ $rent_price_list_item->id }}">
                                                         <i class="tio-delete"></i>
                                                     </a>
                                                 </div>
@@ -117,7 +124,8 @@
 
                     @if (count($rent_price_list) == 0)
                         <div class="text-center p-4">
-                            <img class="mb-3 w-160" src="{{ asset(main_path() . 'assets/back-end') }}/svg/illustrations/sorry.svg"
+                            <img class="mb-3 w-160"
+                                src="{{ asset(main_path() . 'assets/back-end') }}/svg/illustrations/sorry.svg"
                                 alt="Image Description">
                             <p class="mb-0">{{ ui_change('no_data_to_show') }}</p>
                         </div>
@@ -129,39 +137,40 @@
 @endsection
 
 @push('script')
-
-<script>
-    $(document).on('click', '.delete', function () {
-        var id = $(this).attr("id");
-        // var route_name = document.getElementById('route_name').value;
-        Swal.fire({
-            title: "{{ui_change('are_you_sure_delete_this')}}",
-            text: "{{ui_change('you_will_not_be_able_to_revert_this')}}!",
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: '{{ui_change('yes_delete_it')}}!',
-            cancelButtonText: '{{ ui_change("cancel") }}',
-            type: 'warning',
-            reverseButtons: true
-        }).then((result) => {
-            if (result.value) {
-                $.ajaxSetup({
-                    headers: {
-                        'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
-                    }
-                });
-                $.ajax({
-                    url: "{{ route('rent_price.delete') }}",
-                    method: 'get',
-                    data: {id: id},
-                    success: function () {
-                        toastr.success('{{ui_change('deleted_successfully')}}');
-                        location.reload();
-                    }
-                });
-            }
-        })
-    }); 
-</script>
+    <script>
+        $(document).on('click', '.delete', function() {
+            var id = $(this).attr("id");
+            // var route_name = document.getElementById('route_name').value;
+            Swal.fire({
+                title: "{{ ui_change('are_you_sure_delete_this') }}",
+                text: "{{ ui_change('you_will_not_be_able_to_revert_this') }}!",
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: '{{ ui_change('yes_delete_it') }}!',
+                cancelButtonText: '{{ ui_change('cancel') }}',
+                type: 'warning',
+                reverseButtons: true
+            }).then((result) => {
+                if (result.value) {
+                    $.ajaxSetup({
+                        headers: {
+                            'X-CSRF-TOKEN': $('meta[name="_token"]').attr('content')
+                        }
+                    });
+                    $.ajax({
+                        url: "{{ route('rent_price.delete') }}",
+                        method: 'get',
+                        data: {
+                            id: id
+                        },
+                        success: function() {
+                            toastr.success('{{ ui_change('deleted_successfully') }}');
+                            location.reload();
+                        }
+                    });
+                }
+            })
+        });
+    </script>
 @endpush

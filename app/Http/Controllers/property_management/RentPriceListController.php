@@ -17,6 +17,13 @@ class RentPriceListController extends Controller
     {
         // $this->authorize('unit_management');
         $ids = $request->bulk_ids;
+        // dd($request->all());
+          if ($request->bulk_action_btn === 'delete'  && is_array($ids) && count($ids)) {
+            
+
+            $rentUpdated = (new RentPriceList())->setConnection('tenant')->whereIn('id', $ids)->delete();
+            return back()->with('success', ui_change('deleted successfully'));
+        }
         // $lastRun = Cache::get('last_enquiry_expiry_run');
         // if (!$lastRun || now()->diffInHours($lastRun) >= 24) {
         //     $enquiry_settings = get_business_settings('enquiry')->where('type', 'enquiry_expire_date')->first();
@@ -117,21 +124,23 @@ class RentPriceListController extends Controller
         $request->validate([
             'rent_amount'     => 'required',
             'property'        => 'required',
-            'block'           => 'required',
-            'floor'           => 'required',
+            // 'block'           => 'required',
+            // 'floor'           => 'required',
             // 'units'           => 'required|array',
             'applicable_date' => 'required',
         ]);
+        // dd( $request->all());
         try {
             if ($request->applicable_date) {
                 $applicable_date = Carbon::createFromFormat('d/m/Y', $request->applicable_date)->format('Y-m-d');
             }
 
             foreach ($request->units as $unit_id) {
+                $unit_management = (new UnitManagement())->setConnection('tenant')->select('property_management_id' , 'block_management_id','floor_management_id','id')->where('id', $unit_id)->first();
                 (new RentPriceList())->setConnection('tenant')->create([
-                    'property_id'         => $request->property,
-                    'block_management_id' => $request->block,
-                    'floor_management_id' => $request->floor,
+                    'property_id'         => $unit_management->property_management_id,
+                    'block_management_id' => $unit_management->block_management_id,
+                    'floor_management_id' => $unit_management->floor_management_id,
                     'applicable_date'     => $applicable_date,
                     'unit_management_id'  => $unit_id,
                     'rent_amount'         => $request->rent_amount[$unit_id],
@@ -227,10 +236,25 @@ class RentPriceListController extends Controller
 
     public function getUnitsFiltered(Request $request)
     {
+        if($request->property_id == -1){
+            $units = UnitManagement::when($request->block_id, fn($q) => $q->where('block_management_id', $request->block_id))
+            ->when($request->floor_id, fn($q) => $q->where('floor_management_id', $request->floor_id))
+             ->with('unit_management_main:id,name,code','property_unit_management:id,name,code','block_unit_management:id,block_id','block_unit_management.block:id,name,code','floor_unit_management.floor_management_main:id,name,code','floor_unit_management:id,floor_id',
+            'unit_type:id,name,code',
+            'unit_condition:id,name,code',
+            'unit_description:id,name,code',
+            'view:id,name,code')
+            ->get(); 
+            return response()->json(['units' => $units]);
+        }
         $units = UnitManagement::where('property_management_id', $request->property_id)
             ->when($request->block_id, fn($q) => $q->where('block_management_id', $request->block_id))
             ->when($request->floor_id, fn($q) => $q->where('floor_management_id', $request->floor_id))
-            ->with('unit_management_main:id,name,code')
+            ->with('unit_management_main:id,name,code','property_unit_management:id,name,code','block_unit_management:id,block_id','block_unit_management.block:id,name,code','floor_unit_management.floor_management_main:id,name,code','floor_unit_management:id,floor_id',
+            'unit_type:id,name,code',
+            'unit_condition:id,name,code',
+            'unit_description:id,name,code',
+            'view:id,name,code')
             ->get();
 
         return response()->json(['units' => $units]);

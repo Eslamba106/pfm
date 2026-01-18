@@ -31,6 +31,10 @@
                 class="btn btn--primary">{{ ui_change('back') }}</button>
             <a href="{{ route('enquiry.general_check_property') }}"
                 class="m-1 btn btn--primary">{{ ui_change('enquiry_quick_search' , 'property_transaction') }}</a>
+            <a href="{{ route('general_image_view') }}"
+                class="m-1 btn btn--primary">{{ ui_change('image_view' , 'property_transaction') }}</a>
+            <a href="{{ route('general_list_view') }}"
+                class="m-1 btn btn--primary">{{ ui_change('list_view' , 'property_transaction') }}</a>
             <a href="https://www.finexerp.com/"
                 class="m-1 btn btn--primary">{{ ui_change('Finexerp' , 'property_transaction') }}</a>
             <!-- Secondary Content -->

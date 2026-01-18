@@ -833,8 +833,7 @@
                                 </tr>
                             </thead>
                             <tbody id="service_master_item" class="text-center">
-                                <!-- سيتم إدخال الصفوف هنا ديناميكياً -->
-                                <!-- مثال توضيحي:
+                       
                                 <tr>
                                     <td>Unit Name</td>
                                     <td>Villa 12</td>
