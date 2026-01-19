@@ -6,6 +6,8 @@ use App\Models\Tenant;
 use Illuminate\Http\Request;
 use App\Models\PropertyManagement;
 use App\Http\Controllers\Controller;
+use App\Models\Unit;
+use App\Models\UnitManagement;
 
 class BookingRoomController extends Controller
 {
@@ -28,11 +30,17 @@ class BookingRoomController extends Controller
     }
     public function check_in_page(Request $request)
     {
-        dd($request->all());
+         
         $ids = $request->bulk_ids;
         if ($ids == null) {
             return redirect()->back()->with('error', 'Please Select Unit');
         }
-        return view('admin-views.room_reservation.booking_room.check_in', ['bulk_ids' => $ids]);
+        $tenant = Tenant::select('id', 'name', 'company_name' , 'address')->get();
+        $unit_managements = UnitManagement::whereIn('id', $ids)->get();
+        $data = [
+            'unit_managements' => $unit_managements,
+            'tenants' => $tenant,
+        ];
+        return view('admin-views.room_reservation.booking_room.check_in', $data);
     }
 }

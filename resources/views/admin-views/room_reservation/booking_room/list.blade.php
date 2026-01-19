@@ -207,7 +207,8 @@
                              <div class="units-container">
                                  @foreach ($floor_item->unit_management_child as $unit)
                                      <label class="unit-box" data-unit-id="{{ $unit->id }}">
-                                         <input type="checkbox" name="bulk_ids[]" value="{{ $unit->id }}">
+                                         <input type="checkbox" class="bulk-checkbox" name="bulk_ids[]"
+                                             value="{{ $unit->id }}">
                                          {{ $unit->unit_management_main->name }}
                                          <div class="unit-dots">
                                              <span class="dot dot-booking" data-action="booking"></span>
@@ -223,7 +224,7 @@
              @endforeach
          @endforeach
      </div>
-
+    </form>
      <div class="modal fade" id="check_in" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
          <div class="modal-dialog" role="document">
@@ -235,7 +236,7 @@
                          <span aria-hidden="true">&times;</span>
                      </button>
                  </div>
-                 <form action="{{ route('booking_room.check_in_page') }}" method="post">
+                 <form action="{{ route('booking_room.check_in_page') }}" id="checkin-form" method="get">
                      @csrf
                      <div id="bulk-hidden-inputs"></div>
 
@@ -358,7 +359,9 @@
          });
      </script>
      <script>
-         document.querySelector('form').addEventListener('submit', function() {
+         document.addEventListener('submit', function(e) {
+             if (!e.target.matches('#checkin-form')) return;
+
              let container = document.getElementById('bulk-hidden-inputs');
              container.innerHTML = '';
 
