@@ -1183,10 +1183,7 @@ Route::group(['prefix' => 'room_reservation/booking'], function () {
     // ------------------------ room types ----------------------
     Route::group(['prefix' => 'booking-room'], function () {
         Route::get('list', [BookingRoomController::class, 'index'])->name('booking_room.list');
-        Route::post('store', [BookingRoomController::class, 'store'])->name('booking_room.store');
-        Route::patch('update', [BookingRoomController::class, 'update'])->name('booking_room.update');
-        Route::get('delete', [BookingRoomController::class, 'delete'])->name('booking_room.delete');
-        Route::get('edit/{id}', [BookingRoomController::class, 'edit'])->name('booking_room.edit');
+        Route::get('check-in-page', [BookingRoomController::class, 'check_in_page'])->name('booking_room.check_in_page');
     });
 
    

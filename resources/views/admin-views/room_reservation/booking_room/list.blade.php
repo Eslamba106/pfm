@@ -187,6 +187,11 @@
                  <i class="tio-add"></i>
                  <span class="text">{{ ui_change('create_agreement', 'property_transaction') }}</span>
              </button>
+             <button type="button" data-check_in="" data-toggle="modal" data-target="#check_in"
+                 class="btn btn--primary createButton">
+                 <i class="tio-add"></i>
+                 <span class="text">{{ ui_change('checkIn', 'property_transaction') }}</span>
+             </button>
      </div>
      <div class="container list-container">
          @foreach ($property_items as $property)
@@ -202,7 +207,7 @@
                              <div class="units-container">
                                  @foreach ($floor_item->unit_management_child as $unit)
                                      <label class="unit-box" data-unit-id="{{ $unit->id }}">
-                                         <input type="checkbox" name="units[]" value="{{ $unit->id }}">
+                                         <input type="checkbox" name="bulk_ids[]" value="{{ $unit->id }}">
                                          {{ $unit->unit_management_main->name }}
                                          <div class="unit-dots">
                                              <span class="dot dot-booking" data-action="booking"></span>
@@ -218,10 +223,70 @@
              @endforeach
          @endforeach
      </div>
+
+     <div class="modal fade" id="check_in" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
+         aria-hidden="true">
+         <div class="modal-dialog" role="document">
+             <div class="modal-content">
+                 <div class="modal-header">
+                     <h5 class="modal-title" id="exampleModalLabel">
+                         {{ ui_change('Generate_Invoice', 'property_report') }}</h5>
+                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                         <span aria-hidden="true">&times;</span>
+                     </button>
+                 </div>
+                 <form action="{{ route('booking_room.check_in_page') }}" method="post">
+                     @csrf
+                     <div id="bulk-hidden-inputs"></div>
+
+                     <div class="modal-body">
+                         <div class="form-group">
+                             <label for="">{{ ui_change('select', 'property_report') }}</label>
+                             <select name="tenant_id" id="" class="form-control">
+                                 @foreach ($tenants as $tenants_item)
+                                     <option value="{{ $tenants_item->id }}">
+                                         {{ $tenants_item->name ?? $tenants_item->company_name }}</option>
+                                 @endforeach
+                             </select>
+                         </div>
+                         <div class="row">
+                             <div class="col-md-6">
+                                 <div class="form-group">
+                                     <label for="">{{ ui_change('Booking_From', 'property_report') }}</label>
+                                     <input type="text" name="booking_from" class="form-control date">
+                                 </div>
+                             </div>
+                             <div class="col-md-6">
+                                 <div class="form-group">
+                                     <label for="">{{ ui_change('Booking_to', 'property_report') }}</label>
+                                     <input type="text" name="booking_to" class="form-control date">
+                                 </div>
+                             </div>
+                         </div>
+                     </div>
+                     <div class="modal-footer">
+                         <button type="button" class="btn btn-secondary"
+                             data-dismiss="modal">{{ ui_change('Cancel', 'property_report') }}</button>
+                         <button type="submit"
+                             class="btn btn--primary">{{ ui_change('Generate', 'property_report') }}</button>
+                     </div>
+                 </form>
+             </div>
+         </div>
+     </div>
  @endsection
 
  @push('script')
      <script>
+         flatpickr(".date", {
+             dateFormat: "d/m/Y",
+             defaultDate: "today",
+         });
+     </script>
+     <script>
+         function setFormAction(actionUrl) {
+             document.getElementById('productForm').action = actionUrl;
+         }
          const bookingCreateRoute = "{{ route('booking.create_with_select_unit') }}";
          const enquiryCreateRoute = "{{ route('enquiry.create_with_select_unit') }}";
          const proposalCreateRoute = "{{ route('proposal.create_with_select_unit') }}";
@@ -241,7 +306,7 @@
      <script>
          let currentUnitId = null;
          const menu = document.getElementById('unitContextMenu');
- 
+
          document.querySelectorAll('.unit-box').forEach(box => {
              const checkbox = box.querySelector('input');
 
@@ -290,6 +355,20 @@
 
          document.addEventListener('click', () => {
              menu.style.display = 'none';
+         });
+     </script>
+     <script>
+         document.querySelector('form').addEventListener('submit', function() {
+             let container = document.getElementById('bulk-hidden-inputs');
+             container.innerHTML = '';
+
+             document.querySelectorAll('.bulk-checkbox:checked').forEach(function(checkbox) {
+                 let input = document.createElement('input');
+                 input.type = 'hidden';
+                 input.name = 'bulk_ids[]';
+                 input.value = checkbox.value;
+                 container.appendChild(input);
+             });
          });
      </script>
  @endpush

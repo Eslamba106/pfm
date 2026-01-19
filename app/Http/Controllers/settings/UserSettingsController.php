@@ -25,7 +25,7 @@ class UserSettingsController extends Controller
 
     public function update(Request $request, $id)
     {
-        $admin = User::findOrFail($id);
+        $admin = (new User())->setConnection('tenant')->findOrFail($id);
 
         $admin->update([
             'user_name'                 => $request->username,
