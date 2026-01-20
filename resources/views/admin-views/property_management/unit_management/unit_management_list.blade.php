@@ -45,7 +45,7 @@
                             <div class="col-lg-8 mt-3 mt-lg-0 d-flex flex-wrap gap-3 justify-content-lg-end">
 
                                 {{-- @can('create_unit_management') --}}
-                                    <a href="{{ route('unit_management.create') }}" class="btn btn--primary">
+                                    <a href="{{ route('unit_management.create_new') }}" class="btn btn--primary">
                                         <i class="tio-add"></i>
                                         <span class="text">{{ ui_change('unit_configuration' , 'property_config') }}</span>
                                     </a>

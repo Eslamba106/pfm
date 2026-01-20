@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Models;
 
 use App\Models\hierarchy\MainLedger;
@@ -15,7 +16,7 @@ class UnitManagement extends Model
     public function unit_ledger()
     {
         return $this->hasOne(MainLedger::class, 'main_id', 'id')
-            ->whereHas('group', function ($q) { 
+            ->whereHas('group', function ($q) {
                 $q->where('property_id', $this->property_management_id);
             });
     }
@@ -106,5 +107,8 @@ class UnitManagement extends Model
     {
         return $this->belongsTo(AgreementUnits::class, "id", "unit_id");
     }
-
+    public function facilities()
+    {
+        return $this->belongsToMany(RoomFacility::class, 'unit_management_options', 'unit_management_id', 'facility_id');
+    }
 }

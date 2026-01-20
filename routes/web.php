@@ -69,6 +69,7 @@ use App\Http\Controllers\facility_master\ComplaintCategoryController;
 use App\Http\Controllers\property_management\RentPriceListController;
 use App\Http\Controllers\property_transactions\TerminationController;
 use App\Http\Controllers\property_management\UnitManagementController;
+use App\Http\Controllers\Room_Reservation\Master\RentalTypeController;
 use App\Http\Controllers\Room_Reservation\Master\RoomOptionController;
 use App\Http\Controllers\Room_Reservation\Master\RoomStatusController;
 use App\Http\Controllers\property_management\BlockManagementController;
@@ -294,6 +295,7 @@ Route::group(['prefix' => 'countries'], function () {
 Route::group(['prefix' => 'ledgers'], function () {
     Route::get('/', [LedgerController::class, 'index'])->name('ledgers.index');
     Route::post('/', [LedgerController::class, 'store'])->name('ledgers.store');
+    Route::get('/create', [LedgerController::class, 'create'])->name('ledgers.create');
     Route::get('/edit/{id}', [LedgerController::class, 'edit'])->name('ledgers.edit');
     Route::get('/show/{id}', [LedgerController::class, 'show'])->name('ledgers.show');
     Route::patch('/update/{id}', [LedgerController::class, 'update'])->name('ledgers.update');
@@ -539,6 +541,7 @@ Route::group(['prefix' => 'floor_management'], function () {
 // Units Management
 Route::group(['prefix' => 'unit_management'], function () {
     Route::get('/', [UnitManagementController::class, 'index'])->name('unit_management.index');
+    Route::get('/create-new', [UnitManagementController::class, 'create_new'])->name('unit_management.create_new');
     Route::get('/create', [UnitManagementController::class, 'create'])->name('unit_management.create');
     Route::post('store', [UnitManagementController::class, 'store'])->name('unit_management.store');
     Route::get('/edit/{id}', [UnitManagementController::class, 'edit'])->name('unit_management.edit');
@@ -1106,6 +1109,14 @@ Route::group(['prefix' => 'investors'], function () {
 
 Route::group(['prefix' => 'room_reservation/master'], function () {
 
+    // ------------------------ room types ----------------------
+    Route::group(['prefix' => 'rental-type'], function () {
+        Route::get('list', [RentalTypeController::class, 'index'])->name('rental_type.list');
+        Route::post('store', [RentalTypeController::class, 'store'])->name('rental_type.store');
+        Route::patch('update', [RentalTypeController::class, 'update'])->name('rental_type.update');
+        Route::get('delete', [RentalTypeController::class, 'delete'])->name('rental_type.delete');
+        Route::get('edit/{id}', [RentalTypeController::class, 'edit'])->name('rental_type.edit');
+    });
     // ------------------------ room types ----------------------
     Route::group(['prefix' => 'room-types'], function () {
         Route::get('list', [RoomTypeController::class, 'index'])->name('room_type.list');

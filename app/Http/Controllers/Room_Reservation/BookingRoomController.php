@@ -35,7 +35,7 @@ class BookingRoomController extends Controller
         if ($ids == null) {
             return redirect()->back()->with('error', 'Please Select Unit');
         }
-        $tenant = Tenant::select('id', 'name', 'company_name' , 'address')->get();
+        $tenant = Tenant::select('id', 'name', 'company_name' , 'address1')->get();
         $unit_managements = UnitManagement::whereIn('id', $ids)->get();
         $data = [
             'unit_managements' => $unit_managements,

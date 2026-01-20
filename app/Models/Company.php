@@ -25,4 +25,7 @@ class Company extends Model
     public function schema(){
         return $this->belongsTo(Schema::class , 'schema_id');
     }
+    public function country_master(){
+        return $this->belongsTo(CountryMaster::class , 'countryid');
+    }
 }

@@ -7,6 +7,7 @@ use App\Models\User;
 use App\Models\View;
 use App\Models\UnitType;
 use App\Models\UnitParking;
+use App\Models\RoomFacility;
 use Illuminate\Http\Request;
 use App\Models\UnitCondition;
 use App\Models\general\Groups;
@@ -46,6 +47,35 @@ class UnitManagementController extends Controller
         return view("admin-views.property_management.unit_management.unit_management_list", $data);
     }
 
+    public function create_new()
+    {
+        // $this->authorize('create_unit_management');
+
+        $property = (new PropertyManagement())->setConnection('tenant')->forUser()->get();
+        $blocks = (new BlockManagement())->setConnection('tenant')->get();
+        $floors = (new FloorManagement())->setConnection('tenant')->get();
+        $units = (new Unit())->setConnection('tenant')->get();
+        $unit_types = (new UnitType())->setConnection('tenant')->get();
+        $unit_conditions = (new UnitCondition())->setConnection('tenant')->get();
+        $unit_descriptions = (new UnitDescription())->setConnection('tenant')->get();
+        $views = (new View())->setConnection('tenant')->get();
+        $unit_parkings = (new UnitParking())->setConnection('tenant')->get();
+        $facilities = RoomFacility::select('id', 'name')->get();
+        $data = [
+            "property" => $property,
+            "floors" => $floors,
+            'units' => $units,
+            "blocks" => $blocks,
+            "unit_types" => $unit_types,
+            "unit_conditions" => $unit_conditions,
+            "unit_descriptions" => $unit_descriptions,
+            "unit_parkings" => $unit_parkings,
+            "views" => $views,
+            "facilities" => $facilities,
+        ];
+
+        return view("admin-views.property_management.unit_management.create_new")->with($data);
+    }
     public function create()
     {
         // $this->authorize('create_unit_management');
@@ -73,196 +103,330 @@ class UnitManagementController extends Controller
 
         return view("admin-views.property_management.unit_management.create")->with($data);
     }
-  public function store(Request $request)
-{
-    DB::beginTransaction();
+    public function store(Request $request)
+    {
+        DB::beginTransaction();
 
-    try {
+        try {
 
-        /** ================= VALIDATION ================= */
-        $request->validate([
-            'property'      => 'required',
-            'block'         => 'required',
-            'floor'         => 'required',
-            'start_up_unit' => 'required',
-            'unit_count'    => 'required',
-        ]);
+            /** ================= VALIDATION ================= */
+            $request->validate([
+                'property' => 'required',
+                'block'    => 'required',
+                'floor'    => 'required',
+                'units'    => 'required|array|min:1',
+            ]);
 
-        /** ================= SELECT UNITS ================= */
-        if (
-            $request->unit_description_mode === 'default' &&
-            $request->unit_type_mode === 'default' &&
-            $request->view_mode === 'default'
-        ) {
-            // DEFAULT MODE
-            $selectedUnits = (new Unit())
+            /** ================= HELPERS ================= */
+            $fk = fn($v) => ($v && $v != 0) ? $v : null;
+
+            $company = auth()->user()
+                ?? (new User())->setConnection('tenant')->first();
+
+            /** ================= GET UNITS ================= */
+            $units = (new Unit())
                 ->setConnection('tenant')
-                ->whereBetween('id', [
-                    $request->start_up_unit,
-                    $request->start_up_unit + $request->unit_count - 1
-                ])
+                ->whereIn('id', $request->units)
                 ->get();
-        } else {
-            // RANGE MODE
-            $selectedUnitIds = collect()
-                ->merge($request->unit_start_unit_description ?? [])
-                ->merge($request->unit_end_unit_description ?? [])
-                ->merge($request->unit_start_view ?? [])
-                ->merge($request->unit_end_view ?? [])
-                ->unique()
-                ->values()
-                ->toArray();
 
-            $selectedUnits = (new Unit())
-                ->setConnection('tenant')
-                ->whereIn('id', $selectedUnitIds)
-                ->get();
-        }
-
-        if ($selectedUnits->isEmpty()) {
-            return redirect()->back()->with('error', 'No units selected');
-        }
-
-        /** ================= HELPERS ================= */
-        $fk = fn ($v) => ($v && $v != 0) ? $v : null;
-
-        $company = auth()->user()
-            ?? (new User())->setConnection('tenant')->first();
-
-        /** ================= PREPARE DATA ================= */
-        $unit_description = [];
-        $unit_type        = [];
-        $unit_condition   = [];
-        $unit_parking     = [];
-        $view             = [];
-
-        /** -------- UNIT DESCRIPTION -------- */
-        if ($request->unit_description_mode === 'range') {
-            foreach ($request->unit_start_unit_description as $i => $unitId) {
-                $unit_description[(int)$unitId] =
-                    $fk($request->unit_description[$i] ?? null);
+            if ($units->isEmpty()) {
+                return redirect()->back()->with('error', 'No units selected');
             }
-        } else {
-            foreach ($selectedUnits as $unit) {
-                $unit_description[$unit->id] =
-                    $fk($request->unit_description[0] ?? null);
-            }
-        }
 
-        /** -------- UNIT TYPE -------- */
-        foreach ($selectedUnits as $unit) {
-            $unit_type[$unit->id] =
-                $fk($request->unit_type[0] ?? null);
-        }
-
-        /** -------- UNIT CONDITION -------- */
-        foreach ($selectedUnits as $unit) {
-            $unit_condition[$unit->id] =
-                $fk($request->unit_condition[0] ?? null);
-        }
-
-        /** -------- UNIT PARKING -------- */
-        foreach ($selectedUnits as $unit) {
-            $unit_parking[$unit->id] =
-                $fk($request->unit_parking[0] ?? null);
-        }
-
-        /** -------- VIEW -------- */
-        if ($request->view_mode === 'range') {
-            foreach ($request->unit_start_view as $i => $unitId) {
-                $view[(int)$unitId] =
-                    $fk($request->view[$i] ?? null);
-            }
-        } else {
-            foreach ($selectedUnits as $unit) {
-                $view[$unit->id] =
-                    $fk($request->view[0] ?? null);
-            }
-        }
-
-        /** ================= STORE ================= */
-        foreach ($selectedUnits as $unit) {
-
+            /** ================= FLOOR DATA ================= */
             $floor_manage = (new FloorManagement())
                 ->setConnection('tenant')
                 ->select('id', 'long_status')
-                ->find($request->floor);
+                ->findOrFail($request->floor);
 
-            $unit_management = (new UnitManagement())
-                ->setConnection('tenant')
-                ->create([
-                    'property_management_id' => $request->property,
-                    'block_management_id'    => $request->block,
-                    'floor_management_id'    => $request->floor,
-                    'unit_id'                => $unit->id,
-                    'unit_description_id'    => $unit_description[$unit->id],
-                    'unit_type_id'           => $unit_type[$unit->id],
-                    'unit_condition_id'      => $unit_condition[$unit->id],
-                    'unit_parking_id'        => $unit_parking[$unit->id],
-                    'view_id'                => $view[$unit->id],
-                    'long_status'            => $floor_manage->long_status,
-                ]);
-
-            /** -------- LEDGER -------- */
+            /** ================= GROUP ================= */
             $group = (new Groups())
                 ->setConnection('tenant')
                 ->where('property_id', $request->property)
                 ->first();
 
-            (new MainLedger())
-                ->setConnection('tenant')
-                ->create([
-                    'code'                => $unit->name,
-                    'name'                =>
+            foreach ($units as $unit) {
+
+                $unit_management = (new UnitManagement())
+                    ->setConnection('tenant')
+                    ->create([
+                        'property_management_id' => $request->property,
+                        'block_management_id'    => $request->block,
+                        'floor_management_id'    => $request->floor,
+                        'unit_id'                => $unit->id,
+                        'adults'                 => $request->adults[$unit->id] ?? 1,
+                        'children'               => $request->children[$unit->id] ?? 1,
+                        'unit_description_id' =>
+                        $fk($request->unit_description[$unit->id] ?? null),
+
+                        'unit_type_id' =>
+                        $fk($request->unit_type[$unit->id] ?? null),
+
+                        'unit_condition_id' =>
+                        $fk($request->unit_condition[$unit->id] ?? null),
+
+                        'unit_parking_id' =>
+                        $fk($request->unit_parking[$unit->id] ?? null),
+
+                        'view_id' =>
+                        $fk($request->unit_view[$unit->id] ?? null),
+
+                        'long_status' => $floor_manage->long_status,
+                    ]);
+                if ($request->unit_facilities[$unit->id] ?? false) {
+                    $unit_management->facilities()->sync($request->unit_facilities[$unit->id]);
+                }
+
+                /** ================= LEDGER ================= */
+                (new MainLedger())
+                    ->setConnection('tenant')
+                    ->create([
+                        'code'      => $unit->name,
+                        'name'      =>
                         $unit_management->property_unit_management->code . '-' .
-                        $unit_management->block_unit_management->block->code . '-' .
-                        $unit_management->floor_unit_management->floor_management_main->name . '-' .
-                        $unit_management->unit_management_main->name,
-                    'currency'            => $company->currency_code,
-                    'country_id'          =>
-                        $unit_management->property_unit_management?->country_master?->country?->id,
-                    'group_id'            => $group->id,
-                    'main_id'             => $unit_management->id,
-                    'is_taxable'          => $group->is_taxable ?? 0,
-                    'vat_applicable_from' => $group->vat_applicable_from,
-                    'tax_rate'            => $group->tax_rate ?? 0,
-                    'tax_applicable'      => $group->tax_applicable ?? 0,
-                    'status'              => 'active',
-                ]);
+                            $unit_management->block_unit_management->block->code . '-' .
+                            $unit_management->floor_unit_management->floor_management_main->name . '-' .
+                            $unit_management->unit_management_main->name,
 
-            /** -------- COST CENTER -------- */
-            $property = (new CostCenterCategory())
-                ->setConnection('tenant')
-                ->where('main_id', $unit_management->property_management_id)
-                ->where('main_type', 'property')
-                ->first();
+                        'currency'  => $company->currency_code,
+                        'country_id' =>
+                        $unit_management->property_unit_management
+                            ?->country_master
+                            ?->country
+                            ?->id,
 
-            (new CostCenter())
-                ->setConnection('tenant')
-                ->create([
-                    'name' =>
+                        'group_id'            => $group?->id,
+                        'main_id'             => $unit_management->id,
+                        'is_taxable'          => $group->is_taxable ?? 0,
+                        'vat_applicable_from' => $group->vat_applicable_from ?? null,
+                        'tax_rate'            => $group->tax_rate ?? 0,
+                        'tax_applicable'      => $group->tax_applicable ?? 0,
+                        'status'              => 'active',
+                    ]);
+
+                /** ================= COST CENTER ================= */
+                $propertyCost = (new CostCenterCategory())
+                    ->setConnection('tenant')
+                    ->where('main_id', $unit_management->property_management_id)
+                    ->where('main_type', 'property')
+                    ->first();
+
+                (new CostCenter())
+                    ->setConnection('tenant')
+                    ->create([
+                        'name' =>
                         $unit_management->property_unit_management->name . '-' .
-                        $unit_management->unit_management_main->name . '-' .
-                        $unit_management->block_unit_management->block->name . '-' .
-                        $unit_management->floor_unit_management->floor_management_main->name,
-                    'main_id'              => $unit_management->id,
-                    'main_type'            => 'unit',
-                    'cost_center_category_id' => $property->id,
-                    'status'               => 'active',
-                ]);
+                            $unit_management->unit_management_main->name . '-' .
+                            $unit_management->block_unit_management->block->name . '-' .
+                            $unit_management->floor_unit_management->floor_management_main->name,
+
+                        'main_id'   => $unit_management->id,
+                        'main_type' => 'unit',
+                        'cost_center_category_id' => $propertyCost?->id,
+                        'status'    => 'active',
+                    ]);
+            }
+
+            DB::commit();
+
+            return redirect()
+                ->route('unit_management.index')
+                ->with('success', ui_change('added_successfully'));
+        } catch (\Throwable $e) {
+            DB::rollBack();
+            return redirect()->back()->with('error', $e->getMessage());
         }
-
-        DB::commit();
-
-        return redirect()
-            ->route('unit_management.index')
-            ->with('success', ui_change('added_successfully'));
-
-    } catch (\Throwable $e) {
-        DB::rollBack();
-        return redirect()->back()->with('error', $e->getMessage());
     }
-}
+
+    // public function store(Request $request)
+    // {
+    //     DB::beginTransaction();
+
+    //     try {
+
+    //         /** ================= VALIDATION ================= */
+    //         $request->validate([
+    //             'property'      => 'required',
+    //             'block'         => 'required',
+    //             'floor'         => 'required',
+    //             'start_up_unit' => 'required',
+    //             'unit_count'    => 'required',
+    //         ]);
+
+    //         /** ================= SELECT UNITS ================= */
+    //         if (
+    //             $request->unit_description_mode === 'default' &&
+    //             $request->unit_type_mode === 'default' &&
+    //             $request->view_mode === 'default'
+    //         ) {
+    //             // DEFAULT MODE
+    //             $selectedUnits = (new Unit())
+    //                 ->setConnection('tenant')
+    //                 ->whereBetween('id', [
+    //                     $request->start_up_unit,
+    //                     $request->start_up_unit + $request->unit_count - 1
+    //                 ])
+    //                 ->get();
+    //         } else {
+    //             // RANGE MODE
+    //             $selectedUnitIds = collect()
+    //                 ->merge($request->unit_start_unit_description ?? [])
+    //                 ->merge($request->unit_end_unit_description ?? [])
+    //                 ->merge($request->unit_start_view ?? [])
+    //                 ->merge($request->unit_end_view ?? [])
+    //                 ->unique()
+    //                 ->values()
+    //                 ->toArray();
+
+    //             $selectedUnits = (new Unit())
+    //                 ->setConnection('tenant')
+    //                 ->whereIn('id', $selectedUnitIds)
+    //                 ->get();
+    //         }
+
+    //         if ($selectedUnits->isEmpty()) {
+    //             return redirect()->back()->with('error', 'No units selected');
+    //         }
+
+    //         /** ================= HELPERS ================= */
+    //         $fk = fn($v) => ($v && $v != 0) ? $v : null;
+
+    //         $company = auth()->user()
+    //             ?? (new User())->setConnection('tenant')->first();
+
+    //         /** ================= PREPARE DATA ================= */
+    //         $unit_description = [];
+    //         $unit_type        = [];
+    //         $unit_condition   = [];
+    //         $unit_parking     = [];
+    //         $view             = [];
+
+    //         /** -------- UNIT DESCRIPTION -------- */
+    //         if ($request->unit_description_mode === 'range') {
+    //             foreach ($request->unit_start_unit_description as $i => $unitId) {
+    //                 $unit_description[(int)$unitId] =
+    //                     $fk($request->unit_description[$i] ?? null);
+    //             }
+    //         } else {
+    //             foreach ($selectedUnits as $unit) {
+    //                 $unit_description[$unit->id] =
+    //                     $fk($request->unit_description[0] ?? null);
+    //             }
+    //         }
+
+    //         /** -------- UNIT TYPE -------- */
+    //         foreach ($selectedUnits as $unit) {
+    //             $unit_type[$unit->id] =
+    //                 $fk($request->unit_type[0] ?? null);
+    //         }
+
+    //         /** -------- UNIT CONDITION -------- */
+    //         foreach ($selectedUnits as $unit) {
+    //             $unit_condition[$unit->id] =
+    //                 $fk($request->unit_condition[0] ?? null);
+    //         }
+
+    //         /** -------- UNIT PARKING -------- */
+    //         foreach ($selectedUnits as $unit) {
+    //             $unit_parking[$unit->id] =
+    //                 $fk($request->unit_parking[0] ?? null);
+    //         }
+
+    //         /** -------- VIEW -------- */
+    //         if ($request->view_mode === 'range') {
+    //             foreach ($request->unit_start_view as $i => $unitId) {
+    //                 $view[(int)$unitId] =
+    //                     $fk($request->view[$i] ?? null);
+    //             }
+    //         } else {
+    //             foreach ($selectedUnits as $unit) {
+    //                 $view[$unit->id] =
+    //                     $fk($request->view[0] ?? null);
+    //             }
+    //         }
+
+    //         /** ================= STORE ================= */
+    //         foreach ($selectedUnits as $unit) {
+
+    //             $floor_manage = (new FloorManagement())
+    //                 ->setConnection('tenant')
+    //                 ->select('id', 'long_status')
+    //                 ->find($request->floor);
+
+    //             $unit_management = (new UnitManagement())
+    //                 ->setConnection('tenant')
+    //                 ->create([
+    //                     'property_management_id' => $request->property,
+    //                     'block_management_id'    => $request->block,
+    //                     'floor_management_id'    => $request->floor,
+    //                     'unit_id'                => $unit->id,
+    //                     'unit_description_id'    => $unit_description[$unit->id],
+    //                     'unit_type_id'           => $unit_type[$unit->id],
+    //                     'unit_condition_id'      => $unit_condition[$unit->id],
+    //                     'unit_parking_id'        => $unit_parking[$unit->id],
+    //                     'view_id'                => $view[$unit->id],
+    //                     'long_status'            => $floor_manage->long_status,
+    //                 ]);
+
+    //             /** -------- LEDGER -------- */
+    //             $group = (new Groups())
+    //                 ->setConnection('tenant')
+    //                 ->where('property_id', $request->property)
+    //                 ->first();
+
+    //             (new MainLedger())
+    //                 ->setConnection('tenant')
+    //                 ->create([
+    //                     'code'                => $unit->name,
+    //                     'name'                =>
+    //                     $unit_management->property_unit_management->code . '-' .
+    //                         $unit_management->block_unit_management->block->code . '-' .
+    //                         $unit_management->floor_unit_management->floor_management_main->name . '-' .
+    //                         $unit_management->unit_management_main->name,
+    //                     'currency'            => $company->currency_code,
+    //                     'country_id'          =>
+    //                     $unit_management->property_unit_management?->country_master?->country?->id,
+    //                     'group_id'            => $group->id,
+    //                     'main_id'             => $unit_management->id,
+    //                     'is_taxable'          => $group->is_taxable ?? 0,
+    //                     'vat_applicable_from' => $group->vat_applicable_from,
+    //                     'tax_rate'            => $group->tax_rate ?? 0,
+    //                     'tax_applicable'      => $group->tax_applicable ?? 0,
+    //                     'status'              => 'active',
+    //                 ]);
+
+    //             /** -------- COST CENTER -------- */
+    //             $property = (new CostCenterCategory())
+    //                 ->setConnection('tenant')
+    //                 ->where('main_id', $unit_management->property_management_id)
+    //                 ->where('main_type', 'property')
+    //                 ->first();
+
+    //             (new CostCenter())
+    //                 ->setConnection('tenant')
+    //                 ->create([
+    //                     'name' =>
+    //                     $unit_management->property_unit_management->name . '-' .
+    //                         $unit_management->unit_management_main->name . '-' .
+    //                         $unit_management->block_unit_management->block->name . '-' .
+    //                         $unit_management->floor_unit_management->floor_management_main->name,
+    //                     'main_id'              => $unit_management->id,
+    //                     'main_type'            => 'unit',
+    //                     'cost_center_category_id' => $property->id,
+    //                     'status'               => 'active',
+    //                 ]);
+    //         }
+
+    //         DB::commit();
+
+    //         return redirect()
+    //             ->route('unit_management.index')
+    //             ->with('success', ui_change('added_successfully'));
+    //     } catch (\Throwable $e) {
+    //         DB::rollBack();
+    //         return redirect()->back()->with('error', $e->getMessage());
+    //     }
+    // }
 
 
     // public function store(Request $request)
@@ -428,6 +592,8 @@ class UnitManagementController extends Controller
         $unit_descriptions = (new UnitDescription())->setConnection('tenant')->get();
         $views = (new View())->setConnection('tenant')->get();
         $unit_parkings = (new UnitParking())->setConnection('tenant')->get();
+        $facilities = RoomFacility::select('id', 'name')->get();
+
         $data = [
             "property" => $property,
             "floors" => $floors,
@@ -439,6 +605,7 @@ class UnitManagementController extends Controller
             "unit_parkings" => $unit_parkings,
             "views" => $views,
             "selected_unit" => $selected_unit,
+            "facilities" => $facilities,
         ];
         return view("admin-views.property_management.unit_management.edit")->with($data);
     }
@@ -458,6 +625,11 @@ class UnitManagementController extends Controller
                 'view_id'                       => ($request->view != 0) ? $request->view : null,
                 'long_status'                   => $request->type,
             ]);
+             if ($request->has('unit_facilities')) {
+            $selected_unit->facilities()->sync($request->unit_facilities);
+        } else { 
+            $selected_unit->facilities()->sync([]);
+        }
             return redirect()->route('unit_management.index')->with('success', __('region.added_successfully'));
         } catch (\Exception $e) {
             return redirect()->back()->with("error", $e->getMessage());

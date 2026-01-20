@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\hierarchy;
 
 use App\Http\Controllers\Controller;
@@ -36,6 +37,18 @@ class LedgerController extends Controller
         return view("admin-views.hierarchy.ledgers.ledgers_list", $data);
     }
 
+    public function create()
+    {
+        $groups    = (new Groups())->setConnection('tenant')->get();
+        $countries = (new Country())->setConnection('tenant')->get();
+
+        $data = [
+            'groups'    => $groups,
+            'countries' => $countries,
+
+        ];
+        return view("admin-views.hierarchy.ledgers.create", $data);
+    }
     public function store(Request $request)
     {
         // dd($request->all());
@@ -80,7 +93,6 @@ class LedgerController extends Controller
             return redirect()->route("ledgers.index")->with("success", __('general.added_successfully'));
         } catch (\Throwable $th) {
             return redirect()->back()->with("error", $th->getMessage());
-
         }
     }
 
@@ -111,8 +123,8 @@ class LedgerController extends Controller
         try {
             $ledger              = (new MainLedger())->setConnection('tenant')->findOrFail($id);
             $vat_applicable_from = $request->vat_applicable_from
-            ? Carbon::createFromFormat('d/m/Y', $request->vat_applicable_from)->format('Y-m-d')
-            : null;
+                ? Carbon::createFromFormat('d/m/Y', $request->vat_applicable_from)->format('Y-m-d')
+                : null;
 
             $ledger->update([
                 'code'                   => $request->code,
@@ -147,7 +159,6 @@ class LedgerController extends Controller
         } catch (\Throwable $th) {
             return redirect()->back()->with("error", $th->getMessage());
         }
-
     }
     public function delete(Request $request)
     {
