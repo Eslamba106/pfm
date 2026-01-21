@@ -76,13 +76,10 @@
                                         <th class="text-center">{{ ui_change($route . '_name', 'room_reservation') }}
                                         </th>
 
-                                        <th class="text-center">{{ ui_change($route . '_code', 'room_reservation') }}</th>
-                                        @if ($route == 'room_block' || $route == 'room_floor')
-                                            <th class="text-center">{{ ui_change('building', 'room_reservation') }}</th>
-                                        @endif
-                                        @if ($route == 'room_floor')
-                                            <th class="text-center">{{ ui_change('Block', 'room_reservation') }}</th>
-                                        @endif
+                                        <th class="text-center">{{ ui_change('ledger', 'room_reservation') }}</th>
+                                        <th class="text-center">{{ ui_change('from', 'room_reservation') }}</th>
+                                        <th class="text-center">{{ ui_change('to', 'room_reservation') }}</th>
+                                       
                                         <th class="text-center">{{ ui_change('actions', 'room_reservation') }}</th>
                                     </tr>
                                 </thead>
@@ -92,14 +89,10 @@
                                             <td>{{ $main->firstItem() + $key }}</td>
                                             <td class="text-center">{{ $value->name }}</td>
 
-                                            <td class="text-center">{{ $value->code }} </td>
-                                            @if ($route == 'room_block' || $route == 'room_floor')
-                                                <td class="text-center">{{ $value->building?->name }} </td>
-                                            @endif
-                                            @if ($route == 'room_floor')
-                                                <td class="text-center">{{ $value->block?->name }} </td>
-                                            @endif
-
+                                            <td class="text-center">{{ $value->ledger?->name }} </td>
+                                            <td class="text-center">{{ $value->from .'-'.$value->from_period }} </td>
+                                            <td class="text-center">{{ $value->to .'-'.$value->to_period }} </td>
+                                            
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
                                                     <a id="edit_{{ $route }}_item"
@@ -158,58 +151,75 @@
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route($route . '.update') }}" method="post">
+                <form action="{{ route('rental_type.update') }}" method="post">
                     @csrf
                     @method('patch')
-                    <div class="modal-body">
-                        <div class="row">
+                    <div class="modal-body"> 
                             <input id="{{ $route }}_id" type="hidden" name="id" class="form-control">
-
-                            <div class="col-md-12 col-lg-4 col-xl-12">
-                                <div class="form-group ">
+  
+                          <div class="row">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                      <div class="form-group ">
                                     <label for="">{{ ui_change('name') }}</label>
                                     <input id="edit_name" type="text" name="name" class="form-control">
                                 </div>
+                                </div>
+
                             </div>
-                            <div class="col-md-12 col-lg-4 col-xl-12">
-                                <div class="form-group ">
-                                    <label for="">{{ ui_change('code') }}</label>
-                                    <input id="edit_code" type="text" name="code" class="form-control">
+                            <div class="col-md-6">
+                                <div class="form-group">
+                                    <label for="">{{ ui_change('ledger', 'property_report') }}</label>
+                                    <select id="edit_ledger_id" name="ledger_id" class="js-select2-custom  form-control">
+                                        @foreach ($ledgers as $ledger_item)
+                                            <option value="{{ $ledger_item->id }}">
+                                                {{ $ledger_item->name ?? $ledger_item->company_name }}</option>
+                                        @endforeach
+                                    </select>
                                 </div>
+
                             </div>
-                            @if ($route == 'room_block' || $route == 'room_floor')
-                                <div class="col-md-12 col-lg-4 col-xl-12">
-                                    <div class="form-group ">
-                                        <label for="">{{ ui_change('building') }}</label>
-                                        <select class="js-select2-custom form-control" id="edit_building_id"
-                                            name="building_id" onchange="get_blocks_for_edit()" required>
-                                            <option selected value="">{{ ui_change('select', 'property_master') }}
-                                            </option>
-                                            @foreach ($buildings as $building_item)
-                                                <option value="{{ $building_item->id }}">
-                                                    {{ $building_item->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+                        </div>
+
+                        <div class="row">
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">{{ ui_change('from', 'property_report') }}</label>
+                                    <input id="edit_from" type="number" name="from" class="form-control date">
                                 </div>
-                            @endif
-                            @if ($route == 'room_floor')
-                                <div class="col-md-12 col-lg-4 col-xl-12">
-                                    <div class="form-group ">
-                                        <label for="">{{ ui_change('block') }}</label>
-                                        <select class="js-select2-custom form-control" id="edit_block_id" name="block_id"
-                                            required>
-                                            <option value="">{{ ui_change('select', 'property_master') }} </option>
-                                            @foreach ($blocks as $block_item)
-                                                <option value="{{ $block_item->id }}">
-                                                    {{ $block_item->name }}
-                                                </option>
-                                            @endforeach
-                                        </select>
-                                    </div>
+
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">{{ ui_change('period', 'property_report') }}</label>
+                                    <select id="edit_period_from" name="period_from" class="form-control">
+                                        <option value="day">{{ ui_change('day', 'property_report') }}</option>
+                                        <option value="week">{{ ui_change('week', 'property_report') }}</option>
+                                        <option value="month">{{ ui_change('month', 'property_report') }}</option>
+                                        <option value="year">{{ ui_change('year', 'property_report') }}</option>
+                                    </select>
                                 </div>
-                            @endif
+
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">{{ ui_change('to', 'property_report') }}</label>
+                                    <input type="number" id="edit_to" name="to" class="form-control date">
+                                </div>
+
+                            </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">{{ ui_change('period', 'property_report') }}</label>
+                                    <select name="period_to"  id="edit_period_to" class="form-control">
+                                        <option value="day">{{ ui_change('day', 'property_report') }}</option>
+                                        <option value="week">{{ ui_change('week', 'property_report') }}</option>
+                                        <option value="month">{{ ui_change('month', 'property_report') }}</option>
+                                        <option value="year">{{ ui_change('year', 'property_report') }}</option>
+                                    </select>
+                                </div>
+
+                            </div>
 
                         </div>
                     </div>
@@ -229,30 +239,30 @@
             <div class="modal-content">
                 <div class="modal-header">
                     <h5 class="modal-title" id="exampleModalLabel">
-                        {{ ui_change('Generate_Invoice', 'property_report') }}</h5>
+                        {{ ui_change('Add_Rental_Type', 'property_report') }}</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
                 </div>
-                <form action="{{ route('booking_room.check_in_page') }}" id="checkin-form" method="get">
+                <form action="{{ route('rental_type.store') }}" id="checkin-form" method="post">
                     @csrf
                     <div class="modal-body">
                         <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">{{ ui_change('name', 'property_report') }}</label>
-                                    <input type="text" class="form-control">
+                                    <input type="text" class="form-control" name="name">
                                 </div>
 
                             </div>
                             <div class="col-md-6">
                                 <div class="form-group">
                                     <label for="">{{ ui_change('ledger', 'property_report') }}</label>
-                                    <select name="ledger_id" class="form-control">
-                                        {{-- @foreach ($tenants as $tenants_item)
-                                            <option value="{{ $tenants_item->id }}">
-                                                {{ $tenants_item->name ?? $tenants_item->company_name }}</option>
-                                        @endforeach --}}
+                                    <select name="ledger_id" class="js-select2-custom  form-control">
+                                        @foreach ($ledgers as $ledger_item)
+                                            <option value="{{ $ledger_item->id }}">
+                                                {{ $ledger_item->name ?? $ledger_item->company_name }}</option>
+                                        @endforeach
                                     </select>
                                 </div>
 
@@ -289,7 +299,7 @@
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="">{{ ui_change('period', 'property_report') }}</label>
-                                    <select name="period_from" class="form-control">
+                                    <select name="period_to" class="form-control">
                                         <option value="day">{{ ui_change('day', 'property_report') }}</option>
                                         <option value="week">{{ ui_change('week', 'property_report') }}</option>
                                         <option value="month">{{ ui_change('month', 'property_report') }}</option>
@@ -305,7 +315,7 @@
                         <button type="button" class="btn btn-secondary"
                             data-dismiss="modal">{{ ui_change('Cancel', 'property_report') }}</button>
                         <button type="submit"
-                            class="btn btn--primary">{{ ui_change('Generate', 'property_report') }}</button>
+                            class="btn btn--primary">{{ ui_change('save', 'property_report') }}</button>
                     </div>
                 </form>
             </div>
@@ -352,9 +362,7 @@
             })
         });
 
-
-
-        // Call the dataTables jQuery plugin
+ 
     </script>
     <script>
         $(document).on('click', '#edit_{{ $route }}_item', function(e) {
@@ -385,13 +393,22 @@
                         $('#{{ $route }}_id').val(sect_id)
 
                         $('#edit_name').val(response.main_info.name);
-                        $('#edit_code').val(response.main_info.code);
-                        $('#edit_building_id').val(response.main_info.building_id).trigger('change');
-                        $('#edit_building_id')
-                            .val(response.main_info.building_id)
+                        $('#edit_from').val(response.main_info.from);
+                        $('#edit_to').val(response.main_info.to);
+                        $('#edit_period_from').val(response.main_info.from_period).trigger('change');
+                        $('#edit_period_from')
+                            .val(response.main_info.from_period)
+                            .trigger('change');
+                        $('#edit_period_to').val(response.main_info.to_period).trigger('change');
+                        $('#edit_period_to')
+                            .val(response.main_info.to_period)
+                            .trigger('change');
+                        $('#edit_ledger_id').val(response.main_info.ledger_id).trigger('change');
+                        $('#edit_ledger_id')
+                            .val(response.main_info.ledger_id)
                             .trigger('change');
 
-                        get_blocks_for_edit(response.main_info.block_id);
+                        // get_blocks_for_edit(response.main_info.block_id);
                     }
                 },
                 error: function(xhr, status, error) {

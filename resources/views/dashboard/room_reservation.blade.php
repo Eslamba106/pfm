@@ -54,6 +54,12 @@
                  <div class="accordion-item ">
                      <h2 class="accordion-header list-group-item">
                          <a class="accordion-button"
+                             href="{{ route('rental_type.list') }}">{{ ui_change('rental_type', 'room_reservation') }}</a>
+                     </h2>
+                 </div>
+                 <div class="accordion-item ">
+                     <h2 class="accordion-header list-group-item">
+                         <a class="accordion-button"
                              href="{{ route('room_type.list') }}">{{ ui_change('room_types', 'room_reservation') }}</a>
                      </h2>
                  </div>
@@ -112,7 +118,7 @@
                  <div class="accordion-item ">
                      <h2 class="accordion-header list-group-item">
                          <a class="accordion-button"
-                             href="{{ route('booking_room.list') }}">{{ ui_change('Booking', 'room_reservation') }}</a>
+                             href="{{ route('booking_room.list') }}">{{ ui_change('book_now', 'room_reservation') }}</a>
                      </h2>
                  </div>
                  <div class="accordion-item ">

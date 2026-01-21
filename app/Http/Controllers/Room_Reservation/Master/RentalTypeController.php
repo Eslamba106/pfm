@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Room_Reservation\Master;
 use App\Models\RentalType;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
+use App\Models\hierarchy\MainLedger;
 
 class RentalTypeController extends Controller
 {
@@ -22,11 +23,12 @@ class RentalTypeController extends Controller
             }
         })
             ->latest()->paginate()->appends($query_param);
-
+        $ledger = MainLedger::select('id' , 'name')->get();
         $data = [
             'main'   => $rental_type,
             'search' => $search,
             'route'  => 'rental_type',
+            'ledgers' => $ledger,
 
         ];
         return view("admin-views.room_reservation.rental_type.index", $data);
@@ -34,15 +36,25 @@ class RentalTypeController extends Controller
 
     public function store(Request $request)
     {
+       
         $request->validate([
             'name' => 'required|unique:rental_types,name',
-            'code' => 'required',
+            'ledger_id' => 'required',
+            'from' => 'required',
+            'period_from' => 'required',
+            'to' => 'required',
+            'period_to' => 'required',
+
         ]);
 
         try {
             $rental_type = RentalType::create([
-                'name' => $request->name,
-                'code' => $request->code,
+                'name' => $request->name, 
+                'to_period' => $request->period_to,
+                'from_period' => $request->period_from,
+                'to' => $request->to,
+                'from' => $request->from,
+                'ledger_id' => $request->ledger_id, 
             ]);
             return redirect()->route('rental_type.list')->with('success', ui_change('added_successfully'));
         } catch (\Exception $e) {
@@ -56,13 +68,21 @@ class RentalTypeController extends Controller
 
         $request->validate([
             'name' => 'required|unique:rental_types,name,' . $rental_type->id,
-            'code' => 'required',
+            'ledger_id' => 'required',
+            'from' => 'required',
+            'period_from' => 'required',
+            'to' => 'required',
+            'period_to' => 'required',
         ]);
 
         try {
             $rental_type->update([
-                'name' => $request->name,
-                'code' => $request->code,
+             'name' => $request->name, 
+                'to_period' => $request->period_to,
+                'from_period' => $request->period_from,
+                'to' => $request->to,
+                'from' => $request->from,
+                'ledger_id' => $request->ledger_id, 
             ]);
 
             return redirect()
@@ -86,19 +106,5 @@ class RentalTypeController extends Controller
         return redirect()->back()->with('error', ui_change('error_in_deleted'));
     }
 
-    public function edit($id)
-    {
-        $main_info = RentalType::findOrFail($id);
-        if ($main_info) {
-            return response()->json([
-                'status'    => 200,
-                "main_info" => $main_info,
-            ]);
-        } else {
-            return response()->json([
-                'status'  => 404,
-                "message" => "Receipt Settings Not Found",
-            ]);
-        }
-    }
+   
 }

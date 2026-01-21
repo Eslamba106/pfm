@@ -187,6 +187,11 @@
                  <i class="tio-add"></i>
                  <span class="text">{{ ui_change('create_agreement', 'property_transaction') }}</span>
              </button>
+             <button type="submit" onclick="setFormAction('{{ route('booking_room.create') }}')"
+                 class="btn btn--primary createButton">
+                 <i class="tio-add"></i>
+                 <span class="text">{{ ui_change('new_booking', 'property_transaction') }}</span>
+             </button>
              <button type="button" data-check_in="" data-toggle="modal" data-target="#check_in"
                  class="btn btn--primary createButton">
                  <i class="tio-add"></i>
@@ -224,7 +229,7 @@
              @endforeach
          @endforeach
      </div>
-    </form>
+     </form>
      <div class="modal fade" id="check_in" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
          aria-hidden="true">
          <div class="modal-dialog" role="document">

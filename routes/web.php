@@ -1195,6 +1195,9 @@ Route::group(['prefix' => 'room_reservation/booking'], function () {
     Route::group(['prefix' => 'booking-room'], function () {
         Route::get('list', [BookingRoomController::class, 'index'])->name('booking_room.list');
         Route::get('check-in-page', [BookingRoomController::class, 'check_in_page'])->name('booking_room.check_in_page');
+        Route::get('create', [BookingRoomController::class, 'create'])->name('booking_room.create');
+        Route::post('store', [BookingRoomController::class, 'store'])->name('booking_room.store');
+
     });
 
    

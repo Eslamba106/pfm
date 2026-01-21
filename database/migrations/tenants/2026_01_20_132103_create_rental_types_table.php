@@ -18,7 +18,7 @@ return new class extends Migration
             $table->string('from_period')->nullable();
             $table->integer('to')->nullable();
             $table->string('to_period')->nullable();
-            $table->tinyInteger('ledger_id')->nullable();
+            $table->integer('ledger_id')->nullable();
             $table->timestamps();
         });
     }
