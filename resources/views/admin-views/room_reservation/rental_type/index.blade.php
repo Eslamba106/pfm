@@ -79,7 +79,7 @@
                                         <th class="text-center">{{ ui_change('ledger', 'room_reservation') }}</th>
                                         <th class="text-center">{{ ui_change('from', 'room_reservation') }}</th>
                                         <th class="text-center">{{ ui_change('to', 'room_reservation') }}</th>
-                                       
+
                                         <th class="text-center">{{ ui_change('actions', 'room_reservation') }}</th>
                                     </tr>
                                 </thead>
@@ -90,9 +90,9 @@
                                             <td class="text-center">{{ $value->name }}</td>
 
                                             <td class="text-center">{{ $value->ledger?->name }} </td>
-                                            <td class="text-center">{{ $value->from .'-'.$value->from_period }} </td>
-                                            <td class="text-center">{{ $value->to .'-'.$value->to_period }} </td>
-                                            
+                                            <td class="text-center">{{ $value->from . '-' . $value->from_period }} </td>
+                                            <td class="text-center">{{ $value->to . '-' . $value->to_period }} </td>
+
                                             <td>
                                                 <div class="d-flex justify-content-center gap-2">
                                                     <a id="edit_{{ $route }}_item"
@@ -154,16 +154,16 @@
                 <form action="{{ route('rental_type.update') }}" method="post">
                     @csrf
                     @method('patch')
-                    <div class="modal-body"> 
-                            <input id="{{ $route }}_id" type="hidden" name="id" class="form-control">
-  
-                          <div class="row">
+                    <div class="modal-body">
+                        <input id="{{ $route }}_id" type="hidden" name="id" class="form-control">
+
+                        <div class="row">
                             <div class="col-md-6">
                                 <div class="form-group">
-                                      <div class="form-group ">
-                                    <label for="">{{ ui_change('name') }}</label>
-                                    <input id="edit_name" type="text" name="name" class="form-control">
-                                </div>
+                                    <div class="form-group ">
+                                        <label for="">{{ ui_change('name') }}</label>
+                                        <input id="edit_name" type="text" name="name" class="form-control">
+                                    </div>
                                 </div>
 
                             </div>
@@ -208,10 +208,11 @@
                                 </div>
 
                             </div>
+
                             <div class="col-md-3">
                                 <div class="form-group">
                                     <label for="">{{ ui_change('period', 'property_report') }}</label>
-                                    <select name="period_to"  id="edit_period_to" class="form-control">
+                                    <select name="period_to" id="edit_period_to" class="form-control">
                                         <option value="day">{{ ui_change('day', 'property_report') }}</option>
                                         <option value="week">{{ ui_change('week', 'property_report') }}</option>
                                         <option value="month">{{ ui_change('month', 'property_report') }}</option>
@@ -220,7 +221,13 @@
                                 </div>
 
                             </div>
+                            <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">{{ ui_change('color', 'property_report') }}</label>
+                                    <input type="color" id="edit_color" name="color" class="form-control  ">
+                                </div>
 
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -308,7 +315,13 @@
                                 </div>
 
                             </div>
+                             <div class="col-md-3">
+                                <div class="form-group">
+                                    <label for="">{{ ui_change('color', 'property_report') }}</label>
+                                    <input type="color"  name="color" class="form-control  ">
+                                </div>
 
+                            </div>
                         </div>
                     </div>
                     <div class="modal-footer">
@@ -361,8 +374,6 @@
                 }
             })
         });
-
- 
     </script>
     <script>
         $(document).on('click', '#edit_{{ $route }}_item', function(e) {
@@ -395,6 +406,7 @@
                         $('#edit_name').val(response.main_info.name);
                         $('#edit_from').val(response.main_info.from);
                         $('#edit_to').val(response.main_info.to);
+                        $('#edit_color').val(response.main_info.color);
                         $('#edit_period_from').val(response.main_info.from_period).trigger('change');
                         $('#edit_period_from')
                             .val(response.main_info.from_period)

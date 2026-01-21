@@ -55,6 +55,8 @@ class RentalTypeController extends Controller
                 'to' => $request->to,
                 'from' => $request->from,
                 'ledger_id' => $request->ledger_id, 
+                                'color'     => $request->color,
+
             ]);
             return redirect()->route('rental_type.list')->with('success', ui_change('added_successfully'));
         } catch (\Exception $e) {
@@ -83,6 +85,7 @@ class RentalTypeController extends Controller
                 'to' => $request->to,
                 'from' => $request->from,
                 'ledger_id' => $request->ledger_id, 
+                'color'     => $request->color,
             ]);
 
             return redirect()
@@ -106,5 +109,19 @@ class RentalTypeController extends Controller
         return redirect()->back()->with('error', ui_change('error_in_deleted'));
     }
 
-   
+    public function edit($id)
+    {
+        $main_info = RentalType::findOrFail($id);
+        if ($main_info) {
+            return response()->json([
+                'status'    => 200,
+                "main_info" => $main_info,
+            ]);
+        } else {
+            return response()->json([
+                'status'  => 404,
+                "message" => "Receipt Settings Not Found",
+            ]);
+        }
+    }
 }
