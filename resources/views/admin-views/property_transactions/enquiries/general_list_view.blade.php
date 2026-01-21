@@ -150,13 +150,13 @@
                 style="color:black">{{ ui_change('Floor_Wise_Unit_Count', 'property_transaction') }}</span>
             <span class="badge bg-warning me-2 m-2 p-2"
                 style="color:black">{{ ui_change('Total_Unit', 'property_transaction') }}</span>
-            <span class="badge bg-danger me-2 m-2 p-2"
+            <span class="badge   me-2 m-2 p-2" style="background-color: {{ $settings['proposal_color']->value ?? '#ffeb3b' }};color:white"
                 style="color:black">{{ ui_change('Proposed_Unit', 'property_transaction') }}</span>
-            <span class="badge bg-success me-2 m-2 p-2"
+            <span class="badge  me-2 m-2 p-2" style="background-color: {{ $settings['booking_color']->value ?? '#d500f9' }};color:white"
                 style="color:black">{{ ui_change('Booked_Unit', 'property_transaction') }}</span>
-            <span class="badge bg-secondary me-2 m-2 p-2"
+            <span class="badge me-2 m-2 p-2" style="background-color: {{ $settings['agreement_color']->value ?? '#f44336' }};color:white"
                 style="color:black">{{ ui_change('Agreement_Unit', 'property_transaction') }}</span>
-            <span class="badge  me-2 m-2 p-2" style="background-color: #372be2;color:white">
+            <span class="badge  me-2 m-2 p-2" style="background-color: {{ $settings['enquiry_color']->value ?? '#372be2' }};color:white">
                 {{ ui_change('Proposal_Pending', 'property_transaction') }}</span>
 
 
@@ -194,7 +194,7 @@
                                                         $enquiry_selected = true;
                                                     @endphp
                                                 @endif
-                                                <div style="background-color: #372be2;color:white"
+                                                <div style="background-color: {{ $settings['enquiry_color']->value ?? '#372be2' }};color:white"
                                                     class="unit  hover-info   p-1 border border-gray-300"
                                                     @if ($enquiry_selected) style="background-color:#fff; position:relative; display:inline-block; margin:2px; cursor:pointer; min-width:80px; text-align:center;"
                                                         data-unit-id="{{ $unit->id }}" @endif>
@@ -225,7 +225,7 @@
                                                         $proposal_selected = true;
                                                     @endphp
                                                 @endif
-                                                <div class="unit  hover-info bg-danger  p-1 border border-gray-300"
+                                                <div class="unit  hover-info    p-1 border border-gray-300" style="background-color: {{ $settings['proposal_color']->value ?? '#ffeb3b' }};color:white"
                                                     @if ($proposal_selected) style="background-color:#fff; position:relative; display:inline-block; margin:2px; cursor:pointer; min-width:80px; text-align:center;"
                                                         data-unit-id="{{ $unit->id }}" @endif>
                                                     {{ $unit->unit_management_main->name }}
@@ -254,7 +254,8 @@
                                                         $booking_selected = true;
                                                     @endphp
                                                 @endif
-                                                <div class="unit  hover-info bg-success  p-1 border border-gray-300"
+                                                <div class="unit  hover-info  p-1 border border-gray-300"
+                                                 style="background-color: {{ $settings['booking_color']->value ?? '#d500f9' }};color:white"
                                                     @if ($booking_selected) style="background-color:#fff; position:relative; display:inline-block; margin:2px; cursor:pointer; min-width:80px; text-align:center;"
                                                         data-unit-id="{{ $unit->id }}" @endif>
                                                     {{ $unit->unit_management_main->name }}
@@ -281,7 +282,9 @@
                                                         $agreement_selected = true;
                                                     @endphp
                                                 @endif
-                                                <div class="unit  hover-info bg-secondary p-1 border border-gray-300"
+                                                <div class="unit  hover-info  p-1 border border-gray-300"
+                                                      style="background-color: {{ $settings['agreement_color']->value ?? '#f44336' }};color:white"
+
                                                     @if ($agreement_selected) style="background-color:#fff; position:relative; display:inline-block; margin:2px; cursor:pointer; min-width:80px; text-align:center;"
                                                         data-unit-id="{{ $unit->id }}" @endif>
                                                     {{ $unit->unit_management_main->name }}

@@ -23,6 +23,7 @@ use App\Models\UnitCondition;
 use App\Models\EnquiryDetails;
 use App\Models\UnitManagement;
 use App\Models\BlockManagement;
+use App\Models\BusinessSetting;
 use App\Models\FloorManagement;
 use App\Models\ProposalDetails;
 use App\Models\UnitDescription;
@@ -1186,10 +1187,11 @@ class EnquiryController extends Controller
             'blocks_management_child.floors_management_child.unit_management_child',
             'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->forUser()->get();
-        // $property = PropertyManagement::findOrFail($id);
-        // dd($enquiry_unit);
+       $settings = BusinessSetting::whereIn('type', ['enquiry_color','booking_color','proposal_color','agreement_color'])->select('type','value')->get()->keyBy('type');
+ 
         $data = [
             'property_items' => $property,
+            'settings'=>$settings,
         ];
         return view('admin-views.property_transactions.enquiries.general_view_image', $data);
     }
@@ -1204,8 +1206,11 @@ class EnquiryController extends Controller
             'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->forUser()->get();
 
+       $settings = BusinessSetting::whereIn('type', ['enquiry_color','booking_color','proposal_color','agreement_color'])->select('type','value')->get()->keyBy('type');
+ 
         $data = [
             'property_items' => $property,
+            'settings'=>$settings,
         ];
         return view('admin-views.property_transactions.enquiries.general_list_view', $data);
     }

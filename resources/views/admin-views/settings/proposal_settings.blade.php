@@ -70,6 +70,12 @@
                                     <input type="number" class="form-control"   name="enquiry_expire_date"  class="form-control" value="{{ ( isset($proposal_expire_date)) ? $proposal_expire_date : ($enquiry_expire_date ?? '')  }}">
                                 </div>
                             </div>
+                            <div class="col-md-12 col-lg-4 col-xl-3">
+                                <div class="form-group">
+                                    <label for="">{{ ($end == 'proposal') ? __('property_transactions.proposal_expire_date') : __('property_transactions.enquiry_expire_date')  }}</label>
+                                    <input type="color" class="form-control"   name="proposal_color"  class="form-control" value="{{ ( isset($proposal_color)) ? $proposal_color : ($enquiry_color ?? '')  }}">
+                                </div>
+                            </div>
 
                         </div>
                     </div>

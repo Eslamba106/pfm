@@ -1,6 +1,8 @@
 @extends('layouts.back-end.app')
 @php
     $lang = Session::get('locale');
+    // dd($settings['agreement_color']->value)
+    
 @endphp
 @section('title', ui_change('view_image', 'property_transaction'))
 @push('css_or_js')
@@ -63,23 +65,42 @@
         }
 
         .unit.proposed {
-            background-color: #ffeb3b;
+            background-color: {{ $settings['proposal_color']->value ?? '#ffeb3b' }};
         }
 
         .unit.booked {
-            background-color: #d500f9;
+            background-color: {{ $settings['booking_color']->value ?? '#d500f9' }};
             color: #fff;
         }
 
         .unit.agreement {
-            background-color: #f44336;
+            background-color: {{ $settings['agreement_color']->value ?? '#f44336' }};
             color: #fff;
         }
 
-        .proposal_pending {
-            background-color: #372be2;
+        .proposal_pending { 
+            background-color: {{ $settings['enquiry_color']->value ?? '#372be2' }};
             color: #fff;
         }
+
+        /* .unit.proposed {
+                background-color: #ffeb3b;
+            }
+
+            .unit.booked {
+                background-color: #d500f9;
+                color: #fff;
+            }
+
+            .unit.agreement {
+                background-color: #f44336;
+                color: #fff;
+            }
+
+            .proposal_pending {
+                background-color: #372be2;
+                color: #fff;
+            } */
 
         @keyframes blink {
             0% {
@@ -178,13 +199,13 @@
                                 {{ ui_change('Floors', 'property_transaction') }}</div>
                             <div><span style="background-color: #fff;"></span>
                                 {{ ui_change('Empty_Units', 'property_transaction') }}</div>
-                            <div><span style="background-color: #ffeb3b;"></span>
+                            <div><span style="background-color: {{ $settings['proposal_color']->value ?? '#ffeb3b' }}"></span>
                                 {{ ui_change('Proposed_Units', 'property_transaction') }}</div>
-                            <div><span style="background-color: #d500f9;"></span>
+                            <div><span style="background-color: {{ $settings['booking_color']->value ?? '#d500f9' }}"></span>
                                 {{ ui_change('Booked_Units', 'property_transaction') }}</div>
-                            <div><span style="background-color: #f44336;"></span>
+                            <div><span style="background-color: {{ $settings['agreement_color']->value ?? '#f44336' }}"></span>
                                 {{ ui_change('Agreement_Units', 'property_transaction') }}</div>
-                            <div><span style="background-color: #372be2;"></span>
+                            <div><span style="background-color: {{ $settings['enquiry_color']->value ?? '#372be2' }}"></span>
                                 {{ ui_change('Proposal_Pending', 'property_transaction') }}</div>
                         </div>
                         {{-- @forelse ($properties as $property_item) --}}
@@ -296,7 +317,7 @@
 
                                         @foreach ($floor_item->unit_management_child as $unit_item)
                                             @if ($unit_item->booking_status == 'enquiry')
-                                                <div style="background-color:blue;color:white; position:relative"
+                                                <div style="background-color:{{ $settings['enquiry_color']->value ?? '#372be2' }};color:white; position:relative"
                                                     class="unit hover-info">
                                                     @php
                                                         $periodFrom = optional($unit_item->enquiry)->period_from;
@@ -325,7 +346,7 @@
 
                                                 {{-- PROPOSAL --}}
                                             @elseif($unit_item->booking_status == 'proposal')
-                                                <div style="background-color:#ffeb3b; position:relative"
+                                                <div style="background-color:{{ $settings['proposal_color']->value ?? '#ffeb3b' }}; position:relative"
                                                     class="unit hover-info">
                                                     @php
                                                         $periodFrom = optional($unit_item->proposal_main)
@@ -356,7 +377,7 @@
 
                                                 {{-- BOOKING --}}
                                             @elseif($unit_item->booking_status == 'booking')
-                                                <div style="background-color:#d500f9; position:relative"
+                                                <div style="background-color:{{ $settings['booking_color']->value ?? '#d500f9' }}; position:relative"
                                                     class="unit hover-info">
                                                     @php
                                                         $periodFrom = optional($unit_item->booking_main)
@@ -382,11 +403,9 @@
                                                         <br>
                                                         {{ optional(optional(optional($unit_item->booking_main)->booking)->tenant)->contact_no }}
                                                     </div>
-                                                </div>
-
-                                                {{-- AGREEMENT --}}
+                                                </div> 
                                             @elseif($unit_item->booking_status == 'agreement')
-                                                <div style="background-color:#f44336; position:relative"
+                                                <div style="background-color:{{ $settings['agreement_color']->value ?? '#f44336' }}; position:relative"
                                                     class="unit hover-info">
                                                     @php
                                                         $periodFrom = optional($unit_item->agreement_main)

@@ -13,6 +13,7 @@ class PropertyTransactionSettingsController extends Controller
         $agreement_prefix    = optional(BusinessSetting::whereType('agreement_prefix')->first())->value;
         $agreement_digits    = optional(BusinessSetting::whereType('agreement_digits')->first())->value ;
         $agreement_date_Data = optional(BusinessSetting::whereType('agreement_date')->first())->value  ;
+        $agreement_color = optional(BusinessSetting::whereType('agreement_color')->first())->value  ;
         $agreement_date = ($agreement_date_Data != null) ? Carbon::createFromFormat('Y-m-d', $agreement_date_Data)->format('Y-m-d') : '';
         $agreement_expire_date  = optional(BusinessSetting::whereType('agreement_expire_date')->first())->value  ;
 
@@ -21,6 +22,7 @@ class PropertyTransactionSettingsController extends Controller
             "agreement_prefix"      => $agreement_prefix,
             "agreement_date"      => $agreement_date,
             "agreement_expire_date"      => $agreement_expire_date,
+            'agreement_color'           => $agreement_color,
         ];
         return view('admin-views.settings.agreement_settings' ,$data);
     }
@@ -33,6 +35,9 @@ class PropertyTransactionSettingsController extends Controller
         BusinessSetting::updateOrInsert(['type' => 'agreement_digits'], [
             'value' => $request['agreement_digits']
         ]);
+        BusinessSetting::updateOrInsert(['type' => 'agreement_color'], [
+            'value' => $request['agreement_color']
+        ]);
         
         BusinessSetting::updateOrInsert(['type' => 'agreement_expire_date'], [
             'value' => $request['agreement_expire_date']
@@ -43,12 +48,13 @@ class PropertyTransactionSettingsController extends Controller
         BusinessSetting::updateOrInsert(['type' => 'agreement_date'], [
             'value' => $start_date
         ]);
-        return redirect()->back()->with('success',__('property_transactions.setting_updated'));
+        return redirect()->back()->with('success',ui_change('setting_updated'));
     }
     public function bookingIndex(){
         $booking_prefix    = optional(BusinessSetting::whereType('booking_prefix')->first())->value;
         $booking_digits    = optional(BusinessSetting::whereType('booking_digits')->first())->value ;
         $booking_date_Data = optional(BusinessSetting::whereType('booking_date')->first())->value  ;
+        $booking_color = optional(BusinessSetting::whereType('booking_color')->first())->value  ;
         $booking_date = ($booking_date_Data != null) ? Carbon::createFromFormat('Y-m-d', $booking_date_Data)->format('Y-m-d') : '';
         $booking_expire_date  = optional(BusinessSetting::whereType('booking_expire_date')->first())->value  ;
 
@@ -57,7 +63,7 @@ class PropertyTransactionSettingsController extends Controller
             "booking_prefix"            => $booking_prefix,
             "booking_date"              => $booking_date,
             "booking_expire_date"       => $booking_expire_date,
-
+            "booking_color"             => $booking_color,
         ];
         return view('admin-views.settings.booking_settings' ,$data);
     }
@@ -74,17 +80,21 @@ class PropertyTransactionSettingsController extends Controller
         BusinessSetting::updateOrInsert(['type' => 'booking_digits'], [
             'value' => $request['booking_digits']
         ]);
+        BusinessSetting::updateOrInsert(['type' => 'booking_color'], [
+            'value' => $request['booking_color']
+        ]);
         if($request['booking_date']){ $start_date = Carbon::createFromFormat('d/m/Y',$request['booking_date'])->format('Y-m-d'); }
 
         BusinessSetting::updateOrInsert(['type' => 'booking_date'], [
             'value' => $start_date
         ]);
-        return redirect()->back()->with('success',__('property_transactions.setting_updated'));
+        return redirect()->back()->with('success',ui_change('setting_updated'));
     }
     public function enquiryIndex(){
         $enquiry_prefix    = optional(BusinessSetting::whereType('enquiry_prefix')->first())->value;
         $enquiry_digits    = optional(BusinessSetting::whereType('enquiry_digits')->first())->value ;
         $enquiry_date_Data = optional(BusinessSetting::whereType('enquiry_date')->first())->value  ;
+        $enquiry_color = optional(BusinessSetting::whereType('enquiry_color')->first())->value  ;
         $enquiry_expire_date  = optional(BusinessSetting::whereType('enquiry_expire_date')->first())->value  ;
         $enquiry_date = ($enquiry_date_Data != null) ? Carbon::createFromFormat('Y-m-d', $enquiry_date_Data)->format('Y-m-d') : '';
 
@@ -93,6 +103,7 @@ class PropertyTransactionSettingsController extends Controller
             "enquiry_prefix"      => $enquiry_prefix,
             "enquiry_date"      => $enquiry_date,
             "enquiry_expire_date"      => $enquiry_expire_date,
+            "enquiry_color"     => $enquiry_color,
         ];
         return view('admin-views.settings.proposal_settings' ,$data);
     }
@@ -108,17 +119,21 @@ class PropertyTransactionSettingsController extends Controller
         BusinessSetting::updateOrInsert(['type' => 'enquiry_digits'], [
             'value' => $request['proposal_digits']
         ]);
+        BusinessSetting::updateOrInsert(['type' => 'enquiry_color'], [
+            'value' => $request['proposal_color']
+        ]);
         if($request['proposal_date']){ $start_date = Carbon::createFromFormat('d/m/Y',$request['proposal_date'])->format('Y-m-d'); }
 
         BusinessSetting::updateOrInsert(['type' => 'enquiry_date'], [
             'value' => $start_date
         ]);
-        return redirect()->back()->with('success',__('property_transactions.setting_updated'));
+        return redirect()->back()->with('success',ui_change('setting_updated'));
     }
     public function proposalIndex(){
         $proposal_prefix    = optional(BusinessSetting::whereType('proposal_prefix')->first())->value;
         $proposal_digits    = optional(BusinessSetting::whereType('proposal_digits')->first())->value ;
         $proposal_date = optional(BusinessSetting::whereType('proposal_date')->first())->value  ;
+        $proposal_color = optional(BusinessSetting::whereType('proposal_color')->first())->value  ;
         $proposal_date = Carbon::createFromFormat('Y-m-d', $proposal_date)->format('Y-m-d') ;
         $proposal_expire_date  = optional(BusinessSetting::whereType('proposal_expire_date')->first())->value  ;
 
@@ -127,6 +142,7 @@ class PropertyTransactionSettingsController extends Controller
             "proposal_prefix"      => $proposal_prefix,
             "proposal_date"      => $proposal_date,
             "proposal_expire_date"      => $proposal_expire_date,
+            'proposal_color'            => $proposal_color,
         ];
         return view('admin-views.settings.proposal_settings' ,$data);
     }
@@ -142,12 +158,15 @@ class PropertyTransactionSettingsController extends Controller
         BusinessSetting::updateOrInsert(['type' => 'proposal_digits'], [
             'value' => $request['proposal_digits']
         ]);
+        BusinessSetting::updateOrInsert(['type' => 'proposal_color'], [
+            'value' => $request['proposal_color']
+        ]);
         if($request['proposal_date']){ $start_date = Carbon::createFromFormat('d/m/Y',$request['proposal_date'])->format('Y-m-d'); }
 
         BusinessSetting::updateOrInsert(['type' => 'proposal_date'], [
             'value' => $start_date
         ]);
-        return redirect()->back()->with('success',__('property_transactions.setting_updated'));
+        return redirect()->back()->with('success',ui_change('setting_updated'));
     }
 
 

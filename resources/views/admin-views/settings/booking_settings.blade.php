@@ -71,6 +71,12 @@
                                     <input type="number" class="form-control"   name="booking_expire_date"  class="form-control" value="{{ ( isset($booking_expire_date)) ? $booking_expire_date : ''   }}">
                                 </div>
                             </div>
+                            <div class="col-md-12 col-lg-4 col-xl-3">
+                                <div class="form-group">
+                                    <label for="">{{   ui_change('booking_color')    }}</label>
+                                    <input type="color" class="form-control"   name="booking_color"  class="form-control" value="{{ ( isset($booking_color)) ? $booking_color : ''   }}">
+                                </div>
+                            </div>
 
                         </div>
                     </div>
