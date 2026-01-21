@@ -149,6 +149,76 @@
              transform: translateY(0);
          }
      </style>
+     <style>
+         .block-card {
+             border: 1px solid #ccc;
+             padding: 10px;
+             margin-bottom: 20px;
+         }
+
+         .floor-section {
+             display: flex;
+             align-items: flex-start;
+             border: 1px dashed #888;
+             padding: 10px;
+             margin-bottom: 10px;
+             gap: 10px;
+         }
+
+         .floor-label {
+             font-weight: bold;
+             min-width: 100px;
+         }
+
+         .units-container {
+             display: flex;
+             flex-wrap: wrap;
+             gap: 5px;
+         }
+
+         .unit-box {
+             display: flex;
+             align-items: center;
+             padding: 5px 8px;
+             border: 1px solid #007bff;
+             border-radius: 4px;
+             cursor: pointer;
+             position: relative;
+         }
+
+         .unit-box input[type="checkbox"] {
+             display: none;
+         }
+
+         .unit-box.selected {
+             outline: 2px solid #007bff;
+         }
+
+         .unit-dots {
+             display: flex;
+             gap: 3px;
+             margin-left: auto;
+         }
+
+         .dot {
+             width: 8px;
+             height: 8px;
+             border-radius: 50%;
+             background-color: gray;
+         }
+
+         .dot-booking {
+             background-color: #d500f9;
+         }
+
+         .dot-checkin {
+             background-color: #ffeb3b;
+         }
+
+         .dot-info {
+             background-color: #f44336;
+         }
+     </style>
  @endpush
 
  @section('content')
@@ -190,42 +260,47 @@
              <button type="submit" onclick="setFormAction('{{ route('booking_room.create') }}')"
                  class="btn btn--primary createButton">
                  <i class="tio-add"></i>
-                 <span class="text">{{ ui_change('new_booking', 'property_transaction') }}</span>
+                 <span class="text">{{ ui_change('book_now', 'property_transaction') }}</span>
              </button>
-             <button type="button" data-check_in="" data-toggle="modal" data-target="#check_in"
+             {{-- <button type="button" data-check_in="" data-toggle="modal" data-target="#check_in"
                  class="btn btn--primary createButton">
                  <i class="tio-add"></i>
                  <span class="text">{{ ui_change('checkIn', 'property_transaction') }}</span>
-             </button>
+             </button> --}}
      </div>
      <div class="container list-container">
          @foreach ($property_items as $property)
              <h3 class="mt-3">{{ $property->name }}</h3>
 
              @foreach ($property->blocks_management_child as $block_item)
-                 <div class="block-card">
-                     <div class="block-name mb-2">Block: {{ $block_item->block->name }}</div>
+                 @if ($block_item->floors_management_child?->count() > 0)
+                     <div class="block-card">
+                         <div class="block-name mb-2">{{ ui_change('block') }}: {{ $block_item->block->name }}</div>
 
-                     @foreach ($block_item->floors_management_child as $floor_item)
-                         <div class="floor-section">
-                             <div class="floor-label">Floor: {{ $floor_item->floor_management_main->name }}</div>
-                             <div class="units-container">
-                                 @foreach ($floor_item->unit_management_child as $unit)
-                                     <label class="unit-box" data-unit-id="{{ $unit->id }}">
-                                         <input type="checkbox" class="bulk-checkbox" name="bulk_ids[]"
-                                             value="{{ $unit->id }}">
-                                         {{ $unit->unit_management_main->name }}
-                                         <div class="unit-dots">
-                                             <span class="dot dot-booking" data-action="booking"></span>
-                                             <span class="dot dot-checkin" data-action="checkin"></span>
-                                             <span class="dot dot-info" data-action="info"></span>
-                                         </div>
-                                     </label>
-                                 @endforeach
-                             </div>
-                         </div>
-                     @endforeach
-                 </div>
+                         @foreach ($block_item->floors_management_child as $floor_item)
+                             @if ($floor_item->unit_management_child?->count() > 0)
+                                 <div class="floor-section">
+                                     <div class="floor-label">{{ ui_change('floor') }}:
+                                         {{ $floor_item->floor_management_main->name }}</div>
+                                     <div class="units-container">
+                                         @foreach ($floor_item->unit_management_child as $unit)
+                                             <label class="unit-box" data-unit-id="{{ $unit->id }}">
+                                                 <input type="checkbox" class="bulk-checkbox" name="bulk_ids[]"
+                                                     value="{{ $unit->id }}">
+                                                 {{ $unit->unit_management_main->name }}
+                                                 <div class="unit-dots">
+                                                     <span class="dot dot-booking" data-action="booking"></span>
+                                                     <span class="dot dot-checkin" data-action="checkin"></span>
+                                                     <span class="dot dot-info" data-action="info"></span>
+                                                 </div>
+                                             </label>
+                                         @endforeach
+                                     </div>
+                                 </div>
+                             @endif
+                         @endforeach
+                     </div>
+                 @endif
              @endforeach
          @endforeach
      </div>
