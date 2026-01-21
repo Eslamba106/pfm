@@ -2,7 +2,6 @@
 @php
     $lang = Session::get('locale');
     // dd($settings['agreement_color']->value)
-    
 @endphp
 @section('title', ui_change('view_image', 'property_transaction'))
 @push('css_or_js')
@@ -78,29 +77,29 @@
             color: #fff;
         }
 
-        .proposal_pending { 
+        .proposal_pending {
             background-color: {{ $settings['enquiry_color']->value ?? '#372be2' }};
             color: #fff;
         }
 
         /* .unit.proposed {
-                background-color: #ffeb3b;
-            }
+                    background-color: #ffeb3b;
+                }
 
-            .unit.booked {
-                background-color: #d500f9;
-                color: #fff;
-            }
+                .unit.booked {
+                    background-color: #d500f9;
+                    color: #fff;
+                }
 
-            .unit.agreement {
-                background-color: #f44336;
-                color: #fff;
-            }
+                .unit.agreement {
+                    background-color: #f44336;
+                    color: #fff;
+                }
 
-            .proposal_pending {
-                background-color: #372be2;
-                color: #fff;
-            } */
+                .proposal_pending {
+                    background-color: #372be2;
+                    color: #fff;
+                } */
 
         @keyframes blink {
             0% {
@@ -143,6 +142,20 @@
 
         .hover-info:hover .info-box {
             display: block;
+        }
+    </style>
+    <style>
+        .unit-checkbox {
+            display: none;
+        }
+
+        .unit.selected {
+            outline: 3px solid #007bff;
+            outline-offset: -3px;
+        }
+
+        .unit {
+            cursor: pointer;
         }
     </style>
 @endpush
@@ -199,13 +212,17 @@
                                 {{ ui_change('Floors', 'property_transaction') }}</div>
                             <div><span style="background-color: #fff;"></span>
                                 {{ ui_change('Empty_Units', 'property_transaction') }}</div>
-                            <div><span style="background-color: {{ $settings['proposal_color']->value ?? '#ffeb3b' }}"></span>
+                            <div><span
+                                    style="background-color: {{ $settings['proposal_color']->value ?? '#ffeb3b' }}"></span>
                                 {{ ui_change('Proposed_Units', 'property_transaction') }}</div>
-                            <div><span style="background-color: {{ $settings['booking_color']->value ?? '#d500f9' }}"></span>
+                            <div><span
+                                    style="background-color: {{ $settings['booking_color']->value ?? '#d500f9' }}"></span>
                                 {{ ui_change('Booked_Units', 'property_transaction') }}</div>
-                            <div><span style="background-color: {{ $settings['agreement_color']->value ?? '#f44336' }}"></span>
+                            <div><span
+                                    style="background-color: {{ $settings['agreement_color']->value ?? '#f44336' }}"></span>
                                 {{ ui_change('Agreement_Units', 'property_transaction') }}</div>
-                            <div><span style="background-color: {{ $settings['enquiry_color']->value ?? '#372be2' }}"></span>
+                            <div><span
+                                    style="background-color: {{ $settings['enquiry_color']->value ?? '#372be2' }}"></span>
                                 {{ ui_change('Proposal_Pending', 'property_transaction') }}</div>
                         </div>
                         {{-- @forelse ($properties as $property_item) --}}
@@ -213,101 +230,7 @@
                             <h3 style="color: var(--primary)">{{ $property_item->name }}</h3>
                         </div>
                         <div class="grid-container">
-                            {{-- @foreach ($property_item->blocks_management_child as $block_item)
-                                <div class="grid-title">{{ $block_item->block->name }}</div>
-                                @foreach ($block_item->floors_management_child as $floor_item)
-                                    <div class="grid">
-                                        <div class="floor">{{ $floor_item->floor_management_main->name }}</div>
-                                        @foreach ($floor_item->unit_management_child as $unit_item)
-                                            @if ($unit_item->booking_status == 'enquiry')
-                                                <div style="background-color:blue;color:white" class="unit  hover-info  ">
-                                                    {{ $unit_item->unit_management_main->name }}
-
-
-                                                    <div class="info-box">
-                                                        {{ optional(optional(optional($unit_item->enquiry)->main_enquiry)->tenant)->name ?? optional(optional(optional($unit_item->enquiry)->main_enquiry)->tenant)->company_name }}
-                                                        <br>
-                                                        {{ optional(optional($unit_item->enquiry)->main_enquiry)->enquiry_no }}
-                                                        <br>
-                                                        {{ optional($unit_item->rent_schedules->first())->rent_amount ?? optional($unit_item->main_enquiry)->rent_amount }}
-                                                        <br>
-                                                        {{ optional(optional(optional($unit_item->enquiry)->main_enquiry)->tenant)->contact_no }}
-
-                                                    </div>
-                                                </div>
-                                            @elseif($unit_item->booking_status == 'proposal')
-                                                <div style="background-color:#ffeb3b;" class="unit  hover-info  ">
-                                                    {{ $unit_item->unit_management_main->name }}
-
-
-                                                    <div class="info-box">
-                                                        {{ optional(optional(optional($unit_item->proposal_main)->proposal)->tenant)->name ?? optional(optional(optional($unit_item->proposal_main)->proposal)->tenant)->company_name }}
-                                                        <br>
-                                                        {{ optional(optional($unit_item->proposal_main)->proposal)->proposal_no }}
-                                                        <br>
-                                                        {{ optional($unit_item->rent_schedules->first())->rent_amount ?? optional($unit_item->proposal_main)->rent_amount }}
-                                                        <br>
-                                                        {{ optional(optional(optional($unit_item->proposal_main)->proposal)->tenant)->contact_no }}
-                                                    </div>
-                                                </div>
-                                            @elseif($unit_item->booking_status == 'booking')
-                                                <div style="background-color:#d500f9;" class="unit  hover-info  ">
-                                                    {{ $unit_item->unit_management_main->name }}
-
-
-                                                    <div class="info-box">
-                                                        {{ optional(optional(optional($unit_item->booking_main)->booking)->tenant)->name ?? optional(optional(optional($unit_item->booking_main)->booking)->tenant)->company_name }}
-                                                        <br>
-                                                        {{ optional(optional($unit_item->booking_main)->booking)->booking_no }}
-                                                        <br>
-                                                        {{ optional($unit_item->rent_schedules->first())->rent_amount ?? optional($unit_item->booking_main)->rent_amount }}
-                                                        <br>
-                                                        {{ optional(optional(optional($unit_item->booking_main)->booking)->tenant)->contact_no }}
-                                                    </div>
-                                                </div>
-                                            @elseif($unit_item->booking_status == 'agreement')
-                                                <div style="background-color:#f44336;" class="unit  hover-info  ">
-                                                    {{ $unit_item->unit_management_main->name }}
-
-
-                                                    <div class="info-box">
-                                                        {{ optional(optional(optional($unit_item->agreement_main)->agreement)->tenant)->name ?? optional(optional(optional($unit_item->agreement_main)->agreement)->tenant)->company_name }}
-                                                        <br>
-                                                        {{ optional(optional($unit_item->agreement_main)->agreement)->agreement_no }}
-                                                        <br>
-                                                        {{ optional($unit_item->rent_schedules->first())->rent_amount ?? optional($unit_item->agreement_main)->rent_amount }}
-                                                        <br>
-                                                        {{ optional(optional(optional($unit_item->agreement_main)->agreement)->tenant)->contact_no }}
-                                                    </div>
-                                                </div>
-                                                
-                                            @elseif($unit_item->booking_status == 'empty')
-                                                <div style="background-color:#fff;" class="unit  hover-info empty ">
-                                                    {{ $unit_item->unit_management_main->name }}
-                                                    <div class="info-box">
-
-                                                        {{ optional($unit_item->rent_schedules->first())->rent_amount }}
-                                                    </div>
-                                                </div>
-                                            @endif
-                                            {{-- <div 
-                                             @if (array_key_exists($unit_item->id, $enquiry_units)) style="background-color:blue;" @endif 
-                                                class="unit  hover-info  @if ($unit_item->booking_status == 'empty') empty
-                                         @elseif($unit_item->booking_status == 'proposal') proposed
-                                         @elseif($unit_item->booking_status == 'booking') booked
-                                         @elseif($unit_item->booking_status == 'agreement') agreement  
-                                         @elseif(array_key_exists($unit_item->id, $enquiry_units))  proposal_pending @endif">
-                                                {{ $unit_item->unit_management_main->name . ' - ' . optional($unit_item->rent_schedules->first())->rent_amount }}
-                                                
-                                                 
-                                                
-                                        @endforeach
-
-
-                                    </div>
-                                    <hr>
-                                @endforeach
-                            @endforeach --}}
+                           
                             @foreach ($property_item->blocks_management_child as $block_item)
                                 <div class="grid-title">{{ $block_item->block->name }}</div>
 
@@ -403,7 +326,7 @@
                                                         <br>
                                                         {{ optional(optional(optional($unit_item->booking_main)->booking)->tenant)->contact_no }}
                                                     </div>
-                                                </div> 
+                                                </div>
                                             @elseif($unit_item->booking_status == 'agreement')
                                                 <div style="background-color:{{ $settings['agreement_color']->value ?? '#f44336' }}; position:relative"
                                                     class="unit hover-info">
@@ -468,6 +391,22 @@
 @endsection
 
 @push('script')
+ <script>
+document.addEventListener('DOMContentLoaded', function() {
+    document.querySelectorAll('.unit').forEach(unit => {
+        unit.addEventListener('click', function(e) { 
+            if (!unit.classList.contains('empty')) return; 
+            unit.classList.toggle('selected'); 
+            const checkbox = unit.querySelector('.unit-checkbox');
+            if (checkbox) {
+                checkbox.checked = unit.classList.contains('selected'); 
+                checkbox.dispatchEvent(new Event('input', { bubbles: true }));
+            }
+        });
+    });
+});
+</script>
+
     <script>
         function setFormAction(actionUrl) {
             document.getElementById('productForm').action = actionUrl;
