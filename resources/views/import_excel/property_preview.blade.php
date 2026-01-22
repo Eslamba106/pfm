@@ -2,8 +2,8 @@
 @section('title', ui_change('preview_excel'))
 
 @section('content')
-    <div class="content container-fluid"> 
-        
+    <div class="content container-fluid">
+
         <div class="mb-4">
             <h2 class="h1 mb-1 text-capitalize d-flex gap-2">
                 {{ ui_change('Import') }}
@@ -16,75 +16,59 @@
         {{-- <div class="row" style="text-align: {{ Session::get('direction') === 'rtl' ? 'right' : 'left' }};"> --}}
 
         <form action="{{ route('import.confirm_property_master') }}" method="POST">
-            @csrf 
+            @csrf
             <div class="card shadow-sm border-0">
                 <div class="card-header bg-light">
                     <h5 class="mb-0">{{ ui_change('Preview_Imported_Data') }}</h5>
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive" style="max-height: 500px; overflow-y: auto;">
-                        {{-- <table id="datatable" style="text-align: {{ Session::get('locale') === 'ar' ? 'right' : 'left' }};"
+
+                        <table id="datatable"
+                            style="text-align: {{ Session::get('locale') === 'ar' ? 'right' : 'left' }}; table-layout: fixed; width:100%;"
                             class="table table-striped table-bordered table-hover align-middle mb-0">
 
                             <thead class="bg-light text-capitalize sticky-top">
                                 <tr>
                                     @foreach ($data[0] as $header)
-                                        <th class="text-center fw-bold">{{ $header }}</th>
+                                        <th class="text-center fw-bold" style="width:150px; white-space:nowrap;">
+                                            {{ $header }}</th>
                                     @endforeach
                                 </tr>
                             </thead>
 
                             <tbody>
-                                @foreach ($data->skip(1) as $rowIndex => $row)
+                            <tbody>
+                                @foreach ($data->skip(1) as $row)
                                     <tr>
-                                        @foreach ($row as $colIndex => $value)
-                                            @php
-                                                $columnName = $data[0][$colIndex];
-                                            @endphp
-                                            <td>
-                                                <input type="text" name="rows[{{ $rowIndex + 1 }}][{{ $columnName }}]"
-                                                    value="{{ $value }}" class="form-control text-center auto-resize"
-                                                    oninput="resizeInput(this)">
+                                        @foreach ($row as $value)
+                                            <td class="text-center">
+                                                {{ $value }}
                                             </td>
                                         @endforeach
                                     </tr>
                                 @endforeach
                             </tbody>
-                        </table> --}}
-                        <table id="datatable" 
-    style="text-align: {{ Session::get('locale') === 'ar' ? 'right' : 'left' }}; table-layout: fixed; width:100%;" 
-    class="table table-striped table-bordered table-hover align-middle mb-0">
 
-    <thead class="bg-light text-capitalize sticky-top">
-        <tr>
-            @foreach ($data[0] as $header)
-                <th class="text-center fw-bold" style="width:150px; white-space:nowrap;">{{ $header }}</th>
-            @endforeach
-        </tr>
-    </thead>
-
-    <tbody>
-        @foreach ($data->skip(1) as $rowIndex => $row)
-            <tr>
-                @foreach ($row as $colIndex => $value)
-                    @php $columnName = $data[0][$colIndex]; @endphp
-                    <td>
-                        <input type="text" 
-                               name="rows[{{ $rowIndex + 1 }}][{{ $columnName }}]" 
-                               value="{{ $value }}" 
-                               class="form-control text-center"
-                               style="width:150px;">
-                    </td>
-                @endforeach
-            </tr>
-        @endforeach
-    </tbody>
-</table>
+                            {{-- @foreach ($data->skip(1) as $rowIndex => $row)
+                                    <tr>
+                                        @foreach ($row as $colIndex => $value)
+                                            @php $columnName = $data[0][$colIndex]; @endphp
+                                            <td>
+                                                <input type="text" name="rows[{{ $rowIndex + 1 }}][{{ $columnName }}]"
+                                                    value="{{ $value }}" class="form-control text-center"
+                                                    style="width:150px;">
+                                            </td>
+                                        @endforeach
+                                    </tr>
+                                @endforeach --}}
+                            </tbody>
+                        </table>
 
                     </div>
                 </div>
 
-              
+
 
                 <div class="card-footer d-flex justify-content-end">
 

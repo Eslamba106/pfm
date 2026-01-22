@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\import;
 
 use Exception;
@@ -40,45 +41,72 @@ class PropertyMasterImportController extends Controller
     }
     public function preview(Request $request)
     {
-        // dd($request->all());
         $request->validate([
-            'file' => 'required',
+            'file' => 'required|mimes:xlsx,csv',
         ]);
-        // dd($request->file('file'));
-        $path = $request->file('file')->getRealPath();
 
         $data = Excel::toCollection(null, $request->file('file'))->first();
 
-        return view('import_excel.property_preview', compact('data'));
-    }
-//     public function confirm_property_master(Request $request)
-// {
-//     $rows = $request->input('rows', []);
- 
-//     ImportPropertyJob::dispatch($rows);
+        session([
+            'property_import_preview' => $data
+        ]);
 
-//     return redirect()
-//         ->route('property_management.index')
-//         ->with('success', ui_change('import_request_received_processing_in_background'));
-// }
+        return view('import_excel.property_preview', [
+            'data' => $data
+        ]);
+    }
+
+    // public function preview(Request $request)
+    // {
+    //     // dd($request->all());
+    //     $request->validate([
+    //         'file' => 'required',
+    //     ]);
+    //     // dd($request->file('file'));
+    //     $path = $request->file('file')->getRealPath();
+
+    //     $data = Excel::toCollection(null, $request->file('file'))->first();
+
+    //     return view('import_excel.property_preview', compact('data'));
+    // }
+    //     public function confirm_property_master(Request $request)
+    // {
+    //     $rows = $request->input('rows', []);
+
+    //     ImportPropertyJob::dispatch($rows);
+
+    //     return redirect()
+    //         ->route('property_management.index')
+    //         ->with('success', ui_change('import_request_received_processing_in_background'));
+    // }
     public function confirm_property_master(Request $request)
     {
-        $rows = $request->input('rows', []);
+        // $rows = $request->input('rows', []);
+        $rows = session('property_import_preview');
+        $headers = $rows->first()->toArray();
 
-        foreach ($rows as $row) {
-            $normalizedRow = $this->normalizeRow($row);
 
-            // ---------------------
-            // Property Type
-            // ---------------------
-            $propertyType = PropertyType::firstOrCreate([
-                'name' => $normalizedRow['property_type'] ?? null,
-                'code' => $normalizedRow['property_type'] ?? null,
-            ]);
+        if (!$rows) {
+            return back()->withErrors('No preview data found');
+        } 
+        foreach ($rows->skip(1) as $row) {
+            $rowArray = $row->toArray();
+ 
+            $assocRow = array_combine($headers, $rowArray);
 
-            // ---------------------
-            // Property
-            // ---------------------
+            $normalizedRow = $this->normalizeRow($assocRow);
+
+            if (empty(array_filter($normalizedRow))) {
+                continue;
+            }
+ 
+            if ($normalizedRow['property_type']) {
+                $propertyType = PropertyType::firstOrCreate([
+                    'name' => $normalizedRow['property_type'] ?? null,
+                    'code' => $normalizedRow['property_type'] ?? null,
+                ]);
+            }
+ 
             $property = PropertyManagement::firstOrCreate(
                 ['name' => $normalizedRow['property_name'] ?? null],
                 ['code' => $normalizedRow['property_code'] ?? null]
@@ -92,7 +120,7 @@ class PropertyMasterImportController extends Controller
             // Block
             // ---------------------
             $blockName = Block::firstOrCreate([
-                'name' => $normalizedRow['block_name'] ?? null,
+                'name' => $normalizedRow['block_name'],
                 'code' => $normalizedRow['block_code'] ?? null,
             ]);
 
@@ -122,9 +150,9 @@ class PropertyMasterImportController extends Controller
                 ? (int) $normalizedRow['total_no_of_units']
                 : 1;
 
-          // ---------------------
-// Units
-// ---------------------
+            // ---------------------
+            // Units
+            // ---------------------
             $unitBaseName = $normalizedRow['unit_name'] ?? 'Unit';
             $unitFullName = $unitBaseName;
 
@@ -135,28 +163,28 @@ class PropertyMasterImportController extends Controller
                 'code' => $unitNo ?? $unitFullName,
             ]);
 
-// Unit Description
+            // Unit Description
             $unit_description = ! empty($normalizedRow['unit_type'])
                 ? UnitDescription::firstOrCreate([
-                'name' => $normalizedRow['unit_type'],
-                'code' => $normalizedRow['unit_type'],
-            ])
+                    'name' => $normalizedRow['unit_type'],
+                    'code' => $normalizedRow['unit_type'],
+                ])
                 : null;
 
-// Unit Condition
+            // Unit Condition
             $unit_condition = ! empty($normalizedRow['unit_condition'])
                 ? UnitCondition::firstOrCreate([
-                'name' => $normalizedRow['unit_condition'],
-                'code' => $normalizedRow['unit_condition'],
-            ])
+                    'name' => $normalizedRow['unit_condition'],
+                    'code' => $normalizedRow['unit_condition'],
+                ])
                 : null;
 
-// View
+            // View
             $view = ! empty($normalizedRow['view'])
                 ? View::firstOrCreate([
-                'name' => $normalizedRow['view'],
-                'code' => $normalizedRow['view'],
-            ])
+                    'name' => $normalizedRow['view'],
+                    'code' => $normalizedRow['view'],
+                ])
                 : null;
 
             UnitManagement::firstOrCreate(
@@ -176,121 +204,137 @@ class PropertyMasterImportController extends Controller
 
         return redirect()->route('property_management.index')->with('success', ui_change('imported_successfully'));
     }
+    //     private function normalizeRow(array $row): array
+    // {
+    //     return [
+    //         'property_name' => $row['Property Name'] ?? null,
+    //         'property_code' => $row['Property Code'] ?? null,
+    //         'property_type' => $row['Property Type'] ?? null,
+    //         'ownership_type'=> $row['Type of Ownership'] ?? null,
+    //         'land_lord'     => $row['Land Lord Name'] ?? null,
+    //         'block_name'    => $row['Block Name'] ?? null,
+    //         'block_code'    => $row['Block Code'] ?? null,
+    //         'floor_name'    => $row['Floor Name'] ?? null,
+    //         'floor_code'    => $row['Floor Code'] ?? null,
+    //         'unit_name'     => $row['Unit Name'] ?? null,
+    //         'rent_amount'   => $row['Rent (Amount per month)'] ?? null,
+    //     ];
+    // }
 
-//     public function confirm_property_master(Request $request)
-// {
-//     $rows = $request->input('rows', []);
+    //     public function confirm_property_master(Request $request)
+    // {
+    //     $rows = $request->input('rows', []);
 
-//     foreach ($rows as $row) {
-//         // نظف المفاتيح
-//         $normalizedRow = $this->normalizeRow($row);
+    //     foreach ($rows as $row) {
+    //         // نظف المفاتيح
+    //         $normalizedRow = $this->normalizeRow($row);
 
-//         // ---------------------
-//         // Property Type
-//         // ---------------------
-//         $propertyType = PropertyType::firstOrCreate([
-//             'name' => $normalizedRow['property_type'] ?? null,
-//             'code' => $normalizedRow['property_type'] ?? null,
-//         ]);
+    //         // ---------------------
+    //         // Property Type
+    //         // ---------------------
+    //         $propertyType = PropertyType::firstOrCreate([
+    //             'name' => $normalizedRow['property_type'] ?? null,
+    //             'code' => $normalizedRow['property_type'] ?? null,
+    //         ]);
 
-//         // ---------------------
-//         // Property
-//         // ---------------------
-//         $property = PropertyManagement::firstOrCreate(
-//             ['name' => $normalizedRow['property_name'] ?? null],
-//             ['code' => $normalizedRow['property_code'] ?? null]
-//         );
+    //         // ---------------------
+    //         // Property
+    //         // ---------------------
+    //         $property = PropertyManagement::firstOrCreate(
+    //             ['name' => $normalizedRow['property_name'] ?? null],
+    //             ['code' => $normalizedRow['property_code'] ?? null]
+    //         );
 
-//         if ($property && $propertyType) {
-//             $property->property_types()->syncWithoutDetaching([$propertyType->id]);
-//         }
+    //         if ($property && $propertyType) {
+    //             $property->property_types()->syncWithoutDetaching([$propertyType->id]);
+    //         }
 
-//         // ---------------------
-//         // Block
-//         // ---------------------
-//         $blockName = Block::firstOrCreate([
-//             'name' => $normalizedRow['block_name'] ?? null,
-//             'code' => $normalizedRow['block_code'] ?? null,
-//         ]);
+    //         // ---------------------
+    //         // Block
+    //         // ---------------------
+    //         $blockName = Block::firstOrCreate([
+    //             'name' => $normalizedRow['block_name'] ?? null,
+    //             'code' => $normalizedRow['block_code'] ?? null,
+    //         ]);
 
-//         $block = BlockManagement::firstOrCreate([
-//             'block_id'               => $blockName->id,
-//             'property_management_id' => $property->id,
-//         ]);
+    //         $block = BlockManagement::firstOrCreate([
+    //             'block_id'               => $blockName->id,
+    //             'property_management_id' => $property->id,
+    //         ]);
 
-//         // ---------------------
-//         // Floor
-//         // ---------------------
-//         $floorName = Floor::firstOrCreate([
-//             'name' => $normalizedRow['floor_name'] ?? null,
-//             'code' => $normalizedRow['floor_code'] ?? null,
-//         ]);
+    //         // ---------------------
+    //         // Floor
+    //         // ---------------------
+    //         $floorName = Floor::firstOrCreate([
+    //             'name' => $normalizedRow['floor_name'] ?? null,
+    //             'code' => $normalizedRow['floor_code'] ?? null,
+    //         ]);
 
-//         $floor = FloorManagement::firstOrCreate([
-//             'floor_id'               => $floorName->id,
-//             'block_management_id'    => $block->id,
-//             'property_management_id' => $property->id,
-//         ]);
+    //         $floor = FloorManagement::firstOrCreate([
+    //             'floor_id'               => $floorName->id,
+    //             'block_management_id'    => $block->id,
+    //             'property_management_id' => $property->id,
+    //         ]);
 
-//         // ---------------------
-//         // Unit
-//         // ---------------------
-//         $unitName = null;
-//         if (!empty($normalizedRow['unit_no'])) {
-//             $unitName = Unit::firstOrCreate([
-//                 'name' => $normalizedRow['unit_no'],
-//                 'code' => $normalizedRow['unit_no'],
-//             ]);
-//         } elseif (!empty($normalizedRow['unit_name'])) {
-//             $unitName = Unit::firstOrCreate([
-//                 'name' => $normalizedRow['unit_name'],
-//                 'code' => $normalizedRow['unit_name'],
-//             ]);
-//         }
+    //         // ---------------------
+    //         // Unit
+    //         // ---------------------
+    //         $unitName = null;
+    //         if (!empty($normalizedRow['unit_no'])) {
+    //             $unitName = Unit::firstOrCreate([
+    //                 'name' => $normalizedRow['unit_no'],
+    //                 'code' => $normalizedRow['unit_no'],
+    //             ]);
+    //         } elseif (!empty($normalizedRow['unit_name'])) {
+    //             $unitName = Unit::firstOrCreate([
+    //                 'name' => $normalizedRow['unit_name'],
+    //                 'code' => $normalizedRow['unit_name'],
+    //             ]);
+    //         }
 
-//         // Unit Description
-//         $unit_description = !empty($normalizedRow['unit_type'])
-//             ? UnitDescription::firstOrCreate([
-//                 'name' => $normalizedRow['unit_type'],
-//                 'code' => $normalizedRow['unit_type']
-//             ])
-//             : null;
+    //         // Unit Description
+    //         $unit_description = !empty($normalizedRow['unit_type'])
+    //             ? UnitDescription::firstOrCreate([
+    //                 'name' => $normalizedRow['unit_type'],
+    //                 'code' => $normalizedRow['unit_type']
+    //             ])
+    //             : null;
 
-//         // Unit Condition
-//         $unit_condition = !empty($normalizedRow['unit_condition'])
-//             ? UnitCondition::firstOrCreate([
-//                 'name' => $normalizedRow['unit_condition'],
-//                 'code' => $normalizedRow['unit_condition']
-//             ])
-//             : null;
+    //         // Unit Condition
+    //         $unit_condition = !empty($normalizedRow['unit_condition'])
+    //             ? UnitCondition::firstOrCreate([
+    //                 'name' => $normalizedRow['unit_condition'],
+    //                 'code' => $normalizedRow['unit_condition']
+    //             ])
+    //             : null;
 
-//         // View
-//         $view = !empty($normalizedRow['view'])
-//             ? View::firstOrCreate([
-//                 'name' => $normalizedRow['view'],
-//                 'code' => $normalizedRow['view']
-//             ])
-//             : null;
+    //         // View
+    //         $view = !empty($normalizedRow['view'])
+    //             ? View::firstOrCreate([
+    //                 'name' => $normalizedRow['view'],
+    //                 'code' => $normalizedRow['view']
+    //             ])
+    //             : null;
 
-//         if ($unitName) {
-//             $unit = UnitManagement::firstOrCreate(
-//                 [
-//                     'unit_id'                => $unitName->id,
-//                     'property_management_id' => $property->id,
-//                     'block_management_id'    => $block->id,
-//                     'floor_management_id'    => $floor->id,
-//                 ],
-//                 [
-//                     'unit_description_id' => $unit_description->id ?? null,
-//                     'unit_condition_id'   => $unit_condition->id ?? null,
-//                     'view_id'             => $view->id ?? null,
-//                 ]
-//             );
-//         }
-//     }
+    //         if ($unitName) {
+    //             $unit = UnitManagement::firstOrCreate(
+    //                 [
+    //                     'unit_id'                => $unitName->id,
+    //                     'property_management_id' => $property->id,
+    //                     'block_management_id'    => $block->id,
+    //                     'floor_management_id'    => $floor->id,
+    //                 ],
+    //                 [
+    //                     'unit_description_id' => $unit_description->id ?? null,
+    //                     'unit_condition_id'   => $unit_condition->id ?? null,
+    //                     'view_id'             => $view->id ?? null,
+    //                 ]
+    //             );
+    //         }
+    //     }
 
-//         return redirect()->route('property_management.index')->with('success', ui_change('imported_successfully'));
-// }
+    //         return redirect()->route('property_management.index')->with('success', ui_change('imported_successfully'));
+    // }
 
     private function normalizeRow(array $row): array
     {
@@ -442,12 +486,10 @@ class PropertyMasterImportController extends Controller
             Excel::import(new PropertyMasterTemplate, $request->file('file'));
             DB::commit();
             return back()->with('success', ui_change('imported_successfully'));
-
         } catch (Exception $ex) {
             DB::rollBack();
             return back()->with('error', $ex->getMessage());
         }
-
     }
 }
  
