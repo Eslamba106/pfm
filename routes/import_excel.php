@@ -31,3 +31,4 @@ Route::group(['prefix' => 'import_excel'], function () {
     
     Route::post('/import_tenant', [TenantImportController::class, 'import'])->name('tenant.import'); 
 });
+Route::get('/export-units', [ContractImportController::class, 'export_master'])->name('export_units');

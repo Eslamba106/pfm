@@ -28,13 +28,15 @@ class PropertyMasterImportController extends Controller
         <p>1. ' . ui_change('download_the_format_file_and_fill_it_with_proper_data.') . '</p>
         <p>2. ' . ui_change('you_can_download_the_example_file_to_understand_how_the_data_must_be_filled.') . '</p>
         <p>3. ' . ui_change('once_you_have_downloaded_and_filled_the_format_file') . ', ' . ui_change('upload_it_in_the_form_below_and_submit.') . '</p>
-        <p>4. ' . ui_change('after_uploading_products_you_need_to_edit_them_and_set_product_images_and_choices.') . '</p>
-        <p>5. ' . ui_change('you_can_get_brand_and_category_id_from_their_list_please_input_the_right_ids.') . '</p>
-        <p>6. ' . ui_change('you_can_upload_your_product_images_in_product_folder_from_gallery_and_copy_image_path.') . '</p>
+
     ';
+        //     <p>4. ' . ui_change('after_uploading_products_you_need_to_edit_them_and_set_product_images_and_choices.') . '</p>
+        // <p>5. ' . ui_change('you_can_get_brand_and_category_id_from_their_list_please_input_the_right_ids.') . '</p>
+        // <p>6. ' . ui_change('you_can_upload_your_product_images_in_product_folder_from_gallery_and_copy_image_path.') . '</p>
         $data = [
             'instructions' => $instructions,
             'file'         => 'property',
+            'file_name'         => 'property_headers_only',
         ];
 
         return view('import_excel.upload_page', $data);
