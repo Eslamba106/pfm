@@ -1,17 +1,18 @@
 <?php
 namespace App\Http\Controllers\RolesAndCompanyManagement;
 
-use App\Http\Controllers\Controller;
-use App\Models\Company;
-use App\Models\CountryMaster;
+use Carbon\Carbon;
+use App\Models\Levy;
 use App\Models\Role;
 use App\Models\User;
-use Carbon\Carbon;
-use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
+use App\Models\Company;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
+use App\Models\CountryMaster;
 use Illuminate\Support\Facades\DB;
+use App\Http\Controllers\Controller;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
+use Illuminate\Foundation\Auth\Access\AuthorizesRequests;
 
 class CompanyManagementController extends Controller
 {
@@ -51,12 +52,13 @@ class CompanyManagementController extends Controller
         $user           = (new User())->setConnection('tenant')->first();
         $country        = (new CountryMaster())->setConnection('tenant')->get();
         $dail_code_main = DB::connection('tenant')->table('countries')->select('id', 'dial_code')->get();
-
+        $levies         = Levy::select('id' , 'name' ,'percentage')->get(); 
         $data = [
-            'company'        => $company,
-            'country'        => $country,
-            'dail_code_main' => $dail_code_main,
-            'user'           => $user,
+            'company'           => $company,
+            'country'           => $country,
+            'dail_code_main'    => $dail_code_main,
+            'user'              => $user,
+            'levies'            => $levies 
 
         ];
         return view("admin-views.companies.edit", $data);
@@ -266,6 +268,7 @@ class CompanyManagementController extends Controller
             ($request->tax_reg_date != null) ? $tax_reg_date     = Carbon::createFromFormat('d/m/Y', $request->tax_reg_date)->format('Y-m-d') : $tax_reg_date     = null;
             ($request->book_begining != null) ? $book_begining   = Carbon::createFromFormat('d/m/Y', $request->book_begining)->format('Y-m-d') : $book_begining   = null;
             ($request->financial_year != null) ? $financial_year = Carbon::createFromFormat('d/m/Y', $request->financial_year)->format('Y-m-d') : $financial_year = null;
+            ($request->levy_applicable_date != null) ? $levy_applicable_date = Carbon::createFromFormat('d/m/Y', $request->levy_applicable_date)->format('Y-m-d') : $levy_applicable_date = null;
             // dd($book_begining );
             $company = (new Company())->setConnection('tenant')->findOrFail($id);
 
@@ -325,47 +328,14 @@ class CompanyManagementController extends Controller
                 "otp"                            => $request->otp ?? null,
                 "zip_code"                       => $request->zip_code ?? null,
                 "company_category"               => $request->company_category ?? null,
+
+
+                "levy_id"                               => $request->levy_id ?? null,
+                "levy_percentage"                       => $request->levy_percentage ?? null,
+                "levy_date"                             => $levy_applicable_date,
             ]);
 
-            // if (isset($request->organization_unit_name)) {
-
-            //     $response = (new OnBoarding())
-            //         ->setZatcaEnv($request->environment)
-            //         ->setZatcaLang('en')
-            //         ->setEmailAddress($request->email)
-            //         ->setCommonName($request->name)
-            //         ->setCountryCode('SA')
-            //         ->setOrganizationUnitName($request->organization_unit_name)
-            //         ->setOrganizationName($request->organization_unit_name)
-            //         ->setEgsSerialNumber(generateRandomString())
-            //         ->setVatNumber($request->vat_no)
-            //         ->setInvoiceType($request->invoice_type)
-            //         ->setRegisteredAddress($request->short_address)
-            //         ->setAuthOtp($request->otp)
-            //         ->setBusinessCategory($request->company_category)
-            //         ->getAuthorization();
-            //     if ($response['success']) {
-
-            //         $data = $response['data'];
-            //         Log::info($company);
-
-            //         Log::info($data);
-            //         $company->update([
-            //             'compliance_certificate'            => $data['complianceCertificate'],
-            //             'compliance_secret'                 => $data['complianceSecret'],
-            //             'compliance_request_id'             => $data['complianceRequestID'],
-            //             'production_certificate'            => $data['productionCertificate'],
-            //             'production_certificate_secret'     => $data['productionCertificateSecret'],
-            //             'production_certificate_request_id' => $data['productionCertificateRequestID'],
-            //             'private_key'                       => $data['privateKey'],
-            //             'public_key'                        => $data['publicKey'],
-            //             'csrKey'                            => $data['csrKey'],
-            //             'e_invoice'                         => $response['success'],
-            //         ]);
-
-            //     }
-
-            // }
+           
             (new User())->setConnection('tenant')->first()->update([
                 'user_name' => $request->user_name ?? null,
                 'password'  => Hash::make($request->password),

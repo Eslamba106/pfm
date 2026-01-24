@@ -30,9 +30,11 @@
 @endphp
 @section('content')
     <div class="content container-fluid">
-        <form action="">
+        <form action="{{ route('booking_room.store') }}" method="POST">
             @csrf
             <div class="card">
+                <input type="hidden" name="adults" value="{{ $adults }}">
+                <input type="hidden" name="children" value="{{ $children }}">
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-md-4">
@@ -96,6 +98,7 @@
                                     <strong
                                         class="mb-2">{{ ui_change('room_options', 'room_reservation') }}:</strong><br>
                                     @forelse ($room_options as $room_option_item)
+                                    <input type="hidden" value="{{ $room_option_item->id }}" name="room_ids[]">
                                         <div class="form-group">
                                             <label>{{ $room_option_item->name }}</label>
                                             <div class="d-flex gap-3">
@@ -145,6 +148,7 @@
                                     <th>{{ ui_change('Total Discount', 'room_reservation') }}</th>
                                     <th>{{ ui_change('Gross Total', 'room_reservation') }}</th>
                                     <th>{{ ui_change('VAT %', 'room_reservation') }}</th>
+                                    <th>{{ ui_change('Govt.Levy %', 'room_reservation') }}</th>
                                     <th>{{ ui_change('Net Total', 'room_reservation') }}</th>
                                 </tr>
                             </thead>
@@ -192,11 +196,15 @@
                                                 class="form-control text-center vat-percent-input" value="0"
                                                 name="vat_per[{{ $unit_item->id }}]">
                                         </td>
-
+                                         <td>
+                                            <input type="text" class="form-control text-center levy"
+                                                value="{{ number_format($company->levy?->percentage,$company->decimals) }}" readonly name="levy[{{ $unit_item->id }}]">
+                                        </td>
                                         <td>
                                             <input type="text" class="form-control text-center net-total-input"
                                                 value="0.000" readonly name="net_total[{{ $unit_item->id }}]">
                                         </td>
+                                       
                                     </tr>
                                 @endforeach
 
@@ -235,6 +243,11 @@
                                     <td class="text-right summary-vat">{{ number_format(0, $company->decimals, '.', '') }}
                                     </td>
                                 </tr>
+                                <tr>
+                                    <td>{{ ui_change('Govt.Levy') }}</td>
+                                    <td class="text-right summary-levy">{{ number_format($company->levy?->percentage, $company->decimals, '.', '') }}
+                                    </td>
+                                </tr>
                                 <tr class="bg-light font-weight-bold">
                                     <td>{{ ui_change('Net_Total') }}</td>
                                     <td class="text-right summary-net">{{ number_format(0, $company->decimals, '.', '') }}
@@ -244,6 +257,7 @@
                                 <input type="hidden" name="summary_discount" id="summary_discount">
                                 <input type="hidden" name="summary_gross" id="summary_gross">
                                 <input type="hidden" name="summary_vat" id="summary_vat">
+                                <input type="hidden" name="summary_levy" id="summary_levy">
                                 <input type="hidden" name="summary_net" id="summary_net">
 
                             </table>
@@ -331,6 +345,8 @@
 
                 row.querySelector('.net-total-input').value =
                     netTotal.toFixed({{ $company->decimals }});
+                row.querySelector('.levy').value =
+                    levy.toFixed({{ $company->decimals }});
                 totalBase += baseTotal;
                 totalDiscount += discountAmount;
                 totalVat += vatAmount;
@@ -350,6 +366,8 @@
 
             document.querySelector('.summary-vat').innerText =
                 totalVat.toFixed({{ $company->decimals }});
+            document.querySelector('.summary-levy').innerText =
+                totalLevy.toFixed({{ $company->decimals }});
 
             document.querySelector('.summary-net').innerText =
                 summaryNet.toFixed({{ $company->decimals }});
@@ -374,6 +392,7 @@
                 let discountOut = row.querySelector('.total-discount-input');
                 let grossOut = row.querySelector('.gross-total-input');
                 let netOut = row.querySelector('.net-total-input');
+                let levy = row.querySelector('.levy');
 
                 if (!daysEl || !priceEl) return;
 
@@ -428,6 +447,8 @@
 
             document.getElementById('summary_vat').value =
                 totalVat.toFixed({{ $company->decimals }});
+            document.getElementById('summary_levy').value =
+                totalLevy.toFixed({{ $company->decimals }});
 
             document.getElementById('summary_net').value =
                 summaryNet.toFixed({{ $company->decimals }});

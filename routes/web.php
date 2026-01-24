@@ -20,6 +20,7 @@ use App\Http\Controllers\auth\UserManagementController;
 use App\Http\Controllers\collections\ReceiptController;
 use App\Http\Controllers\Investment\InvestorController;
 use App\Http\Controllers\hierarchy\CostCenterController;
+use App\Http\Controllers\property_master\LevyController;
 use App\Http\Controllers\property_master\UnitController;
 use App\Http\Controllers\property_master\ViewController;
 use App\Http\Controllers\facility_master\AgentController;
@@ -385,6 +386,16 @@ Route::group(['prefix' => 'unit_description'], function () {
     Route::patch('/update/{id}', [UnitDescriptionController::class, 'update'])->name('unit_description.update');
     Route::get('delete', [UnitDescriptionController::class, 'delete'])->name('unit_description.delete');
     Route::post('/status-update', [UnitDescriptionController::class, 'statusUpdate'])->name('unit_description.status-update');
+});
+
+// Levy
+Route::group(['prefix' => 'levy'], function () {
+    Route::get('/', [LevyController::class, 'index'])->name('levy.index');
+    Route::post('store', [LevyController::class, 'store'])->name('levy.store');
+    Route::get('/edit/{id}', [LevyController::class, 'edit'])->name('levy.edit');
+    Route::patch('/update/{id}', [LevyController::class, 'update'])->name('levy.update');
+    Route::get('delete', [LevyController::class, 'delete'])->name('levy.delete');
+    Route::post('/status-update', [LevyController::class, 'statusUpdate'])->name('levy.status-update');
 });
 
 // Unit Type
@@ -1193,8 +1204,12 @@ Route::group(['prefix' => 'room_reservation/booking'], function () {
 
     // ------------------------ room types ----------------------
     Route::group(['prefix' => 'booking-room'], function () {
-        Route::get('list', [BookingRoomController::class, 'index'])->name('booking_room.list');
+        Route::get('book-now', [BookingRoomController::class, 'index'])->name('booking_room.book_now');
+        Route::get('list', [BookingRoomController::class, 'list'])->name('booking_room.list');
         Route::get('check-in-page', [BookingRoomController::class, 'check_in_page'])->name('booking_room.check_in_page');
+        Route::get('check-in/{id}', [BookingRoomController::class, 'check_in'])->name('booking_room.check_in');
+        Route::post('check-in/{id}', [BookingRoomController::class, 'submitCheckin'])->name('booking.checkin.submit');
+        Route::get('check-out/{id}', [BookingRoomController::class, 'submitCheckOut'])->name('booking.checkout.submit');
         Route::get('create', [BookingRoomController::class, 'create'])->name('booking_room.create');
         Route::post('store', [BookingRoomController::class, 'store'])->name('booking_room.store');
 

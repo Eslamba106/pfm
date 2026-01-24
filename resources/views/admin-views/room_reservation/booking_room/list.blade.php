@@ -11,447 +11,139 @@
  @section('title', ui_change('room_reservation', 'room_reservation'))
 
  @push('css_or_js')
-     <style>
-         .unit-box {
-             width: 70px;
-             height: 50px;
-             border: 1px solid #333;
-             display: flex;
-             align-items: center;
-             justify-content: center;
-             font-weight: 600;
-             cursor: pointer;
-             user-select: none;
-         }
-
-         .unit-box input {
-             display: none;
-         }
-
-         .unit-box.selected {
-             border: 3px solid #0d6efd;
-         }
-
-         .block-card {
-             border: 1px solid #ccc;
-             padding: 1rem;
-             margin-bottom: 1.5rem;
-             border-radius: 5px;
-             background-color: #f9f9f9;
-         }
-
-         .floor-section {
-             margin-bottom: 1rem;
-         }
-
-         .floor-label {
-             font-weight: 600;
-             margin-bottom: 0.5rem;
-         }
-
-         .units-container {
-             display: flex;
-             flex-wrap: wrap;
-             gap: 0.5rem;
-         }
-
-         .context-menu {
-             position: absolute;
-             background: #fff;
-             border: 1px solid #ccc;
-             border-radius: 6px;
-             box-shadow: 0 5px 15px rgba(0, 0, 0, .2);
-             display: none;
-             z-index: 9999;
-             min-width: 140px;
-         }
-
-         .context-menu ul {
-             list-style: none;
-             margin: 0;
-             padding: 6px 0;
-         }
-
-         .context-menu li {
-             padding: 8px 12px;
-             cursor: pointer;
-             font-size: 14px;
-         }
-
-         .context-menu li:hover {
-             background-color: #0d6efd;
-             color: #fff;
-         }
-
-         .unit-box {
-             width: 70px;
-             height: 55px;
-             border: 1px solid #333;
-             display: flex;
-             flex-direction: column;
-             align-items: center;
-             justify-content: space-between;
-             font-weight: 600;
-             cursor: pointer;
-             user-select: none;
-             padding: 4px;
-             position: relative;
-         }
-
-         .unit-name {
-             font-size: 13px;
-         }
-
-         .unit-dots {
-             display: flex;
-             gap: 4px;
-             margin-bottom: 2px;
-         }
-
-         .dot {
-             width: 6px;
-             height: 6px;
-             border-radius: 50%;
-             background-color: #bbb;
-             cursor: pointer;
-         }
-
-         .dot-booking {
-             background-color: #0d6efd;
-         }
-
-         .dot-checkin {
-             background-color: #198754;
-         }
-
-         .dot-info {
-             background-color: #6c757d;
-         }
-
-         .dot::after {
-             content: attr(data-tooltip);
-             position: absolute;
-             bottom: 60px;
-             background: #000;
-             color: #fff;
-             font-size: 11px;
-             padding: 4px 6px;
-             border-radius: 4px;
-             white-space: nowrap;
-             opacity: 0;
-             transform: translateY(5px);
-             pointer-events: none;
-             transition: .2s;
-         }
-
-         .dot:hover::after {
-             opacity: 1;
-             transform: translateY(0);
-         }
-     </style>
-     <style>
-         .block-card {
-             border: 1px solid #ccc;
-             padding: 10px;
-             margin-bottom: 20px;
-         }
-
-         .floor-section {
-             display: flex;
-             align-items: flex-start;
-             border: 1px dashed #888;
-             padding: 10px;
-             margin-bottom: 10px;
-             gap: 10px;
-         }
-
-         .floor-label {
-             font-weight: bold;
-             min-width: 100px;
-         }
-
-         .units-container {
-             display: flex;
-             flex-wrap: wrap;
-             gap: 5px;
-         }
-
-         .unit-box {
-             display: flex;
-             align-items: center;
-             padding: 5px 8px;
-             border: 1px solid #007bff;
-             border-radius: 4px;
-             cursor: pointer;
-             position: relative;
-         }
-
-         .unit-box input[type="checkbox"] {
-             display: none;
-         }
-
-         .unit-box.selected {
-             outline: 2px solid #007bff;
-         }
-
-         .unit-dots {
-             display: flex;
-             gap: 3px;
-             margin-left: auto;
-         }
-
-         .dot {
-             width: 8px;
-             height: 8px;
-             border-radius: 50%;
-             background-color: gray;
-         }
-
-         .dot-booking {
-             background-color: #d500f9;
-         }
-
-         .dot-checkin {
-             background-color: #ffeb3b;
-         }
-
-         .dot-info {
-             background-color: #f44336;
-         }
-     </style>
  @endpush
 
  @section('content')
-     <div class="container list-container">
-         <div id="unitContextMenu" class="context-menu">
-             <ul>
-                 <li data-action="enquiry">{{ ui_change('enquiry') }}</li>
-                 <li data-action="proposal">{{ ui_change('proposal') }}</li>
-                 <li data-action="booking">{{ ui_change('booking') }}</li>
-                 <li data-action="agreement">{{ ui_change('agreement') }}</li>
-                 <li data-action="checkin">{{ ui_change('check_in') }}</li>
-             </ul>
+     <div class="content container-fluid">
+         <!-- Page Title -->
+         <div class="mb-3">
+             <h2 class="h1 mb-0 d-flex gap-2">
+                 {{-- <img width="60" src="{{asset('/public/assets/back-end/img/bookings.jpg')}}" alt=""> --}}
+                 {{ ui_change('bookings', 'hierarchy') }}
+             </h2>
          </div>
 
-         <form id="productForm" method="get" class="d-flex flex-wrap gap-2">
-             <button type="submit" onclick="setFormAction('{{ route('enquiry.create_with_select_unit') }}')"
-                 class="btn btn--primary createButton">
-                 <i class="tio-add"></i>
-                 <span class="text">{{ ui_change('create_enquiry', 'property_transaction') }}</span>
-             </button>
+         <div class="row">
 
-             <button type="submit" onclick="setFormAction('{{ route('proposal.create_with_select_unit') }}')"
-                 class="btn btn--primary createButton">
-                 <i class="tio-add"></i>
-                 <span class="text">{{ ui_change('create_proposal', 'property_transaction') }}</span>
-             </button>
 
-             <button type="submit" onclick="setFormAction('{{ route('booking.create_with_select_unit') }}')"
-                 class="btn btn--primary createButton">
-                 <i class="tio-add"></i>
-                 <span class="text">{{ ui_change('create_booking', 'property_transaction') }}</span>
-             </button>
+             <div class="col-md-12">
+                 <div class="card">
+                     <div class="px-3 py-4">
+                         <div class="row align-items-center">
+                             <div class="col-sm-4 col-md-6 col-lg-8 mb-2 mb-sm-0">
+                                 <h5 class="mb-0 d-flex align-items-center gap-2">
+                                     {{ ui_change('booking_list', 'hierarchy') }}
+                                     <span class="badge badge-soft-dark radius-50 fz-12"> </span>
+                                 </h5>
+                             </div>
+                             <div class="col-sm-8 col-md-6 col-lg-4">
+                                 <!-- Search -->
+                                 
+                                 <!-- End Search -->
+                             </div>
+                         </div>
+                     </div>
+                     <div style="text-align: {{ Session::get('locale') === 'ar' ? 'right' : 'left' }};">
+                         <div class="table-responsive">
+                             <table id="datatable"
+                                 class="table table-hover table-borderless table-thead-bordered table-nowrap table-align-middle card-table w-100">
+                                 <thead class="thead-light thead-50 text-capitalize">
+                                     <tr>
+                                         <th>{{ ui_change('sl', 'hierarchy') }}</th>
+                                         <th class="text-center">{{ ui_change('customer_name', 'hierarchy') }} </th>
+                                         <th class="text-center">{{ ui_change('booking_date', 'hierarchy') }} </th>
+                                         <th class="text-center">{{ ui_change('rooms', 'hierarchy') }} </th> 
+                                         <th class="text-center">{{ ui_change('actions', 'hierarchy') }}</th>
+                                     </tr>
+                                 </thead>
+                                 <tbody>
+                                     @foreach ($bookings as $key => $booking)
+                                         <tr>
+                                             <td>{{ $bookings->firstItem() + $key }}</td>
+                                             <td class="text-center">
+                                                 {{ $booking->tenant?->name ?? $booking->tenant?->company_name }}</td>
+                                             <td class="text-center">
+                                                 {{ \Carbon\Carbon::createFromFormat('Y-m-d', $booking->booking_date)->format('d/m/Y') }}
+                                             </td>
 
-             <button type="submit" onclick="setFormAction('{{ route('agreement.create_with_select_unit') }}')"
-                 class="btn btn--primary createButton">
-                 <i class="tio-add"></i>
-                 <span class="text">{{ ui_change('create_agreement', 'property_transaction') }}</span>
-             </button>
-             <button type="submit" onclick="setFormAction('{{ route('booking_room.create') }}')"
-                 class="btn btn--primary createButton">
-                 <i class="tio-add"></i>
-                 <span class="text">{{ ui_change('book_now', 'property_transaction') }}</span>
-             </button>
-             {{-- <button type="button" data-check_in="" data-toggle="modal" data-target="#check_in"
-                 class="btn btn--primary createButton">
-                 <i class="tio-add"></i>
-                 <span class="text">{{ ui_change('checkIn', 'property_transaction') }}</span>
-             </button> --}}
-     </div>
-     <div class="container list-container">
-         @foreach ($property_items as $property)
-             <h3 class="mt-3">{{ $property->name }}</h3>
+                                             <td class="text-center">
+                                                 @if ($booking->rooms->count())
+                                                     <ul class="list-unstyled mb-0">
+                                                         @foreach ($booking->rooms as $room)
+                                                             <li class="mb-1">
+                                                                 <strong>
+                                                                     {{ $room->unit_management?->unit_management_main?->name ?? 'Room #' . $room->room_id }}
+                                                                 </strong>
+                                                                 <br>
+                                                                 <small class="text-muted">
+                                                                     {{ \Carbon\Carbon::parse($booking->booking_from)->format('d/m/Y') }}
+                                                                     →
+                                                                     {{ \Carbon\Carbon::parse($booking->booking_to)->format('d/m/Y') }}
+                                                                 </small>
+                                                             </li>
+                                                         @endforeach
+                                                     </ul>
+                                                 @else
+                                                     <span class="text-muted">—</span>
+                                                 @endif
+                                             </td>
 
-             @foreach ($property->blocks_management_child as $block_item)
-                 @if ($block_item->floors_management_child?->count() > 0)
-                     <div class="block-card">
-                         <div class="block-name mb-2">{{ ui_change('block') }}: {{ $block_item->block->name }}</div>
-
-                         @foreach ($block_item->floors_management_child as $floor_item)
-                             @if ($floor_item->unit_management_child?->count() > 0)
-                                 <div class="floor-section">
-                                     <div class="floor-label">{{ ui_change('floor') }}:
-                                         {{ $floor_item->floor_management_main->name }}</div>
-                                     <div class="units-container">
-                                         @foreach ($floor_item->unit_management_child as $unit)
-                                             <label class="unit-box" data-unit-id="{{ $unit->id }}">
-                                                 <input type="checkbox" class="bulk-checkbox" name="bulk_ids[]"
-                                                     value="{{ $unit->id }}">
-                                                 {{ $unit->unit_management_main->name }}
-                                                 <div class="unit-dots">
-                                                     <span class="dot dot-booking" data-action="booking"></span>
-                                                     <span class="dot dot-checkin" data-action="checkin"></span>
-                                                     <span class="dot dot-info" data-action="info"></span>
+                                             <td>
+                                                 <div class="d-flex justify-content-center gap-2">
+                                                     {{-- <a class="btn btn-outline-info btn-sm square-btn"
+                                                         title="{{ ui_change('edit', 'hierarchy') }}"
+                                                         href="{{ route('region.edit', $booking->id) }}">
+                                                         <i class="tio-edit"></i>
+                                                     </a> --}}
+                                                     @if ($booking->status != 'check_in' && $booking->status != 'check_out') 
+                                                     <a class="btn btn-outline-info   "
+                                                         title="{{ ui_change('check_in', 'hierarchy') }}"
+                                                         href="{{ route('booking_room.check_in', $booking->id) }}">
+                                                         {{ ui_change('check_in', 'hierarchy') }}
+                                                     </a>
+                                                      @endif
+                                                     @if ($booking->status == 'check_in') 
+                                                     <a class="btn btn-outline-danger   "
+                                                         title="{{ ui_change('check_in', 'hierarchy') }}"
+                                                         href="{{ route('booking.checkout.submit', $booking->id) }}">
+                                                         {{ ui_change('check_out', 'hierarchy') }}
+                                                     </a>
+                                                      @endif
+                                                     {{-- <a class="btn btn-outline-danger btn-sm delete square-btn"
+                                                         title="{{ ui_change('delete', 'hierarchy') }}"
+                                                         id="{{ $booking['id'] }}">
+                                                         <i class="tio-delete"></i>
+                                                     </a> --}}
                                                  </div>
-                                             </label>
-                                         @endforeach
-                                     </div>
-                                 </div>
-                             @endif
-                         @endforeach
+                                             </td>
+                                         </tr>
+                                     @endforeach
+                                 </tbody>
+                             </table>
+                         </div>
                      </div>
-                 @endif
-             @endforeach
-         @endforeach
-     </div>
-     </form>
-     <div class="modal fade" id="check_in" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-         aria-hidden="true">
-         <div class="modal-dialog" role="document">
-             <div class="modal-content">
-                 <div class="modal-header">
-                     <h5 class="modal-title" id="exampleModalLabel">
-                         {{ ui_change('Generate_Invoice', 'property_report') }}</h5>
-                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                         <span aria-hidden="true">&times;</span>
-                     </button>
-                 </div>
-                 <form action="{{ route('booking_room.check_in_page') }}" id="checkin-form" method="get">
-                     @csrf
-                     <div id="bulk-hidden-inputs"></div>
 
-                     <div class="modal-body">
-                         <div class="form-group">
-                             <label for="">{{ ui_change('select', 'property_report') }}</label>
-                             <select name="tenant_id" id="" class="form-control">
-                                 @foreach ($tenants as $tenants_item)
-                                     <option value="{{ $tenants_item->id }}">
-                                         {{ $tenants_item->name ?? $tenants_item->company_name }}</option>
-                                 @endforeach
-                             </select>
-                         </div>
-                         <div class="row">
-                             <div class="col-md-6">
-                                 <div class="form-group">
-                                     <label for="">{{ ui_change('Booking_From', 'property_report') }}</label>
-                                     <input type="text" name="booking_from" class="form-control date">
-                                 </div>
-                             </div>
-                             <div class="col-md-6">
-                                 <div class="form-group">
-                                     <label for="">{{ ui_change('Booking_to', 'property_report') }}</label>
-                                     <input type="text" name="booking_to" class="form-control date">
-                                 </div>
-                             </div>
+                     <div class="table-responsive mt-4">
+                         <div class="d-flex justify-content-lg-end">
+                             <!-- Pagination -->
+                             {!! $bookings->links() !!}
                          </div>
                      </div>
-                     <div class="modal-footer">
-                         <button type="button" class="btn btn-secondary"
-                             data-dismiss="modal">{{ ui_change('Cancel', 'property_report') }}</button>
-                         <button type="submit"
-                             class="btn btn--primary">{{ ui_change('Generate', 'property_report') }}</button>
-                     </div>
-                 </form>
+
+                     @if (count($bookings) == 0)
+                         <div class="text-center p-4">
+                             <img class="mb-3 w-160" src="{{ asset('assets/back-end') }}/svg/illustrations/sorry.svg"
+                                 alt="Image Description">
+                             <p class="mb-0">{{ ui_change('general.no_data_to_show', 'hierarchy') }}</p>
+                         </div>
+                     @endif
+                 </div>
              </div>
          </div>
      </div>
+
  @endsection
 
  @push('script')
-     <script>
-         flatpickr(".date", {
-             dateFormat: "d/m/Y",
-             defaultDate: "today",
-         });
-     </script>
-     <script>
-         function setFormAction(actionUrl) {
-             document.getElementById('productForm').action = actionUrl;
-         }
-         const bookingCreateRoute = "{{ route('booking.create_with_select_unit') }}";
-         const enquiryCreateRoute = "{{ route('enquiry.create_with_select_unit') }}";
-         const proposalCreateRoute = "{{ route('proposal.create_with_select_unit') }}";
-         const agreementCreateRoute = "{{ route('agreement.create_with_select_unit') }}";
-     </script>
 
-     <script>
-         document.querySelectorAll('.unit-box').forEach(box => {
-             const checkbox = box.querySelector('input');
-
-             box.addEventListener('click', function() {
-                 checkbox.checked = !checkbox.checked;
-                 box.classList.toggle('selected', checkbox.checked);
-             });
-         });
-     </script>
-     <script>
-         let currentUnitId = null;
-         const menu = document.getElementById('unitContextMenu');
-
-         document.querySelectorAll('.unit-box').forEach(box => {
-             const checkbox = box.querySelector('input');
-
-             box.addEventListener('click', function() {
-                 checkbox.checked = !checkbox.checked;
-                 box.classList.toggle('selected', checkbox.checked);
-             });
-
-             box.addEventListener('contextmenu', function(e) {
-                 e.preventDefault();
-
-                 currentUnitId = this.dataset.unitId;
-
-                 menu.style.display = 'block';
-                 menu.style.top = `${e.pageY}px`;
-                 menu.style.left = `${e.pageX}px`;
-             });
-         });
-
-         menu.querySelectorAll('li').forEach(item => {
-             item.addEventListener('click', function() {
-                 const action = this.dataset.action;
-                 if (action === 'enquiry') {
-                     window.location.href = `${enquiryCreateRoute}?bulk_ids[]=${currentUnitId}`;
-                 }
-                 if (action === 'proposal') {
-                     window.location.href = `${proposalCreateRoute}?bulk_ids[]=${currentUnitId}`;
-                 }
-                 if (action === 'booking') {
-                     window.location.href =
-                         `${bookingCreateRoute}?bulk_ids[]=${currentUnitId}`;
-                 }
-                 if (action === 'agreement') {
-                     window.location.href = `${agreementCreateRoute}?bulk_ids[]=${currentUnitId}`;
-                 }
-
-
-
-                 if (action === 'checkin') {
-                     window.location.href = `/checkin/create?unit_id=${currentUnitId}`;
-                 }
-
-                 menu.style.display = 'none';
-             });
-         });
-
-         document.addEventListener('click', () => {
-             menu.style.display = 'none';
-         });
-     </script>
-     <script>
-         document.addEventListener('submit', function(e) {
-             if (!e.target.matches('#checkin-form')) return;
-
-             let container = document.getElementById('bulk-hidden-inputs');
-             container.innerHTML = '';
-
-             document.querySelectorAll('.bulk-checkbox:checked').forEach(function(checkbox) {
-                 let input = document.createElement('input');
-                 input.type = 'hidden';
-                 input.name = 'bulk_ids[]';
-                 input.value = checkbox.value;
-                 container.appendChild(input);
-             });
-         });
-     </script>
  @endpush

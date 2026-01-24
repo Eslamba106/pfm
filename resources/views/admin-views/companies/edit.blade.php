@@ -484,30 +484,73 @@
             </div>
 
             <div class="card mt-3">
-    <div class="card-body">
-        <h5 class="mb-0 text-capitalize d-flex align-items-center gap-2 border-bottom pb-3 mb-4 pl-4">
-            {{ ui_change('tax_info', 'hierarchy') }}
-        </h5>
+                <div class="card-body">
+                    <h5 class="mb-0 text-capitalize d-flex align-items-center gap-2 border-bottom pb-3 mb-4 pl-4">
+                        {{ ui_change('tax_info', 'hierarchy') }}
+                    </h5>
 
-        <div class="row">
+                    <div class="row">
 
-            <div class="col-md-6 col-lg-4 col-xl-3 ">
-                <div class="form-group">
-                    <label for="name" class="title-color">{{ ui_change('taxability', 'hierarchy') }}</label>
-                    <select class="js-select2-custom form-control" name="tax_type" required>
-                        <option value="">{{ ui_change('select', 'hierarchy') }}</option>
-                        <option value="1" {{ old('tax_type', $company->tax_type) == 1 ? 'selected' : '' }}>
-                            {{ ui_change('taxable', 'hierarchy') }}</option>
-                        <option value="2" {{ old('tax_type', $company->tax_type) == 2 ? 'selected' : '' }}>
-                            {{ ui_change('zero_rated', 'hierarchy') }}</option>
-                        <option value="3" {{ old('tax_type', $company->tax_type) == 3 ? 'selected' : '' }}>
-                            {{ ui_change('exempted', 'hierarchy') }}</option>
-                        <option value="4" {{ old('tax_type', $company->tax_type) == 4 ? 'selected' : '' }}>
-                            {{ ui_change('non_taxable', 'hierarchy') }}</option>
-                    </select>
-                </div>
-            </div>
+                        <div class="col-md-6 col-lg-4 col-xl-3 ">
+                            <div class="form-group">
+                                <label for="name"
+                                    class="title-color">{{ ui_change('taxability', 'hierarchy') }}</label>
+                                <select class="js-select2-custom form-control" name="tax_type" required>
+                                    <option value="">{{ ui_change('select', 'hierarchy') }}</option>
+                                    <option value="1"
+                                        {{ old('tax_type', $company->tax_type) == 1 ? 'selected' : '' }}>
+                                        {{ ui_change('taxable', 'hierarchy') }}</option>
+                                    <option value="2"
+                                        {{ old('tax_type', $company->tax_type) == 2 ? 'selected' : '' }}>
+                                        {{ ui_change('zero_rated', 'hierarchy') }}</option>
+                                    <option value="3"
+                                        {{ old('tax_type', $company->tax_type) == 3 ? 'selected' : '' }}>
+                                        {{ ui_change('exempted', 'hierarchy') }}</option>
+                                    <option value="4"
+                                        {{ old('tax_type', $company->tax_type) == 4 ? 'selected' : '' }}>
+                                        {{ ui_change('non_taxable', 'hierarchy') }}</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="d-flex flex-wrap gap-3">
+                            <div class="tax_status_html tax_status_saudi_html">
+                                <label class="title-color">{{ ui_change('vat_no', 'hierarchy') }}</label>
+                                <input type="text" name="vat_no" class="form-control"
+                                    value="{{ old('vat_no', $company->vat_no) }}">
+                            </div>
 
+                            <div class="tax_status_html tax_status_saudi_html">
+                                <label class="title-color">{{ ui_change('group_vat_no', 'hierarchy') }}</label>
+                                <input type="text" name="group_vat_no" class="form-control"
+                                    value="{{ old('group_vat_no', $company->group_vat_no) }}">
+                            </div>
+
+                            <div class="tax_status_html tax_status_saudi_html">
+                                <label class="title-color">{{ ui_change('tax_registration_date', 'hierarchy') }}</label>
+                                <input type="date" name="tax_reg_date" id="tax_registration_date_edit"
+                                    class="form-control" value="{{ old('tax_reg_date', $company->tax_reg_date) }}">
+                            </div>
+                            <div class="tax_status_html tax_status_saudi_html">
+                                <div>
+                                    <input type="radio" name="status" value="active"
+                                        {{ old('status', $company->status ?? 'active') == 'active' ? 'checked' : '' }}>
+                                    <label class="title-color">{{ ui_change('active', 'hierarchy') }}</label>
+
+                                    <input type="radio" name="status" value="inactive"
+                                        {{ old('status', $company->status) == 'inactive' ? 'checked' : '' }}>
+                                    <label class="title-color">{{ ui_change('inactive', 'hierarchy') }}</label>
+                                </div>
+                            </div>
+
+                            <div class="tax_status_html"
+                                style="{{ old('tax_type', $company->tax_type) == 1 && $isSaudi != 2 ? '' : 'display:none;' }}">
+                                <label class="title-color">{{ ui_change('tax_rate', 'hierarchy') }}</label>
+                                <input type="text" name="tax_rate" class="form-control"
+                                    value="{{ old('tax_rate', $company->tax_rate) }}">
+                            </div>
+                        </div>
+
+                        {{-- 
             <div class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 ? '' : 'd-none' }} tax_status_html tax_status_saudi_html">
                 <div class="form-group">
                     <label class="title-color">{{ ui_change('vat_no', 'hierarchy') }}</label>
@@ -547,85 +590,158 @@
                         <label class="title-color">{{ ui_change('inactive', 'hierarchy') }}</label>
                     </div>
                 </div>
-            </div>
+            </div> --}}
 
-            <!-- Saudi Tax Info -->
-            <div class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
-                <div class="form-group">
-                    <label class="title-color">{{ ui_change('organization_unit_name', 'hierarchy') }}</label>
-                    <input type="text" name="organization_unit_name" id="organization_unit_name_edit" class="form-control" value="{{ old('organization_unit_name', $company->organization_unit_name) }}">
+                        <div
+                            class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
+                            <div class="form-group">
+                                <label class="title-color">{{ ui_change('organization_unit_name', 'hierarchy') }}</label>
+                                <input type="text" name="organization_unit_name" id="organization_unit_name_edit"
+                                    class="form-control"
+                                    value="{{ old('organization_unit_name', $company->organization_unit_name) }}">
+                            </div>
+                        </div>
+
+                        <div
+                            class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
+                            <div class="form-group">
+                                <label
+                                    class="title-color">{{ ui_change('commercial_registration_number', 'hierarchy') }}</label>
+                                <input type="number" name="commercial_registration_number"
+                                    id="commercial_registration_number_edit" class="form-control"
+                                    value="{{ old('commercial_registration_number', $company->commercial_registration_number) }}">
+                            </div>
+                        </div>
+
+                        <div
+                            class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
+                            <div class="form-group">
+                                <label class="title-color">{{ ui_change('invoice_type', 'hierarchy') }}</label>
+                                <select class="js-select2-custom form-control" name="invoice_type">
+                                    <option value="">{{ ui_change('select', 'hierarchy') }}</option>
+                                    <option value="1100"
+                                        {{ old('invoice_type', $company->invoice_type) == 1100 ? 'selected' : '' }}>
+                                        {{ ui_change('both', 'hierarchy') }}</option>
+                                    <option value="0100"
+                                        {{ old('invoice_type', $company->invoice_type) == 0100 ? 'selected' : '' }}>
+                                        {{ ui_change('simplified_invoice', 'hierarchy') }}</option>
+                                    <option value="1000"
+                                        {{ old('invoice_type', $company->invoice_type) == 1000 ? 'selected' : '' }}>
+                                        {{ ui_change('standard_invoice', 'hierarchy') }}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div
+                            class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
+                            <div class="form-group">
+                                <label class="title-color">{{ ui_change('environment', 'hierarchy') }}</label>
+                                <select class="js-select2-custom form-control" name="environment">
+                                    <option value="">{{ ui_change('select', 'hierarchy') }}</option>
+                                    <option value="developer-portal"
+                                        {{ old('environment', $company->environment) == 'developer-portal' ? 'selected' : '' }}>
+                                        {{ ui_change('test', 'hierarchy') }}</option>
+                                    <option value="simulation"
+                                        {{ old('environment', $company->environment) == 'simulation' ? 'selected' : '' }}>
+                                        {{ ui_change('simulation', 'hierarchy') }}</option>
+                                    <option value="core"
+                                        {{ old('environment', $company->environment) == 'core' ? 'selected' : '' }}>
+                                        {{ ui_change('core', 'hierarchy') }}</option>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div
+                            class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
+                            <div class="form-group">
+                                <label class="title-color">{{ ui_change('short_address', 'hierarchy') }}</label>
+                                <input type="text" name="short_address" id="short_address_edit" class="form-control"
+                                    value="{{ old('short_address', $company->short_address) }}">
+                            </div>
+                        </div>
+
+                        <div
+                            class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
+                            <div class="form-group">
+                                <label class="title-color">{{ ui_change('Zip_Code', 'hierarchy') }}</label>
+                                <input type="number" name="zip_code" id="zip_code_edit" class="form-control"
+                                    value="{{ old('zip_code', $company->zip_code) }}">
+                            </div>
+                        </div>
+
+                        <div
+                            class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
+                            <div class="form-group">
+                                <label class="title-color">{{ ui_change('OTP', 'hierarchy') }}</label>
+                                <input type="number" name="otp" id="otp_edit" class="form-control"
+                                    value="{{ old('otp', $company->otp) }}">
+                            </div>
+                        </div>
+
+                        <div
+                            class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
+                            <div class="form-group">
+                                <label class="title-color">{{ ui_change('company_category', 'hierarchy') }}</label>
+                                <input type="text" name="company_category" id="company_category_edit"
+                                    class="form-control"
+                                    value="{{ old('company_category', $company->company_category) }}">
+                            </div>
+                        </div>
+                        <!-- Saudi Tax Info -->
+
+                    </div>
+                    <div class="row align-items-end">
+                        <!-- Checkbox -->
+                        <div class="col-3">
+                            <div class="form-group">
+                                <label class="title-color">{{ ui_change('Govt.Levy') }}</label>
+                                <input type="checkbox" id="apply_levy_checkbox" name="apply_levy"
+                                    @if ($company->levy_id != null) checked @endif>
+                                <label for="apply_levy_checkbox"> </label>
+                            </div>
+                        </div>
+
+                        <!-- Levy Select -->
+                        <div class="col-3" id="levy_select_col"
+                            style="@if ($company->levy_id != null) display:block; @else display:none; @endif">
+                            <div class="form-group">
+                                <label class="title-color">{{ ui_change('select_levy') }}</label>
+                                <select name="levy_id" id="levy_select" class="form-control">
+                                    <option value="">{{ ui_change('-- Choose Levy --') }}</option>
+                                    @foreach ($levies as $levy)
+                                        <option value="{{ $levy->id }}" data-percentage="{{ $levy->percentage }}"
+                                            @if ($company->levy_id == $levy->id) selected @endif>
+                                            {{ $levy->name }}
+                                        </option>
+                                    @endforeach
+                                </select>
+                            </div>
+                        </div>
+
+                        <!-- Levy Percentage -->
+                        <div class="col-3" id="levy_percentage_col"
+                            style="@if ($company->levy_id != null) display:block; @else display:none; @endif">
+                            <div class="form-group">
+                                <label class="title-color">{{ ui_change('Levy_Percentage') }}</label>
+                                <input type="text" name="levy_percentage" id="levy_percentage" class="form-control"
+                                    value="{{ $company->levy_id ? $company->levy_percentage : '' }}" readonly>
+                            </div>
+                        </div>
+
+                        <!-- Levy Applicable Date -->
+                        <div class="col-3" id="levy_date_col"
+                            style="@if ($company->levy_id != null) display:block; @else display:none; @endif">
+                            <div class="form-group">
+                                <label class="title-color">{{ ui_change('Levy_Applicable_Date') }}</label>
+                                <input type="date" name="levy_applicable_date"
+                                    class="form-control levy_applicable_date" value="{{ $company->levy_date }}">
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
-
-            <div class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
-                <div class="form-group">
-                    <label class="title-color">{{ ui_change('commercial_registration_number', 'hierarchy') }}</label>
-                    <input type="number" name="commercial_registration_number" id="commercial_registration_number_edit" class="form-control" value="{{ old('commercial_registration_number', $company->commercial_registration_number) }}">
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
-                <div class="form-group">
-                    <label class="title-color">{{ ui_change('invoice_type', 'hierarchy') }}</label>
-                    <select class="js-select2-custom form-control" name="invoice_type">
-                        <option value="">{{ ui_change('select', 'hierarchy') }}</option>
-                        <option value="1100" {{ old('invoice_type', $company->invoice_type) == 1100 ? 'selected' : '' }}>
-                            {{ ui_change('both', 'hierarchy') }}</option>
-                        <option value="0100" {{ old('invoice_type', $company->invoice_type) == 0100 ? 'selected' : '' }}>
-                            {{ ui_change('simplified_invoice', 'hierarchy') }}</option>
-                        <option value="1000" {{ old('invoice_type', $company->invoice_type) == 1000 ? 'selected' : '' }}>
-                            {{ ui_change('standard_invoice', 'hierarchy') }}</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
-                <div class="form-group">
-                    <label class="title-color">{{ ui_change('environment', 'hierarchy') }}</label>
-                    <select class="js-select2-custom form-control" name="environment">
-                        <option value="">{{ ui_change('select', 'hierarchy') }}</option>
-                        <option value="developer-portal" {{ old('environment', $company->environment) == 'developer-portal' ? 'selected' : '' }}>
-                            {{ ui_change('test', 'hierarchy') }}</option>
-                        <option value="simulation" {{ old('environment', $company->environment) == 'simulation' ? 'selected' : '' }}>
-                            {{ ui_change('simulation', 'hierarchy') }}</option>
-                        <option value="core" {{ old('environment', $company->environment) == 'core' ? 'selected' : '' }}>
-                            {{ ui_change('core', 'hierarchy') }}</option>
-                    </select>
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
-                <div class="form-group">
-                    <label class="title-color">{{ ui_change('short_address', 'hierarchy') }}</label>
-                    <input type="text" name="short_address" id="short_address_edit" class="form-control" value="{{ old('short_address', $company->short_address) }}">
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
-                <div class="form-group">
-                    <label class="title-color">{{ ui_change('Zip_Code', 'hierarchy') }}</label>
-                    <input type="number" name="zip_code" id="zip_code_edit" class="form-control" value="{{ old('zip_code', $company->zip_code) }}">
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
-                <div class="form-group">
-                    <label class="title-color">{{ ui_change('OTP', 'hierarchy') }}</label>
-                    <input type="number" name="otp" id="otp_edit" class="form-control" value="{{ old('otp', $company->otp) }}">
-                </div>
-            </div>
-
-            <div class="col-md-6 col-lg-4 col-xl-3 {{ old('tax_type', $company->tax_type) == 1 && $isSaudi == 2 ? '' : 'd-none' }} tax_status_saudi_html">
-                <div class="form-group">
-                    <label class="title-color">{{ ui_change('company_category', 'hierarchy') }}</label>
-                    <input type="text" name="company_category" id="company_category_edit" class="form-control" value="{{ old('company_category', $company->company_category) }}">
-                </div>
-            </div>
-            <!-- Saudi Tax Info -->
-
-        </div>
-    </div>
-</div>
+            <!-- #region -->
 
             <div class="card mt-3">
                 <div class="card-body">
@@ -693,6 +809,32 @@
 @push('script')
     <script src="{{ asset('assets/back-end') }}/js/tags-input.min.js"></script>
     <script src="{{ asset('assets/back-end/js/spartan-multi-image-picker.js') }}"></script>
+
+    <script>
+        $(document).ready(function() {
+
+            // Toggle show/hide fields when checkbox changed
+            $('#apply_levy_checkbox').change(function() {
+                if ($(this).is(':checked')) {
+                    $('#levy_select_col, #levy_percentage_col, #levy_date_col').slideDown();
+                } else {
+                    $('#levy_select_col, #levy_percentage_col, #levy_date_col').slideUp();
+                    $('#levy_select').val('');
+                    $('#levy_percentage').val('');
+                    $('input[name="levy_applicable_date"]').val('');
+                }
+            });
+
+            // Update percentage when levy selected
+            $('#levy_select').change(function() {
+                var percentage = $(this).find(':selected').data('percentage') || '';
+                $('#levy_percentage').val(percentage);
+            });
+
+        });
+    </script>
+
+
     <script>
         $(document).on('change', '[name="tax_type"], [name="countryid"]', function() {
             let taxType = $('[name="tax_type"]').val();
@@ -751,6 +893,10 @@
         flatpickr("#tax_registration_date_edit", {
             dateFormat: "d/m/Y",
             defaultDate: "{{ $company->tax_reg_date ? \Carbon\Carbon::createFromFormat('Y-m-d', $company->tax_reg_date)->format('d/m/Y') : '' }}",
+        });
+        flatpickr(".levy_applicable_date", {
+            dateFormat: "d/m/Y",
+            defaultDate: "{{ \Carbon\Carbon::now()->format('d/m/Y') }}",
         });
         $(function() {
             $('#color_switcher').click(function() {

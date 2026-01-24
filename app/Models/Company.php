@@ -28,4 +28,7 @@ class Company extends Model
     public function country_master(){
         return $this->belongsTo(CountryMaster::class , 'countryid');
     }
+    public function levy(){
+        return $this->belongsTo(Levy::class , 'levy_id' , 'id');
+    }
 }

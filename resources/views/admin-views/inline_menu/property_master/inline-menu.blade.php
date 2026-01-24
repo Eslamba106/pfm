@@ -17,5 +17,6 @@
         <li class="{{ Request::is('live_with') ?'active':'' }}"><a href="{{ route('live_with.index') }}">{{ui_change('tenant_status' , 'property_master')}}</a></li>
         <li class="{{ Request::is('enquiry_status') ?'active':'' }}"><a href="{{ route('enquiry_status.index') }}">{{ui_change('enquiry_status' , 'property_master')}}</a></li>
         <li class="{{ Request::is('enquiry_request_status') ?'active':'' }}"><a href="{{ route('enquiry_request_status.index') }}">{{ui_change('enquiry_request_status' , 'property_master')}}</a></li>
+        <li class="{{ Request::is('levy') ?'active':'' }}"><a href="{{ route('levy.index') }}">{{ui_change('levy' , 'property_master')}}</a></li>
     </ul>
 </div>
