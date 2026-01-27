@@ -83,7 +83,7 @@
                  </div>
 
              </div>
-             <div class="col-md-4">
+             {{-- <div class="col-md-4">
                  <h4 class="mb-3">{{ ui_change('Room_Management', 'room_reservation') }}</h4>
 
                  <div class="accordion-item ">
@@ -111,7 +111,7 @@
                      </h2>
                  </div>
 
-             </div>
+             </div> --}}
              <div class="col-md-4">
                  <h4 class="mb-3">{{ ui_change('Transactions', 'room_reservation') }}</h4>
 

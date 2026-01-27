@@ -1121,7 +1121,7 @@ Route::group(['prefix' => 'investors'], function () {
 Route::group(['prefix' => 'room_reservation/master'], function () {
 
     // ------------------------ room types ----------------------
-    Route::group(['prefix' => 'rental-type'], function () {
+    Route::group(['prefix' => 'rental-type', 'middleware' => 'auth:web'], function () {
         Route::get('list', [RentalTypeController::class, 'index'])->name('rental_type.list');
         Route::post('store', [RentalTypeController::class, 'store'])->name('rental_type.store');
         Route::patch('update', [RentalTypeController::class, 'update'])->name('rental_type.update');
@@ -1129,7 +1129,7 @@ Route::group(['prefix' => 'room_reservation/master'], function () {
         Route::get('edit/{id}', [RentalTypeController::class, 'edit'])->name('rental_type.edit');
     });
     // ------------------------ room types ----------------------
-    Route::group(['prefix' => 'room-types'], function () {
+    Route::group(['prefix' => 'room-types', 'middleware' => 'auth:web'], function () {
         Route::get('list', [RoomTypeController::class, 'index'])->name('room_type.list');
         Route::post('store', [RoomTypeController::class, 'store'])->name('room_type.store');
         Route::patch('update', [RoomTypeController::class, 'update'])->name('room_type.update');
@@ -1138,7 +1138,7 @@ Route::group(['prefix' => 'room_reservation/master'], function () {
     });
 
     // ------------------------ room facilities ----------------------
-    Route::group(['prefix' => 'room-facilities'], function () {
+    Route::group(['prefix' => 'room-facilities', 'middleware' => 'auth:web'], function () {
         Route::get('/list', [RoomFacilityController::class, 'index'])->name('room_facility.list');
         Route::post('store', [RoomFacilityController::class, 'store'])->name('room_facility.store');
         Route::patch('/update', [RoomFacilityController::class, 'update'])->name('room_facility.update');
@@ -1147,7 +1147,7 @@ Route::group(['prefix' => 'room_reservation/master'], function () {
     });
 
     // ------------------------ room options ----------------------
-    Route::group(['prefix' => 'room-options'], function () {
+    Route::group(['prefix' => 'room-options', 'middleware' => 'auth:web'], function () {
         Route::get('/list', [RoomOptionController::class, 'index'])->name('room_option.list');
         Route::post('store', [RoomOptionController::class, 'store'])->name('room_option.store');
         Route::patch('/update', [RoomOptionController::class, 'update'])->name('room_option.update');
@@ -1156,7 +1156,7 @@ Route::group(['prefix' => 'room_reservation/master'], function () {
     });
 
     // ------------------------ room status ----------------------
-    Route::group(['prefix' => 'room-status'], function () {
+    Route::group(['prefix' => 'room-status', 'middleware' => 'auth:web'], function () {
         Route::get('/list', [RoomStatusController::class, 'index'])->name('room_status.list');
         Route::post('store', [RoomStatusController::class, 'store'])->name('room_status.store');
         Route::patch('/update', [RoomStatusController::class, 'update'])->name('room_status.update');
@@ -1166,7 +1166,7 @@ Route::group(['prefix' => 'room_reservation/master'], function () {
 
 
     // ------------------------ room building ----------------------
-    Route::group(['prefix' => 'room-building'], function () {
+    Route::group(['prefix' => 'room-building', 'middleware' => 'auth:web'], function () {
         Route::get('/list', [RoomBuildingController::class, 'index'])->name('room_building.list');
         Route::post('store', [RoomBuildingController::class, 'store'])->name('room_building.store');
         Route::patch('/update', [RoomBuildingController::class, 'update'])->name('room_building.update');
@@ -1174,7 +1174,7 @@ Route::group(['prefix' => 'room_reservation/master'], function () {
         Route::get('edit/{id}', [RoomBuildingController::class, 'edit'])->name('room_building.edit');
     });
     // ------------------------ room block ----------------------
-    Route::group(['prefix' => 'room-block'], function () {
+    Route::group(['prefix' => 'room-block', 'middleware' => 'auth:web'], function () {
         Route::get('/list', [RoomBlockController::class, 'index'])->name('room_block.list');
         Route::post('store', [RoomBlockController::class, 'store'])->name('room_block.store');
         Route::patch('/update', [RoomBlockController::class, 'update'])->name('room_block.update');
@@ -1182,7 +1182,7 @@ Route::group(['prefix' => 'room_reservation/master'], function () {
         Route::get('edit/{id}', [RoomBlockController::class, 'edit'])->name('room_block.edit');
     });
     // ------------------------ room floor ----------------------
-    Route::group(['prefix' => 'room-floor'], function () {
+    Route::group(['prefix' => 'room-floor', 'middleware' => 'auth:web'], function () {
         Route::get('/list', [RoomFloorController::class, 'index'])->name('room_floor.list');
         Route::post('store', [RoomFloorController::class, 'store'])->name('room_floor.store');
         Route::patch('/update', [RoomFloorController::class, 'update'])->name('room_floor.update');
@@ -1191,7 +1191,7 @@ Route::group(['prefix' => 'room_reservation/master'], function () {
         Route::get('/get-blocks-by-building/{building_id}', [RoomFloorController::class, 'getBlocks'])->name('room_floor.get_blocks');
     });
     // ------------------------ room unit ----------------------
-    Route::group(['prefix' => 'room-unit'], function () {
+    Route::group(['prefix' => 'room-unit', 'middleware' => 'auth:web'], function () {
         Route::get('/list', [RoomController::class, 'index'])->name('room_unit.list');
         Route::post('store', [RoomController::class, 'store'])->name('room_unit.store');
         Route::patch('/update', [RoomController::class, 'update'])->name('room_unit.update');
@@ -1200,7 +1200,7 @@ Route::group(['prefix' => 'room_reservation/master'], function () {
         Route::get('/get-floors-by-building-and-block/{building_id}/{block_id}', [RoomController::class, 'get_floors'])->name('room_unit.get_floors');
     });
 });
-Route::group(['prefix' => 'room_reservation/booking'], function () {
+Route::group(['prefix' => 'room_reservation/booking', 'middleware' => 'auth:web'], function () {
 
     // ------------------------ room types ----------------------
     Route::group(['prefix' => 'booking-room'], function () {

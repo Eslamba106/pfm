@@ -9,7 +9,7 @@ use App\Http\Controllers\settings\ComplaintSettingsController;
 use App\Http\Controllers\Room_Reservation\ReservationSettingsController;
 use App\Http\Controllers\property_transactions\PropertyTransactionSettingsController;
 
-Route::group(["prefix" => "settings"], function () {
+Route::group(["prefix" => "settings", 'middleware' => 'auth:web'], function () {
     Route::group(["prefix" => "ui-settings"], function () {
 
         Route::get("/{position?}", [SettingController::class, "ui_settings"])->name("admin.settings.ui_settings.index");
@@ -41,7 +41,7 @@ Route::group(["prefix" => "settings"], function () {
     });
 });
 
-Route::group(['prefix' => 'currency', 'as' => 'admin.currency.'], function () {
+Route::group(['prefix' => 'currency', 'as' => 'admin.currency.', 'middleware' => 'auth:web'], function () {
     Route::get('view', [CurrencyController::class, 'index'])->name('view');
     Route::get('fetch', [CurrencyController::class, 'fetch'])->name('fetch');
     Route::post('store', [CurrencyController::class, 'store'])->name('store');
@@ -51,7 +51,7 @@ Route::group(['prefix' => 'currency', 'as' => 'admin.currency.'], function () {
     Route::post('status', [CurrencyController::class, 'status'])->name('status');
     Route::post('system-currency-update', [CurrencyController::class, 'systemCurrencyUpdate'])->name('system-currency-update');
 });
-Route::group(['prefix' => 'room-reservation/settings', 'as' => 'room_reservation.settings.'], function () {
+Route::group(['prefix' => 'room-reservation/settings', 'as' => 'room_reservation.settings.', 'middleware' => 'auth:web'], function () {
     // Reservation Settings Routes can be added here in the future
         Route::get('/', [ReservationSettingsController::class, 'room_reservation'])->name('room_reservation_settings');
     Route::patch('/update', [ReservationSettingsController::class, 'room_reservation_update'])->name('room_reservation_settings.store');

@@ -46,8 +46,7 @@
                                     <!-- End Search -->
                                 </div>
                                 <div class="col-lg-8 mt-3 mt-lg-0 d-flex flex-wrap gap-3 justify-content-lg-end">
-
-                                    {{-- @can('create_agreement') --}}
+ 
                                     <a href="{{ route('agreement.create') }}" class="btn btn--primary">
                                         <i class="tio-add"></i>
                                         <span
@@ -68,8 +67,7 @@
                                     <button type="submit" name="bulk_action_btn" value="sign"
                                         class="btn btn--primary btn-sm">{{ ui_change('sign', 'property_transaction') }}
                                         <i class="fas fa-save"></i>
-                                    </button>
-                                    {{-- @endcan --}}
+                                    </button> 
                                 </div>
                             </div>
                         </div>
