@@ -49,6 +49,14 @@
                                         <i class="tio-add"></i>
                                         <span class="text">{{ ui_change('unit_configuration' , 'property_config') }}</span>
                                     </a>
+                                    <a href="{{ route('import_property_master') }}" class="btn btn--primary">
+                                        <i class="tio-add"></i>
+                                        <span class="text">{{ ui_change('import_excel' , 'property_config') }}</span>
+                                    </a>
+                                    <a href="{{ route('export_units') }}" class="btn btn--primary">
+                                        <i class="tio-add"></i>
+                                        <span class="text">{{ ui_change('export_excel' , 'property_config') }}</span>
+                                    </a>
                                 {{-- @endcan --}}
                             </div>
                         </div>

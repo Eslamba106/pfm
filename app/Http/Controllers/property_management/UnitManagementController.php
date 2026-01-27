@@ -8,6 +8,7 @@ use App\Models\View;
 use App\Models\UnitType;
 use App\Models\UnitParking;
 use App\Models\RoomFacility;
+use App\Models\UserSettings;
 use Illuminate\Http\Request;
 use App\Models\UnitCondition;
 use App\Models\general\Groups;
@@ -30,7 +31,14 @@ class UnitManagementController extends Controller
         $ids = $request->bulk_ids;
         $search = $request['search'];
         $query_param = $search ? ['search' => $request['search']] : '';
-        $unit_management = (new UnitManagement())->setConnection('tenant')->join('units', 'unit_management.unit_id', '=', 'units.id')->when($request['search'], function ($q) use ($request) {
+
+        $userId =  auth()->id(); 
+        $settings = UserSettings::where('user_id', $userId)->first(); 
+        $buildingIds = $settings?->building_ids ?? []; 
+        if (is_string($buildingIds)) {
+            $buildingIds = json_decode($buildingIds, true) ?? [];
+        } 
+        $unit_management = (new UnitManagement())->setConnection('tenant')->whereIn('property_management_id',$buildingIds)->join('units', 'unit_management.unit_id', '=', 'units.id')->when($request['search'], function ($q) use ($request) {
             $key = explode(' ', $request['search']);
             foreach ($key as $value) {
                 $q->Where('units.name', 'like', "%{$value}%")
@@ -38,7 +46,7 @@ class UnitManagementController extends Controller
             }
         })
             ->select('unit_management.*', 'units.name as block_name')
-            ->latest()->paginate()->appends($query_param);
+            ->latest()->paginate()->appends($query_param);  
 
         $data = [
             'unit_management' => $unit_management,

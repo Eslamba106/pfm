@@ -53,6 +53,14 @@
                                         <span
                                             class="text">{{ ui_change('create_agreement', 'property_transaction') }}</span>
                                     </a>
+                                    <a href="{{ route('import_contract') }}" class="btn btn--primary">
+                                        <i class="tio-add"></i>
+                                        <span class="text">{{ ui_change('import_excel', 'property_transaction') }}</span>
+                                    </a>
+                                    <a href="{{ route('export_units') }}" class="btn btn--primary">
+                                        <i class="tio-add"></i>
+                                        <span class="text">{{ ui_change('export_template_excel', 'property_transaction') }}</span>
+                                    </a>
                                     <button type="button" data-target="#filter" data-filter="" data-toggle="modal"
                                         class="btn btn--primary btn-sm">
                                         <i class="fas fa-filter"></i>
@@ -126,7 +134,7 @@
                                                 $expiries[] = $u->expiry_date
                                                     ? date('d-m-Y', strtotime($u->expiry_date))
                                                     : ui_change('not_available', 'property_transaction');
-                                            } 
+                                            }
 
                                         @endphp
                                         <tr>
@@ -359,7 +367,7 @@
                                             {{ ui_change('signed', 'property_transaction') }}</option>
                                         <option value="unsigned">{{ ui_change('unsigned', 'property_transaction') }}
                                         </option>
-                                     
+
                                     </select>
                                 </div>
 
