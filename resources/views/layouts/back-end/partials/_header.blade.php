@@ -35,6 +35,8 @@
                 class="m-1 btn btn--primary">{{ ui_change('image_view', 'property_transaction') }}</a>
             <a href="{{ route('general_list_view') }}"
                 class="m-1 btn btn--primary">{{ ui_change('list_view', 'property_transaction') }}</a>
+            <a href="{{ route('booking_room.book_now') }}"
+                class="m-1 btn btn--primary">{{ ui_change('book_now', 'property_transaction') }}</a>
             <a href="https://www.finexerp.com/"
                 class="m-1 btn btn--primary">{{ ui_change('Finexerp', 'property_transaction') }}</a>
             <li class="nav-item d-none d-md-inline-block">
@@ -73,7 +75,8 @@
                                             </label>
                                         </li>
                                     @endforeach
-                                    <button type="submit" class="btn-sm btn--primary ">{{ ui_change('save') }}</button>
+                                    <button type="submit"
+                                        class="btn-sm btn--primary ">{{ ui_change('save') }}</button>
                                 </form>
                             </ul>
                         </div>

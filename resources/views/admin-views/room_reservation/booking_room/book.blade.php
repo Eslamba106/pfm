@@ -367,11 +367,7 @@
  @section('content')
      <div class="container list-container">
          <div class="row mt-5 @if ($lang == 'ar') rtl text-start @else ltr @endif">
-
-             <div class="col-md-12">
-                 <div class="card">
-                     <div class="px-3 py-4">
-                         <div id="unitContextMenu" class="context-menu">
+ <div id="unitContextMenu" class="context-menu">
                              <ul>
                                  <li data-action="enquiry">{{ ui_change('enquiry') }}</li>
                                  <li data-action="proposal">{{ ui_change('proposal') }}</li>
@@ -379,12 +375,16 @@
                                  <li data-action="agreement">{{ ui_change('agreement') }}</li>
                                  <li data-action="book_now">{{ ui_change('book_now') }}</li>
                                  <li data-action="check_in">{{ ui_change('check_in') }}</li>
-                                 <li data-action="check_out">{{ ui_change('check_out') }}</li>
+                                 {{-- <li data-action="check_out">{{ ui_change('check_out') }}</li>
                                  <li data-action="cancel_booking">{{ ui_change('cancel_booking') }}</li>
                                  <li data-action="invoice">{{ ui_change('invoice') }}</li>
-                                 <li data-action="occupy_room">{{ ui_change('occupy_room') }}</li>
+                                 <li data-action="occupy_room">{{ ui_change('occupy_room') }}</li> --}}
                              </ul>
                          </div>
+             <div class="col-md-12">
+                 <div class="card">
+                     <div class="px-3 py-4">
+                        
                          <div class="legend">
                              <div><span style="background-color: #fff;"></span>
                                  {{ ui_change('Empty_Units', 'property_transaction') }}</div>
@@ -702,37 +702,7 @@
              });
          });
      </script>
-     {{-- <script>
-         let currentUnitId = null;
-         const menu = document.getElementById('unitContextMenu');
-
-         document.querySelectorAll('.unit-box').forEach(box => {
-             const checkbox = box.querySelector('input');
-             const status = box.dataset.status;
-
-             box.addEventListener('click', function(e) {
- 
-                 if (status !== 'empty') {
-                     e.preventDefault();
-                     return;
-                 }
-
-                 checkbox.checked = !checkbox.checked;
-                 box.classList.toggle('selected', checkbox.checked);
-             });
-
-             box.addEventListener('contextmenu', function(e) {
-                 e.preventDefault(); 
-                 if (status !== 'empty') return;
-
-                 currentUnitId = this.dataset.unitId;
-                 menu.style.display = 'block';
-                 menu.style.top = `${e.pageY}px`;
-                 menu.style.left = `${e.pageX}px`;
-             });
-         });
-     </script> --}}
-
+     
      <script>
          let currentUnitId = null;
          const menu = document.getElementById('unitContextMenu');

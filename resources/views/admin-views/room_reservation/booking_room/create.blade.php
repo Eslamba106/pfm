@@ -60,7 +60,7 @@
 @endphp
 @section('content')
     <div class="content container-fluid">
-        <form action="{{ route('booking_room.store') }}" method="POST">
+        <form action="{{ route('booking_room.store') }}" method="POST" enctype="multipart/form-data">
             @csrf
             <div class="card">
                 {{-- <input type="hidden" name="adults" value="{{ $adults }}">
@@ -68,16 +68,25 @@
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-md-4">
-                            <label>{{ ui_change('Search_Tenant', 'room_reservation') }}</label>
-                            <div class="input-group">
+                            <div class="form-group row">
+                                <label
+                                    class="col-sm-4 col-form-label">{{ ui_change('Search_Tenant', 'room_reservation') }}</label>
+                                <div class="col-sm-8">
 
-                                <select name="tenant_id" class="js-select2-custom form-control" required>
-                                    <option value="">{{ ui_change('select_tenant') }}</option>
-                                    @foreach ($tenants as $tenants_item)
-                                        <option value="{{ $tenants_item->id }}">
-                                            {{ $tenants_item->name ?? $tenants_item->company_name }}</option>
-                                    @endforeach
-                                </select>
+                                    <select name="tenant_id" class="js-select2-custom form-control" required>
+                                        <option value="">{{ ui_change('select_tenant') }}</option>
+                                        @foreach ($tenants as $tenants_item)
+                                            <option value="{{ $tenants_item->id }}">
+                                                {{ $tenants_item->name ?? $tenants_item->company_name }}</option>
+                                        @endforeach
+                                    </select>
+                                </div>
+                            </div>
+                            <div class="form-group row">
+                                <label class="col-sm-4 col-form-label">{{ ui_change('	ID', 'room_reservation') }}</label>
+                                <div class="col-sm-8"> 
+                                    <input name="id" class="form-control" type="file"> 
+                                </div>
                             </div>
                         </div>
                         <div class="col-md-4">
