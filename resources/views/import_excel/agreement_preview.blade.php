@@ -23,15 +23,11 @@
                 </div>
                 <div class="card-body p-0">
                     <div class="table-responsive" style="max-height: 400px; overflow-y: auto;">
-                        <table id="datatable" style="text-align: {{ Session::get('locale') === 'ar' ? 'right' : 'left' }};"
-                            class="table table-striped table-bordered table-hover align-middle mb-0">
-
+                        <table class="table table-striped table-bordered table-hover align-middle mb-0">
                             <thead class="bg-light text-capitalize">
                                 <tr>
                                     <th class="text-center fw-bold sticky-top"
-                                        style="top:0; background:#4f99e4; z-index:10;">
-                                        {{ ui_change('sl') }}
-                                    </th>
+                                        style="top:0; background:#4f99e4; z-index:10;">{{ ui_change('sl') }}</th>
                                     @foreach ($data[0] as $header)
                                         <th class="text-center fw-bold sticky-top"
                                             style="top:0; background:#4f99e4; z-index:10;">
@@ -40,15 +36,15 @@
                                     @endforeach
                                 </tr>
                             </thead>
-
                             <tbody>
                                 @foreach ($data->skip(1) as $rowIndex => $row)
                                     <tr>
-                                        <td>{{ $rowIndex }}</td>
+                                        <td>{{ $rowIndex + 1 }}</td>
                                         @foreach ($row as $colIndex => $value)
                                             @php
                                                 $columnName = $data[0][$colIndex];
 
+                                                // تحويل التواريخ لو الرقم كبير
                                                 if (is_numeric($value) && $value > 10000) {
                                                     try {
                                                         $date = \PhpOffice\PhpSpreadsheet\Shared\Date::excelToDateTimeObject(
@@ -59,11 +55,7 @@
                                                     }
                                                 }
                                             @endphp
-                                            <td>
-                                                <input type="text" name="rows[{{ $rowIndex + 1 }}][{{ $columnName }}]"
-                                                    value="{{ $value }}" class="form-control text-center auto-resize"
-                                                    oninput="resizeInput(this)">
-                                            </td>
+                                            <td>{{ $value }}</td>
                                         @endforeach
                                     </tr>
                                 @endforeach
@@ -73,13 +65,13 @@
                 </div>
 
                 <div class="card-footer d-flex justify-content-end">
-
                     <button type="submit" class="btn btn-primary">
                         {{ ui_change('Confirm_&_Save') }}
                     </button>
                 </div>
             </div>
         </form>
+
         <script>
             function resizeInput(input) {
                 input.style.width = "1px";

@@ -32,6 +32,9 @@
                             @if ($file == 'agreement')
                                 <a href="{{ route('export_units') }}"  
                                     class="btn-link text-capitalize fz-16 font-weight-medium">{{ ui_change('download_here') }}</a>
+                            @elseif ($file == 'tenant')
+                             <a href="{{ asset('assets/template/' . $file_name . '.xlsx') }}" download=""
+                                    class="btn-link text-capitalize fz-16 font-weight-medium">{{ ui_change('download_here') }}</a>
                             @else
                                 <a href="{{ asset('assets/template/' . $file_name . '.xlsx') }}" download=""
                                     class="btn-link text-capitalize fz-16 font-weight-medium">{{ ui_change('download_here') }}</a>

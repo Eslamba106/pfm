@@ -80,27 +80,7 @@
         .proposal_pending {
             background-color: {{ $settings['enquiry_color']->value ?? '#372be2' }};
             color: #fff;
-        }
-
-        /* .unit.proposed {
-                    background-color: #ffeb3b;
-                }
-
-                .unit.booked {
-                    background-color: #d500f9;
-                    color: #fff;
-                }
-
-                .unit.agreement {
-                    background-color: #f44336;
-                    color: #fff;
-                }
-
-                .proposal_pending {
-                    background-color: #372be2;
-                    color: #fff;
-                } */
-
+        } 
         @keyframes blink {
             0% {
                 opacity: 1;

@@ -227,7 +227,7 @@
          .unit-dots {
              position: relative;
          }
- 
+
          .unit-hover-box.dark {
              position: absolute;
              bottom: 120%;
@@ -247,7 +247,8 @@
              visibility: hidden;
              transition: .25s ease;
              z-index: 9999;
-         } 
+         }
+
          .unit-hover-box.dark::after {
              content: "";
              position: absolute;
@@ -258,20 +259,20 @@
              border-style: solid;
              border-color: #0b0f14 transparent transparent;
          }
- 
+
          .dot-info:hover~.unit-hover-box {
              opacity: 1;
              visibility: visible;
              transform: translateX(-50%) translateY(0);
          }
- 
+
          .unit-hover-box .title {
              font-weight: 700;
              margin-bottom: 8px;
              padding-bottom: 6px;
              border-bottom: 1px solid #2a2f35;
          }
- 
+
          .unit-hover-box .info div {
              margin: 4px 0;
          }
@@ -279,7 +280,7 @@
          .unit-hover-box .info span {
              color: #4fc3f7;
          }
- 
+
          .options-title {
              margin-top: 10px;
              font-weight: 600;
@@ -299,7 +300,7 @@
              gap: 6px;
              margin-bottom: 5px;
          }
- 
+
          .options li.yes::before {
              content: "✔";
              color: #00e676;
@@ -310,6 +311,55 @@
              content: "✖";
              color: #ff5252;
              font-weight: bold;
+         }
+
+         .unit-status-empty {
+             background: #e8f7ee;
+             border: 1px solid #4caf50;
+         }
+
+         .unit-status-booked {
+             background: #fff3cd;
+             border: 1px solid #ffc107;
+             cursor: not-allowed;
+             opacity: 0.7;
+         }
+
+         .unit-status-checkin {
+             background: #f8d7da;
+             border: 1px solid #dc3545;
+             cursor: not-allowed;
+             opacity: 0.7;
+         }
+
+         .unit-status-maintenance {
+             background: #e2e3e5;
+             border: 1px solid #6c757d;
+             cursor: not-allowed;
+             opacity: 0.7;
+         }
+
+         .unit-box.selected {
+             outline: 2px solid #007bff;
+         }
+
+         .legend {
+             display: flex;
+             gap: 10px;
+             margin-bottom: 20px;
+         }
+
+         .legend div {
+             display: flex;
+             align-items: center;
+             gap: 5px;
+         }
+
+         .legend span {
+             width: 20px;
+             height: 20px;
+             display: inline-block;
+             border: 1px solid #000;
          }
      </style>
  @endpush
@@ -335,7 +385,20 @@
                                  <li data-action="occupy_room">{{ ui_change('occupy_room') }}</li>
                              </ul>
                          </div>
-
+                         <div class="legend">
+                             <div><span style="background-color: #fff;"></span>
+                                 {{ ui_change('Empty_Units', 'property_transaction') }}</div>
+                             <div><span style="background-color: {{ $proposal_color ?? '#ffeb3b' }}"></span>
+                                 {{ ui_change('Proposed_Units', 'property_transaction') }}</div>
+                             <div><span style="background-color: {{ $booking_color ?? '#d500f9' }}"></span>
+                                 {{ ui_change('Booked_Units', 'property_transaction') }}</div>
+                             <div><span style="background-color: {{ $agreement_color ?? '#f44336' }}"></span>
+                                 {{ ui_change('Agreement_Units', 'property_transaction') }}</div>
+                             <div><span style="background-color: {{ $enquiry_color ?? '#372be2' }}"></span>
+                                 {{ ui_change('Proposal_Pending', 'property_transaction') }}</div>
+                             <div><span style="background-color: {{ $booked_color ?? '#372be2' }}"></span>
+                                 {{ ui_change('booked', 'property_transaction') }}</div>
+                         </div>
                          <form id="productForm" method="get" class="d-flex flex-wrap gap-2">
                              <button type="submit"
                                  onclick="setFormAction('{{ route('enquiry.create_with_select_unit') }}')"
@@ -378,7 +441,7 @@
                                 <i class="tio-add"></i>
                                 <span class="text">{{ ui_change('checkIn', 'property_transaction') }}</span>
                             </button>  --}}
-                       
+
                      </div>
                  </div>
              </div>
@@ -406,10 +469,29 @@
                                                              {{ $floor_item->floor_management_main->name }}</div>
                                                          <div class="units-container">
                                                              @foreach ($floor_item->unit_management_child as $unit)
-                                                                 <label class="unit-box"
-                                                                     data-unit-id="{{ $unit->id }}">
+                                                                 @php
+                                                                     $bgColor = null;
+
+                                                                     if ($unit->booking_status === 'agreement') {
+                                                                         $bgColor = $agreement_color;
+                                                                     } elseif ($unit->booking_status === 'booked') {
+                                                                         $bgColor = $booking_color;
+                                                                     } elseif ($unit->booking_status === 'proposal') {
+                                                                         $bgColor = $proposal_color;
+                                                                     } elseif ($unit->booking_status === 'enquiry') {
+                                                                         $bgColor = $enquiry_color;
+                                                                     } elseif ($unit->booking_status === 'booked') {
+                                                                         $bgColor = $booked_color;
+                                                                     }
+                                                                 @endphp
+                                                                 <label
+                                                                     class="unit-box   {{ $unit->booking_status !== 'empty' ? 'not-available' : '' }}"
+                                                                     data-unit-id="{{ $unit->id }}"
+                                                                     data-status="{{ $unit->booking_status }}"
+                                                                     style="{{ $bgColor ? 'background-color:' . $bgColor . '; color:#fff;' : '' }}">
                                                                      <input type="checkbox" class="bulk-checkbox"
-                                                                         name="bulk_ids[]" value="{{ $unit->id }}">
+                                                                         name="bulk_ids[]" value="{{ $unit->id }}"
+                                                                         @if ($unit->booking_status != 'empty') disabled @endif>
                                                                      {{ $unit->unit_management_main->name }}
                                                                      <div class="unit-dots">
                                                                          <span class="dot dot-booking"></span>
@@ -417,30 +499,47 @@
                                                                          <span class="dot dot-info"></span>
 
                                                                          <div class="unit-hover-box dark">
-                                                                             <div class="title">{{ ui_change('Room_Info') }}</div>
+                                                                             <div class="title">
+                                                                                 {{ ui_change('Room_Info') }}</div>
 
                                                                              <div class="info">
-                                                                                 <div>{{ ui_change('room_description') }} : <span>{{ $unit->unit_description?->name }}</span></div>
-                                                                                 <div>{{ ui_change('room_type') }} : <span>{{ $unit->unit_type?->name }}</span></div>
-                                                                                 <div>{{ ui_change('room_condition') }} : <span>{{ $unit->unit_condition?->name }}</span></div>
-                                                                                 <div>{{ ui_change('room_parking') }} : <span>{{ $unit->unit_parking?->name }}</span></div>
-                                                                                 <div>{{ ui_change('room_view') }} : <span>{{ $unit->unit_view?->name }}</span></div> 
-                                                                                 <div>{{ ui_change('Max_Adults') }} : <span>{{ $unit->adults }}</span></div>
-                                                                                 <div>{{ ui_change('Max_Children') }} : <span>{{ $unit->children }}</span></div>
+                                                                                 <div>{{ ui_change('room_description') }} :
+                                                                                     <span>{{ $unit->unit_description?->name }}</span>
+                                                                                 </div>
+                                                                                 <div>{{ ui_change('room_type') }} :
+                                                                                     <span>{{ $unit->unit_type?->name }}</span>
+                                                                                 </div>
+                                                                                 <div>{{ ui_change('room_condition') }} :
+                                                                                     <span>{{ $unit->unit_condition?->name }}</span>
+                                                                                 </div>
+                                                                                 <div>{{ ui_change('room_parking') }} :
+                                                                                     <span>{{ $unit->unit_parking?->name }}</span>
+                                                                                 </div>
+                                                                                 <div>{{ ui_change('room_view') }} :
+                                                                                     <span>{{ $unit->unit_view?->name }}</span>
+                                                                                 </div>
+                                                                                 <div>{{ ui_change('Max_Adults') }} :
+                                                                                     <span>{{ $unit->adults }}</span>
+                                                                                 </div>
+                                                                                 <div>{{ ui_change('Max_Children') }} :
+                                                                                     <span>{{ $unit->children }}</span>
+                                                                                 </div>
                                                                              </div>
 
-                                                                               <div class="options-title">{{ ui_change('room_facilities') }}</div>
+                                                                             <div class="options-title">
+                                                                                 {{ ui_change('room_facilities') }}</div>
 
                                                                              <ul class="options">
-                                                                                @forelse ($unit->facilities as $facility_item )
-                                                                                    <li class="yes">{{ $facility_item->name }}</li>
-                                                                                @empty
-                                                                                <li class="no">{{ ui_change("no_facilities") }} </li>
-                                                                                @endforelse
-                                                                                 {{-- <li class="no">Smoking Allowed</li>
-                                                                                 <li class="yes">Breakfast Included</li>
-                                                                                 <li class="no">With dinner</li> --}}
-                                                                             </ul>  
+                                                                                 @forelse ($unit->facilities as $facility_item)
+                                                                                     <li class="yes">
+                                                                                         {{ $facility_item->name }}</li>
+                                                                                 @empty
+                                                                                     <li class="no">
+                                                                                         {{ ui_change('no_facilities') }}
+                                                                                     </li>
+                                                                                 @endforelse
+
+                                                                             </ul>
                                                                          </div>
                                                                      </div>
 
@@ -563,58 +662,11 @@
                  </div>
              </div>
          </div>
-         {{-- <div class="modal fade" id="check_in" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel"
-             aria-hidden="true">
-             <div class="modal-dialog" role="document">
-                 <div class="modal-content">
-                     <div class="modal-header">
-                         <h5 class="modal-title" id="exampleModalLabel">
-                             {{ ui_change('Generate_Invoice', 'property_report') }}</h5>
-                         <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                             <span aria-hidden="true">&times;</span>
-                         </button>
-                     </div>
-                     <form action="{{ route('booking_room.check_in_page') }}" id="checkin-form" method="get">
-                         @csrf
-                         <div id="bulk-hidden-inputs"></div>
 
-                         <div class="modal-body">
-                             <div class="form-group">
-                                 <label for="">{{ ui_change('select', 'property_report') }}</label>
-                                 <select name="tenant_id" id="" class="form-control">
-                                     @foreach ($tenants as $tenants_item)
-                                         <option value="{{ $tenants_item->id }}">
-                                             {{ $tenants_item->name ?? $tenants_item->company_name }}</option>
-                                     @endforeach
-                                 </select>
-                             </div>
-                             <div class="row">
-                                 <div class="col-md-6">
-                                     <div class="form-group">
-                                         <label for="">{{ ui_change('Booking_From', 'property_report') }}</label>
-                                         <input type="text" name="booking_from" class="form-control date">
-                                     </div>
-                                 </div>
-                                 <div class="col-md-6">
-                                     <div class="form-group">
-                                         <label for="">{{ ui_change('Booking_to', 'property_report') }}</label>
-                                         <input type="text" name="booking_to" class="form-control date">
-                                     </div>
-                                 </div>
-                             </div>
-                         </div>
-                         <div class="modal-footer">
-                             <button type="button" class="btn btn-secondary"
-                                 data-dismiss="modal">{{ ui_change('Cancel', 'property_report') }}</button>
-                             <button type="submit"
-                                 class="btn btn--primary">{{ ui_change('Generate', 'property_report') }}</button>
-                         </div>
-                     </form>
-                 </div>
-             </div>
-         </div> --}}
      </div>
-
+     {{-- <li class="no">Smoking Allowed</li>
+                                                                                 <li class="yes">Breakfast Included</li>
+                                                                                 <li class="no">With dinner</li> --}}
  @endsection
 
  @push('script')
@@ -637,7 +689,7 @@
          const proposalCreateRoute = "{{ route('proposal.create_with_select_unit') }}";
          const agreementCreateRoute = "{{ route('agreement.create_with_select_unit') }}";
          const BookNowCreateRoute = "{{ route('booking_room.create') }}";
-         const CheckInRoute =  "{{ route('booking_room.check_in_page') }}";
+         const CheckInRoute = "{{ route('booking_room.check_in_page') }}";
      </script>
 
      <script>
@@ -650,6 +702,37 @@
              });
          });
      </script>
+     {{-- <script>
+         let currentUnitId = null;
+         const menu = document.getElementById('unitContextMenu');
+
+         document.querySelectorAll('.unit-box').forEach(box => {
+             const checkbox = box.querySelector('input');
+             const status = box.dataset.status;
+
+             box.addEventListener('click', function(e) {
+ 
+                 if (status !== 'empty') {
+                     e.preventDefault();
+                     return;
+                 }
+
+                 checkbox.checked = !checkbox.checked;
+                 box.classList.toggle('selected', checkbox.checked);
+             });
+
+             box.addEventListener('contextmenu', function(e) {
+                 e.preventDefault(); 
+                 if (status !== 'empty') return;
+
+                 currentUnitId = this.dataset.unitId;
+                 menu.style.display = 'block';
+                 menu.style.top = `${e.pageY}px`;
+                 menu.style.left = `${e.pageX}px`;
+             });
+         });
+     </script> --}}
+
      <script>
          let currentUnitId = null;
          const menu = document.getElementById('unitContextMenu');

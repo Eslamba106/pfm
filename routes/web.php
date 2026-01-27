@@ -1209,6 +1209,7 @@ Route::group(['prefix' => 'room_reservation/booking'], function () {
         Route::get('check-in-page', [BookingRoomController::class, 'check_in_page'])->name('booking_room.check_in_page');
         Route::get('check-in/{id}', [BookingRoomController::class, 'check_in'])->name('booking_room.check_in');
         Route::post('check-in/{id}', [BookingRoomController::class, 'submitCheckin'])->name('booking.checkin.submit');
+        Route::post('check-in-dire', [BookingRoomController::class, 'submitCheckinDir'])->name('booking.checkin_dir.submit');
         Route::get('check-out/{id}', [BookingRoomController::class, 'submitCheckOut'])->name('booking.checkout.submit');
         Route::get('create', [BookingRoomController::class, 'create'])->name('booking_room.create');
         Route::post('store', [BookingRoomController::class, 'store'])->name('booking_room.store');

@@ -1,4 +1,5 @@
 <?php
+
 namespace App\Http\Controllers\import;
 
 use App\Http\Controllers\Controller;
@@ -19,11 +20,16 @@ class TenantImportController extends Controller
         <p>1. ' . ui_change('download_the_format_file_and_fill_it_with_proper_data.') . '</p>
         <p>2. ' . ui_change('tenant_type_required._and_must_be_one_from_individual_or_company.') . '</p>
         <p>3. ' . ui_change('country_and_nationality _are_required') . '</p>
+        <p>4. ' . ui_change('tenant_type_must_be_one_of_individual_or_company') . '</p>
+        <p>5. ' . ui_change('geneder_must_be_one_of_male_female') . '</p>
 
     ';
+
         $data = [
             'instructions' => $instructions,
             'file'         => 'tenant',
+            'file_name'         => 'cleaned_header',
+
         ];
 
         return view('import_excel.upload_page', $data);
@@ -57,7 +63,7 @@ class TenantImportController extends Controller
         $rows = $request->input('rows', []);
 
         foreach ($rows as $row) {
-            $normalizedRow = $this->normalizeRow($row); 
+            $normalizedRow = $this->normalizeRow($row);
             $validator = Validator::make($normalizedRow, [
                 'tenant_type' => 'required|in:individual,company',
                 'gender'      => 'nullable|in:male,female',

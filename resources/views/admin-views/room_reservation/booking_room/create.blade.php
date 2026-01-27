@@ -17,6 +17,36 @@
             border: none !important;
             padding: 5px;
         }
+
+        .qty-control {
+            display: inline-flex;
+            align-items: center;
+            gap: 6px;
+            margin-inline-start: 8px;
+        }
+
+        .qty-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            height: 34px;
+        }
+
+        .qty-btn {
+            width: 32px;
+            height: 32px;
+            border: 1px solid #ccc;
+            background: #f8f9fa;
+            cursor: pointer;
+            font-size: 18px;
+            line-height: 1;
+            border-radius: 4px;
+        }
+
+        .qty-btn:hover {
+            background: #e9ecef;
+        }
     </style>
 @endpush
 @php
@@ -33,8 +63,8 @@
         <form action="{{ route('booking_room.store') }}" method="POST">
             @csrf
             <div class="card">
-                <input type="hidden" name="adults" value="{{ $adults }}">
-                <input type="hidden" name="children" value="{{ $children }}">
+                {{-- <input type="hidden" name="adults" value="{{ $adults }}">
+                <input type="hidden" name="children" value="{{ $children }}"> --}}
                 <div class="card-body">
                     <div class="row mb-4">
                         <div class="col-md-4">
@@ -42,6 +72,7 @@
                             <div class="input-group">
 
                                 <select name="tenant_id" class="js-select2-custom form-control" required>
+                                    <option value="">{{ ui_change('select_tenant') }}</option>
                                     @foreach ($tenants as $tenants_item)
                                         <option value="{{ $tenants_item->id }}">
                                             {{ $tenants_item->name ?? $tenants_item->company_name }}</option>
@@ -54,7 +85,7 @@
                                 <label
                                     class="col-sm-4 col-form-label">{{ ui_change('Booking_Date', 'room_reservation') }}</label>
                                 <div class="col-sm-8">
-                                    <input type="text" name="booking_date" class="form-control date"
+                                    <input type="text" disabled name="booking_date" class="form-control date"
                                         value="{{ \Carbon\Carbon::now()->format('d/m/Y') }}">
                                 </div>
                             </div>
@@ -90,15 +121,37 @@
                         </div>
                         <div class="col-md-4">
                             <ul class="list-unstyled">
-                                <li><strong>{{ ui_change('Adults', 'room_reservation') }}:</strong> {{ $adults }}
+                                <li>
+                                    <strong>{{ ui_change('Adults', 'room_reservation') }}:</strong>
+
+                                    <div class="qty-control">
+                                        <button type="button" class="qty-btn minus" data-target="adults">−</button>
+
+                                        <input type="number" name="adults" id="adults" class="qty-input"
+                                            value="{{ $adults }}" min="1" readonly>
+
+                                        <button type="button" class="qty-btn plus" data-target="adults">+</button>
+                                    </div>
                                 </li>
-                                <li><strong>{{ ui_change('Children', 'room_reservation') }}:</strong> {{ $children }}
+
+                                <li class="mt-1">
+                                    <strong>{{ ui_change('Children', 'room_reservation') }}:</strong>
+
+                                    <div class="qty-control">
+                                        <button type="button" class="qty-btn minus" data-target="children">−</button>
+
+                                        <input type="number" name="children" id="children" class="qty-input"
+                                            value="{{ $children }}" min="0" readonly>
+
+                                        <button type="button" class="qty-btn plus" data-target="children">+</button>
+                                    </div>
                                 </li>
+
                                 <li class="mt-2">
                                     <strong
                                         class="mb-2">{{ ui_change('room_options', 'room_reservation') }}:</strong><br>
                                     @forelse ($room_options as $room_option_item)
-                                    <input type="hidden" value="{{ $room_option_item->id }}" name="room_ids[]">
+                                        <input type="hidden" value="{{ $room_option_item->id }}" name="room_ids[]">
                                         <div class="form-group">
                                             <label>{{ $room_option_item->name }}</label>
                                             <div class="d-flex gap-3">
@@ -119,7 +172,8 @@
                                                 <div class="form-check">
                                                     <input class="form-check-input" type="radio"
                                                         name="room_options[{{ $room_option_item->id }}]"
-                                                        id="{{ $room_option_item->name }}_any" value="chargeable" checked>
+                                                        id="{{ $room_option_item->name }}_any" value="chargeable"
+                                                        checked>
                                                     <label class="form-check-label"
                                                         for="{{ $room_option_item->name }}_any">{{ ui_change('chargeable') }}</label>
                                                 </div>
@@ -177,7 +231,8 @@
                                         </td>
 
                                         <td>
-                                            <input type="number" step="0.01" name="discount_per[{{ $unit_item->id }}]"
+                                            <input type="number" step="0.01"
+                                                name="discount_per[{{ $unit_item->id }}]"
                                                 class="form-control text-center discount-percent-input" value="0">
                                         </td>
 
@@ -196,15 +251,16 @@
                                                 class="form-control text-center vat-percent-input" value="0"
                                                 name="vat_per[{{ $unit_item->id }}]">
                                         </td>
-                                         <td>
+                                        <td>
                                             <input type="text" class="form-control text-center levy"
-                                                value="{{ number_format($company->levy?->percentage,$company->decimals) }}" readonly name="levy[{{ $unit_item->id }}]">
+                                                value="{{ number_format($company->levy?->percentage, $company->decimals) }}"
+                                                readonly name="levy[{{ $unit_item->id }}]">
                                         </td>
                                         <td>
                                             <input type="text" class="form-control text-center net-total-input"
                                                 value="0.000" readonly name="net_total[{{ $unit_item->id }}]">
                                         </td>
-                                       
+
                                     </tr>
                                 @endforeach
 
@@ -245,7 +301,8 @@
                                 </tr>
                                 <tr>
                                     <td>{{ ui_change('Govt.Levy') }}</td>
-                                    <td class="text-right summary-levy">{{ number_format($company->levy?->percentage, $company->decimals, '.', '') }}
+                                    <td class="text-right summary-levy">
+                                        {{ number_format($company->levy?->percentage, $company->decimals, '.', '') }}
                                     </td>
                                 </tr>
                                 <tr class="bg-light font-weight-bold">
@@ -277,13 +334,67 @@
 
 @push('script')
     <script>
+        document.addEventListener('click', function(e) {
+
+            if (!e.target.classList.contains('qty-btn')) return;
+
+            const targetId = e.target.dataset.target;
+            const input = document.getElementById(targetId);
+
+            let value = parseInt(input.value) || 0;
+            const min = parseInt(input.min) || 0;
+
+            if (e.target.classList.contains('plus')) {
+                value++;
+            }
+
+            if (e.target.classList.contains('minus')) {
+                if (value > min) value--;
+            }
+
+            input.value = value;
+            input.dispatchEvent(new Event('change'));
+        });
+    </script>
+
+    <script>
         document.addEventListener('DOMContentLoaded', function() {
 
             const fromInput = document.querySelector('input[name="booking_from"]');
             const toInput = document.querySelector('input[name="booking_to"]');
 
+            const fromPicker = flatpickr(fromInput, {
+                dateFormat: "d/m/Y",
+                defaultDate: "today",
+                minDate: "today",
+                onChange: function(selectedDates) {
+
+                    if (!selectedDates.length) return;
+
+                    const fromDate = selectedDates[0];
+
+                    const minToDate = new Date(fromDate);
+                    minToDate.setDate(minToDate.getDate() + 1);
+
+                    toPicker.set('minDate', minToDate);
+
+                    if (!toPicker.selectedDates.length || toPicker.selectedDates[0] <= fromDate) {
+                        toPicker.setDate(minToDate, true);
+                    }
+
+                    calculateDays();
+                }
+            });
+
+            const toPicker = flatpickr(toInput, {
+                dateFormat: "d/m/Y",
+                minDate: new Date().fp_incr(1),
+                onChange: function() {
+                    calculateDays();
+                }
+            });
+
             function parseDate(dateStr) {
-                if (!dateStr) return null;
                 const parts = dateStr.split('/');
                 return new Date(parts[2], parts[1] - 1, parts[0]);
             }
@@ -298,21 +409,55 @@
                 let days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
 
                 if (days < 1) days = 1;
+
                 document.querySelectorAll('.days-input').forEach(input => {
                     input.value = days;
                     input.dispatchEvent(new Event('input'));
-                });
-                document.querySelectorAll('.days-input').forEach(input => {
-                    input.value = days;
                 });
 
                 calculateTotals();
             }
 
-            fromInput.addEventListener('change', calculateDays);
-            toInput.addEventListener('change', calculateDays);
-
         });
+    </script>
+
+    <script>
+        // document.addEventListener('DOMContentLoaded', function() {
+
+        //     const fromInput = document.querySelector('input[name="booking_from"]');
+        //     const toInput = document.querySelector('input[name="booking_to"]');
+
+        //     function parseDate(dateStr) {
+        //         if (!dateStr) return null;
+        //         const parts = dateStr.split('/');
+        //         return new Date(parts[2], parts[1] - 1, parts[0]);
+        //     }
+
+        //     function calculateDays() {
+        //         const fromDate = parseDate(fromInput.value);
+        //         const toDate = parseDate(toInput.value);
+
+        //         if (!fromDate || !toDate) return;
+
+        //         let diffTime = toDate - fromDate;
+        //         let days = Math.ceil(diffTime / (1000 * 60 * 60 * 24));
+
+        //         if (days < 1) days = 1;
+        //         document.querySelectorAll('.days-input').forEach(input => {
+        //             input.value = days;
+        //             input.dispatchEvent(new Event('input'));
+        //         });
+        //         document.querySelectorAll('.days-input').forEach(input => {
+        //             input.value = days;
+        //         });
+
+        //         calculateTotals();
+        //     }
+
+        //     fromInput.addEventListener('change', calculateDays);
+        //     toInput.addEventListener('change', calculateDays);
+
+        // });
     </script>
 
     <script>

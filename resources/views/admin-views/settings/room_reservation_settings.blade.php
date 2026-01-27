@@ -53,6 +53,12 @@
                                 <input type="number" class="form-control" name="renewal_reminder" value="{{ (isset($renewal_reminder) ? $renewal_reminder : '') }}">
                             </div>
                         </div>
+                        <div class="col-md-6 col-lg-4 col-xl-3">
+                            <div class="form-group">
+                                <label for="booked_color" class="title-color">{{ ui_change('booked_color') }}</label>
+                                <input type="color" class="form-control" name="booked_color" value="{{ (isset($booked_color) ? $booked_color : '') }}">
+                            </div>
+                        </div>
 
 
 

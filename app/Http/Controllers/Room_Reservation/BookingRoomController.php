@@ -15,9 +15,11 @@ use App\Models\RoomFacility;
 use Illuminate\Http\Request;
 use App\Models\UnitCondition;
 use App\Models\UnitManagement;
+use App\Models\BusinessSetting;
 use App\Models\UnitDescription;
 use App\Models\PropertyManagement;
 use Illuminate\Support\Facades\DB;
+use App\Models\ReservationSettings;
 use App\Http\Controllers\Controller;
 
 class BookingRoomController extends Controller
@@ -27,10 +29,10 @@ class BookingRoomController extends Controller
         $tenants = Tenant::select('id', 'name', 'company_name')->get();
 
         $propertyQuery = PropertyManagement::with(
-            'blocks_management_child',
-            'blocks_management_child.block',
-            'blocks_management_child.floors_management_child',
-            'blocks_management_child.floors_management_child.floor_management_main',
+            'blocks_management_child:id,block_id',
+            'blocks_management_child.block:id,name',
+            'blocks_management_child.floors_management_child:id,floor_id',
+            'blocks_management_child.floors_management_child.floor_management_main:id,name',
             'blocks_management_child.floors_management_child.unit_management_child',
             'blocks_management_child.floors_management_child.unit_management_child.unit_management_main'
         )->forUser();
@@ -90,6 +92,11 @@ class BookingRoomController extends Controller
 
 
         $property = $propertyQuery->get();
+        $agreement_color = BusinessSetting::whereType('agreement_color')->value('value');
+        $booking_color   = BusinessSetting::whereType('booking_color')->value('value');
+        $proposal_color  = BusinessSetting::whereType('proposal_color')->value('value');
+        $enquiry_color   = BusinessSetting::whereType('enquiry_color')->value('value');
+        $booked_color    = optional(ReservationSettings::where('setting_name', 'booked_color')->first())->setting_value;
 
         $data = [
             'property_items' => $property,
@@ -104,6 +111,11 @@ class BookingRoomController extends Controller
             'filterUnitFacilityId' => $filterUnitFacilityId,
             'filterAdults' => $filterAdults,
             'filterChildren' => $filterChildren,
+            'agreement_color'   => $agreement_color,
+            'booking_color'   => $booking_color,
+            'proposal_color'   => $proposal_color,
+            'enquiry_color'   => $enquiry_color,
+            'booked_color'   => $booked_color,
         ];
         return view('admin-views.room_reservation.booking_room.book', $data);
     }
@@ -116,11 +128,17 @@ class BookingRoomController extends Controller
         }
         $tenant = Tenant::select('id', 'name', 'company_name', 'address1')->get();
         $unit_managements = UnitManagement::whereIn('id', $ids)->get();
+        $room_options = RoomOption::select('id', 'name')->get();
+        $rental_types = RentalType::select('id', 'name')->get();
+        $company = (new Company())->setConnection('tenant')->with('levy')->first();
         $data = [
             'unit_managements' => $unit_managements,
             'tenants' => $tenant,
+             'company' => $company,
+            'room_options'  => $room_options,
+            'rental_types'  => $rental_types,
         ];
-        return view('admin-views.room_reservation.booking_room.check_in', $data);
+        return view('admin-views.room_reservation.booking_room.check_in_dir', $data);
     }
     public function create(Request $request)
     {
@@ -173,7 +191,7 @@ class BookingRoomController extends Controller
     {
         $booking_from = Carbon::createFromFormat('d/m/Y', $request->booking_from)->format('Y-m-d');
         $booking_to   = Carbon::createFromFormat('d/m/Y', $request->booking_to)->format('Y-m-d');
-        $booking_date = Carbon::createFromFormat('d/m/Y', $request->booking_date)->format('Y-m-d');
+        $booking_date = ($request->booking_date) ? Carbon::createFromFormat('d/m/Y', $request->booking_date)->format('Y-m-d') : Carbon::now()->format('Y-m-d');
 
         $booking = BookingR::create([
             'tenant_id'         => $request->tenant_id,
@@ -206,6 +224,9 @@ class BookingRoomController extends Controller
                 'vat_per'       => $request->vat_per[$room_id] ?? 0,
                 'levy'          => $request->levy[$room_id] ?? 0,
                 'net_total'     => $request->net_total[$room_id] ?? 0,
+            ]);
+            UnitManagement::whereId((int)$room_id)->update([
+                'booking_status' => 'booked',
             ]);
         }
         return redirect()->route('booking_room.list')->with('success', 'Booking saved successfully.');
@@ -320,7 +341,7 @@ class BookingRoomController extends Controller
     }
     public function submitCheckOut($id)
     {
-        $booking = BookingR::findOrFail($id); 
+        $booking = BookingR::findOrFail($id);
         if ($booking->status !== 'check_in') {
             return redirect()->back()->with('error', 'This booking cannot be checked out.');
         }
@@ -330,5 +351,9 @@ class BookingRoomController extends Controller
         $booking->save();
 
         return redirect()->route('booking_room.list')->with('success', 'Booking checked out successfully.');
+    }
+
+    public function submitCheckinDir(Request $request){
+        dd($request->all());
     }
 }

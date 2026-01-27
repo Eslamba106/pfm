@@ -25,7 +25,11 @@ class BookingR extends Model
     }
 
      public function scopeActive($query)
-    {
-        return $query->where('status', '!=','check_in');  
-    }
+{
+    return $query->where(function($q) {
+        $q->where('status', '!=','check_in')
+          ->orWhereNull('status');
+    });
+}
+
 }

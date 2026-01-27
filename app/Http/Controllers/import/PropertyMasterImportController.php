@@ -46,7 +46,7 @@ class PropertyMasterImportController extends Controller
         $request->validate([
             'file' => 'required|mimes:xlsx,csv',
         ]);
-
+        
         $data = Excel::toCollection(null, $request->file('file'))->first();
 
         session([
